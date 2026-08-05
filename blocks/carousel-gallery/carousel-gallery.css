@@ -1,0 +1,138 @@
+/* Block: carousel-gallery — image-only full-bleed photo gallery
+   Extracted from wknd.site adventure hero (div.carousel.cmp-carousel--mini):
+   full-width image, fixed 400px height, object-fit cover; centered black dot
+   indicators and simple arrow controls in a strip below the image. */
+
+/* --- Full-bleed: break out of the section's 1200px wrapper --- */
+.carousel-gallery-wrapper {
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.carousel-gallery .carousel-gallery-slides-container {
+  position: relative;
+}
+
+.carousel-gallery .carousel-gallery-slides,
+.carousel-gallery .carousel-gallery-slide-indicators {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.carousel-gallery .carousel-gallery-slides {
+  display: flex;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  overflow: scroll clip;
+}
+
+.carousel-gallery .carousel-gallery-slides::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-gallery .carousel-gallery-slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 400px;
+  scroll-snap-align: start;
+}
+
+/* Image fills the slide (source: width 100%, height 400px, object-fit cover) */
+.carousel-gallery .carousel-gallery-slide .carousel-gallery-slide-image {
+  position: absolute;
+  inset: 0;
+}
+
+.carousel-gallery .carousel-gallery-slide .carousel-gallery-slide-image picture {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.carousel-gallery .carousel-gallery-slide .carousel-gallery-slide-image picture > img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* Image-only gallery: no text overlay — hide the (empty) content cell */
+.carousel-gallery .carousel-gallery-slide .carousel-gallery-slide-content {
+  display: none;
+}
+
+/* --- Indicators: centered black dots in a strip below the image --- */
+.carousel-gallery .carousel-gallery-slide-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 14px;
+  margin-top: 9px;
+  line-height: 0;
+}
+
+.carousel-gallery .carousel-gallery-slide-indicator button {
+  width: 10px;
+  height: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: rgb(0 0 0 / 40%);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.carousel-gallery .carousel-gallery-slide-indicator button:disabled,
+.carousel-gallery .carousel-gallery-slide-indicator button:hover,
+.carousel-gallery .carousel-gallery-slide-indicator button:focus-visible {
+  background-color: rgb(0 0 0 / 80%);
+}
+
+/* --- Prev/next: simple black arrow glyphs at the bottom-right --- */
+.carousel-gallery .carousel-gallery-navigation-buttons {
+  position: absolute;
+  right: 16px;
+  bottom: -30px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 1;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.carousel-gallery .carousel-gallery-navigation-buttons button {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  color: rgb(0 0 0 / 80%);
+  cursor: pointer;
+}
+
+.carousel-gallery .carousel-gallery-navigation-buttons button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border: 2px solid currentcolor;
+  border-bottom: 0;
+  border-left: 0;
+  transform: translate(-50%, -50%) rotate(-135deg);
+}
+
+.carousel-gallery .carousel-gallery-navigation-buttons button.slide-next::after {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.carousel-gallery .carousel-gallery-navigation-buttons button:hover,
+.carousel-gallery .carousel-gallery-navigation-buttons button:focus-visible {
+  color: rgb(0 0 0);
+}

@@ -1,0 +1,75 @@
+/* Block: accordion-faq
+ * Design migrated from wknd.site/us/en/faqs — values from source computed styles.
+ * Decorated DOM: details.accordion-faq-item > (summary.accordion-faq-item-label > p) + div.accordion-faq-item-body
+ */
+
+.accordion-faq .accordion-faq-item {
+  margin: 0;
+  border: 0;
+}
+
+/* Question label (summary). Source: 2px #ebebeb bottom divider, ~13.3px padding. */
+.accordion-faq .accordion-faq-item-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13.33px;
+  border-bottom: 2px solid #ebebeb;
+  cursor: pointer;
+  list-style: none;
+  transition: background-color 0.2s;
+}
+
+.accordion-faq .accordion-faq-item-label::-webkit-details-marker {
+  display: none;
+}
+
+/* Question text: Source Sans Pro, 16px, 600, UPPERCASE, pure black. */
+.accordion-faq .accordion-faq-item-label p {
+  margin: 0;
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-transform: uppercase;
+  color: #000;
+}
+
+/* +/- indicator: thin black glyph, ~14px, 2px stroke. No rotation between states. */
+.accordion-faq .accordion-faq-item-label::after {
+  content: '';
+  position: relative;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+
+  /* horizontal bar (always visible) + vertical bar (collapsed only) */
+  background:
+    linear-gradient(#000, #000) center / 14px 2px no-repeat,
+    linear-gradient(#000, #000) center / 2px 14px no-repeat;
+  transition: background-size 0.2s;
+}
+
+/* Expanded: hide the vertical bar -> becomes a minus. */
+.accordion-faq .accordion-faq-item[open] .accordion-faq-item-label::after {
+  background:
+    linear-gradient(#000, #000) center / 14px 2px no-repeat,
+    linear-gradient(#000, #000) center / 0 14px no-repeat;
+}
+
+/* Answer body. Source panel padding 7px 0 0 7px, transparent, no border. */
+.accordion-faq .accordion-faq-item-body {
+  padding: 7px 0 0 7px;
+}
+
+/* Answer text: Source Sans Pro, 14px, line-height 24.5px, justified, #202020. */
+.accordion-faq .accordion-faq-item-body p {
+  margin: 0 0 13.5px;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24.5px;
+  color: var(--text-color);
+  text-align: justify;
+}
