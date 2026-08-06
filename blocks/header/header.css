@@ -415,3 +415,25 @@ header nav .nav-language-list a:any-link {
 }
 
 header nav .nav-language-list a:hover { background: var(--light-color); }
+
+/* mobile header refinements to match the source's compact mobile bar. Placed
+   after the base rules above so these overrides win at equal specificity. */
+@media (width < 900px) {
+  /* language toggle: the source shows only the flag + chevron on mobile — the
+     "EN-US" label is hidden. font-size:0 collapses the text node while the flag
+     span (20×14) and the ::after chevron (8×8) keep their fixed dimensions. */
+  header nav .nav-language-toggle {
+    font-size: 0;
+  }
+
+  /* search box: the source box runs flush to the right screen edge and is a
+     touch wider (~207px). Bleed past the 14px nav gutter and widen the input to
+     match (box = 8 + 18 icon + 6 gap + 143 input + 32 = 207px). */
+  header nav .nav-search {
+    margin-right: -14px;
+  }
+
+  header nav .nav-search input {
+    width: 143px;
+  }
+}
