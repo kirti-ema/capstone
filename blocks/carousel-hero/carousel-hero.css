@@ -56,7 +56,12 @@
   display: block;
   width: 100%;
   height: auto;
+
+  /* WKND source: 16/9 while narrow, capped at 640px tall on wider screens
+     (cap engages ~1138px). object-fit keeps it filling the full-bleed width
+     without stretching — matches the source at every width. */
   aspect-ratio: 16 / 9;
+  max-height: 640px;
   object-fit: cover;
 }
 
@@ -201,12 +206,10 @@
   transform: translate(-60%, -50%) rotate(45deg);
 }
 
-/* Desktop: image taller, card overlaps the image bottom */
+/* Desktop: card overlaps the image bottom. The image keeps its 16/9 ratio
+   capped at 640px (set above) — matching the source, which holds a fixed
+   640px hero height on wide screens rather than growing with the viewport. */
 @media (width >= 900px) {
-  .carousel-hero .carousel-hero-slide .carousel-hero-slide-image img {
-    aspect-ratio: 9 / 4;
-  }
-
   .carousel-hero .carousel-hero-slide .carousel-hero-slide-content {
     margin-top: -180px;
     padding: 0 28px;
