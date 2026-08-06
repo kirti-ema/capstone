@@ -70,12 +70,8 @@ header nav .nav-tools {
   header nav .nav-brand {
     grid-area: brand;
 
-    /* shallower band than desktop; logo scaled down to the source's mobile size */
+    /* shallower band than desktop */
     padding: 12px 0;
-  }
-
-  header nav .nav-brand img {
-    width: 96px;
   }
 
   header nav .nav-tools { grid-area: tools; }
@@ -230,6 +226,12 @@ header nav[aria-expanded='true'] .nav-sections {
 
   header nav[aria-expanded='true'] .nav-sections {
     align-self: start;
+  }
+
+  /* scaled-down mobile logo (source uses ~96px). Placed after the base
+     128px rule so it wins at equal specificity within the media query. */
+  header nav .nav-brand img {
+    width: 96px;
   }
 }
 
