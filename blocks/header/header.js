@@ -194,4 +194,25 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  // dynamic sticky shrink: collapse the tall white bar once the page scrolls,
+  // matching the source header's shrink-on-scroll behavior. Toggling a single
+  // class lets CSS handle the (transitioned) size change.
+  const header = block.closest('header') || document.querySelector('header');
+  if (header) {
+    const SHRINK_AT = 40; // px scrolled before the header collapses
+    const applyScrollState = () => {
+      header.classList.toggle('nav-scrolled', window.scrollY > SHRINK_AT);
+    };
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        applyScrollState();
+        ticking = false;
+      });
+    }, { passive: true });
+    applyScrollState();
+  }
 }
