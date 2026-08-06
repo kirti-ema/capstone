@@ -46,7 +46,10 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  * @param {Element} tools The nav-tools container
  */
 function decorateSearch(tools) {
-  const trigger = [...tools.querySelectorAll('a')].find((a) => a.getAttribute('href') === '#search');
+  // Match by href OR link text: Document Authoring rewrites the placeholder
+  // "#search" href to "/" on publish, so text is the reliable signal.
+  const trigger = [...tools.querySelectorAll('a')].find((a) => a.getAttribute('href') === '#search'
+    || a.textContent.trim().toLowerCase() === 'search');
   if (!trigger) return;
   const form = document.createElement('form');
   form.className = 'nav-search';
@@ -162,7 +165,10 @@ export default async function decorate(block) {
     const navUtility = document.createElement('div');
     navUtility.className = 'nav-utility';
 
-    const signIn = [...navTools.querySelectorAll('a')].find((a) => a.getAttribute('href') === '#sign-in');
+    // Match by href OR link text: DA rewrites the placeholder "#sign-in" href
+    // to "/" on publish, so fall back to the link text.
+    const signIn = [...navTools.querySelectorAll('a')].find((a) => a.getAttribute('href') === '#sign-in'
+      || a.textContent.trim().toLowerCase() === 'sign in');
     if (signIn) {
       signIn.classList.add('nav-signin');
       navUtility.append(signIn.closest('p') || signIn);

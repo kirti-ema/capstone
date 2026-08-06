@@ -2,9 +2,9 @@
   "type": "doc",
   "sites": {
     "capstone": {
+      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json",
       "previewOrg": "kirti-ema",
-      "previewSite": "capstone",
-      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json"
+      "previewSite": "capstone"
     }
   }
 }
