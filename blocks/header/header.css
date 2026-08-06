@@ -155,7 +155,12 @@ header nav .nav-sections {
 header nav[aria-expanded='true'] .nav-sections {
   display: block;
   visibility: visible;
-  align-self: start;
+}
+
+@media (width < 900px) {
+  header nav[aria-expanded='true'] .nav-sections {
+    align-self: start;
+  }
 }
 
 header nav .nav-sections ul {
