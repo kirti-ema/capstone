@@ -68,7 +68,9 @@ header nav .nav-tools {
 
   header nav .nav-brand {
     grid-area: brand;
-    padding: 12px 0;
+
+    /* tall white bar to match source (~169px: 48px logo + generous padding) */
+    padding: 60px 0;
   }
 
   header nav .nav-sections { grid-area: sections; }
