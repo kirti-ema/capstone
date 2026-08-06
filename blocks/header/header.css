@@ -54,7 +54,6 @@ header nav .nav-tools {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 32px;
-    transition: max-width 0.5s;
   }
 
   header nav .nav-utility {
@@ -76,14 +75,9 @@ header nav .nav-tools {
   }
 
   /* dynamic sticky shrink — once scrolled, the source header collapses its tall
-     white bar (padding 50px → ~15px/5px, ~194px → ~114px) and narrows the main
-     bar toward its content. Match that: collapse the brand padding and reduce
-     the capped width, transitioned for a smooth shrink. */
-  header.nav-scrolled nav {
-    max-width: 1000px;
-    transition: max-width 0.5s;
-  }
-
+     white bar (padding 50px → ~15px/5px, ~194px → ~114px). Only the brand's
+     vertical padding collapses: the nav keeps its full width and its children
+     keep their size and flex-alignment (no scaling or re-centering). */
   header.nav-scrolled nav .nav-brand {
     padding: 16px 0 8px;
   }
