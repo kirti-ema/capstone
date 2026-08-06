@@ -353,6 +353,33 @@ main .section.featured .default-content-wrapper {
   align-items: stretch;
 }
 
+/* "Featured Article" eyebrow label is bold in the source */
+main .section.featured .default-content-wrapper > p:first-child {
+  font-weight: 700;
+}
+
+/* "Full Article" CTA — the source renders it as the yellow WKND button
+   (same as the hero CTA), not a plain link. Target the paragraph that holds
+   the link (the picture paragraph has no direct <a>). */
+main .section.featured .default-content-wrapper > p:has(> a) a:any-link {
+  display: inline-block;
+  padding: 14px 35px;
+  background-color: #ffea00;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+main .section.featured .default-content-wrapper > p:has(> a) a:any-link:hover,
+main .section.featured .default-content-wrapper > p:has(> a) a:any-link:focus-visible {
+  background-color: #e6d300;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
 main .section.featured .default-content-wrapper > p:last-child:has(picture),
 main .section.featured .default-content-wrapper picture {
   margin: 0;
@@ -384,6 +411,11 @@ main .section.featured .default-content-wrapper picture img {
   }
 
   main .section.featured .default-content-wrapper > p.button-wrapper {
+    padding-bottom: 36px;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  main .section.featured .default-content-wrapper > p:has(> a) {
     padding-bottom: 36px;
   }
 
