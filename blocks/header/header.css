@@ -217,10 +217,10 @@ header nav .nav-tools {
 header nav .nav-search {
   display: flex;
   align-items: center;
-  gap: 8px;
-  border: 1px solid #d0d0d0;
-  padding: 8px 12px;
-  background: var(--background-color);
+  gap: 10px;
+  border: 0;
+  padding: 11px 16px;
+  background: #ebebeb;
 }
 
 header nav .nav-search-icon {
