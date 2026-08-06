@@ -12,7 +12,9 @@ footer {
 footer .footer {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
+
+  /* source uses a shallower vertical band (16px top / 24px bottom) */
+  padding: 16px 24px 24px;
 }
 
 footer .footer p {
@@ -66,6 +68,7 @@ footer ul.footer-nav a {
 }
 
 footer .footer-follow {
+  font-size: 16px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -79,19 +82,23 @@ footer ul.footer-social {
   list-style: none;
 }
 
-footer ul.footer-social a {
+/* :any-link keeps this above the generic `footer .footer a:any-link` color
+   rule, so the glyph is dark on the light tile (not the light link color) */
+footer ul.footer-social a:any-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  background-color: rgb(255 255 255 / 8%);
-  color: #ebebeb;
+
+  /* source: 48px light square tile with a dark glyph */
+  width: 48px;
+  height: 48px;
+  background-color: #ebebeb;
+  color: var(--dark-color);
 }
 
 footer ul.footer-social a:hover {
-  background-color: rgb(255 255 255 / 16%);
-  color: #fff;
+  background-color: #fff;
+  color: #000;
 }
 
 footer ul.footer-social svg {
@@ -111,11 +118,12 @@ footer .footer-social-label {
   border: 0;
 }
 
-/* legal / attribution */
+/* legal / attribution — source uses 12px/1.25 (smaller than the site body) */
 footer .footer-legal {
   padding-top: 24px;
   color: rgb(235 235 235 / 85%);
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.25;
 }
 
 footer .footer-legal p + p {
@@ -129,7 +137,7 @@ footer .footer-legal a:any-link {
 
 @media (width >= 900px) {
   footer .footer {
-    padding: 40px 32px;
+    padding: 16px 32px 24px;
   }
 
   /* top band: logo left | nav (center) | Follow Us label | social icons */
