@@ -41,6 +41,46 @@ header nav .nav-tools {
   box-sizing: border-box;
 }
 
+/* mobile main bar (<900px): hamburger | logo | search on one row, with the
+   nav links dropping into a full-width row when the hamburger is open. Matches
+   the source's compact mobile header (smaller logo, shallower band). */
+@media (width < 900px) {
+  header nav {
+    display: grid;
+    grid-template:
+      'utility utility utility'
+      'hamburger brand tools'
+      'sections sections sections' / auto 1fr auto;
+    align-items: center;
+    column-gap: 16px;
+    padding: 0 14px;
+  }
+
+  header nav .nav-utility {
+    grid-area: utility;
+
+    /* full-bleed dark strip; SIGN IN left, EN-US right (source spreads them) */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    justify-content: space-between;
+    padding: 4px 14px;
+    gap: 12px;
+  }
+
+  header nav .nav-brand {
+    grid-area: brand;
+
+    /* shallower band than desktop; logo scaled down to the source's mobile size */
+    padding: 12px 0;
+  }
+
+  header nav .nav-brand img {
+    width: 96px;
+  }
+
+  header nav .nav-tools { grid-area: tools; }
+}
+
 @media (width >= 900px) {
   /* main bar: capped at 1200px and centered (32px padding → matches the
      source's side gap); the dark utility band breaks out to full width. */
@@ -184,6 +224,10 @@ header nav[aria-expanded='true'] .nav-sections {
 }
 
 @media (width < 900px) {
+  header nav .nav-sections {
+    grid-area: sections;
+  }
+
   header nav[aria-expanded='true'] .nav-sections {
     align-self: start;
   }
