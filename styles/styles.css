@@ -298,6 +298,21 @@ main img {
   width: 100%;
 }
 
+/* standalone default-content images (a paragraph containing only a picture)
+   are constrained to the source's content-column width rather than the full
+   section width — matches WKND article/FAQ lead images */
+main .default-content-wrapper p:has(> picture:only-child) {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+main .default-content-wrapper p:has(> picture:only-child) picture,
+main .default-content-wrapper p:has(> picture:only-child) img {
+  display: block;
+  max-width: 750px;
+  width: 100%;
+}
+
 /* sections */
 main > .section {
   margin: 40px 0;
