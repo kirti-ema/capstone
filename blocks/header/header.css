@@ -230,14 +230,16 @@ header nav .nav-tools {
   header nav .nav-tools { justify-content: flex-end; }
 }
 
-/* search form */
+/* search form — matches source: 42px tall, lighter semi-transparent grey,
+   magnifier 8px from the left edge, placeholder text starting at 32px */
 header nav .nav-search {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  height: 42px;
   border: 0;
-  padding: 11px 16px;
-  background: #ebebeb;
+  padding: 0 32px 0 8px;
+  background: rgb(235 235 235 / 54%);
 }
 
 header nav .nav-search-icon {
@@ -256,8 +258,14 @@ header nav .nav-search input {
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: 12px;
-  text-transform: none;
   outline: none;
+}
+
+/* source shows the placeholder uppercased ("SEARCH") via text-transform */
+header nav .nav-search input::placeholder {
+  color: #757575;
+  text-transform: uppercase;
+  opacity: 1;
 }
 
 /* sign-in (in dark utility band) */
