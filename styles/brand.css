@@ -1,0 +1,30 @@
+/*
+ * brand.css — WKND design tokens extracted from https://wknd.site/us/en.html
+ * Headings: Asar (serif). Body: Source Sans Pro (sans-serif).
+ */
+
+:root {
+  /* brand fonts */
+  --heading-font-family: asar, georgia, "Times New Roman", times, serif;
+  --body-font-family: "source sans pro", "Helvetica Neue", helvetica, arial, sans-serif;
+
+  /* brand colors */
+  --background-color: #fff;
+  --text-color: #202020;
+  --link-color: #0045ff;
+  --link-hover-color: #0035c4;
+  --light-color: #f5f5f5;
+  --dark-color: #202020;
+
+  /* spacing */
+  --section-padding: 10px;
+  --nav-height: 87px;
+
+  /* heading sizes (desktop) */
+  --heading-size-xxl: 54px;
+  --heading-size-xl: 36px;
+  --heading-size-l: 24px;
+  --heading-size-m: 20px;
+  --heading-size-s: 18px;
+  --heading-size-xs: 16px;
+}

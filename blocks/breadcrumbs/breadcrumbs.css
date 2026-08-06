@@ -1,0 +1,52 @@
+/* Block: breadcrumbs — values extracted from source computed styles (WKND) */
+
+.breadcrumbs .breadcrumbs-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--body-font-size-xs); /* 14px */
+  line-height: 21px;
+  text-transform: uppercase;
+}
+
+.breadcrumbs .breadcrumbs-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 5px;
+  color: var(--text-color); /* #202020 */
+}
+
+.breadcrumbs .breadcrumbs-item:first-child {
+  padding-left: 0;
+}
+
+/* solid right-pointing triangle separator (source: yellow icon glyph #ffea00) */
+.breadcrumbs .breadcrumbs-item:not(:first-child)::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 10px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 7px solid #ffea00;
+}
+
+.breadcrumbs .breadcrumbs-item a {
+  color: var(--text-color); /* #202020, overrides global link blue */
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.breadcrumbs .breadcrumbs-item a:hover {
+  color: var(--text-color);
+  text-decoration: underline;
+}
+
+.breadcrumbs .breadcrumbs-item-active {
+  font-weight: 400;
+  color: var(--text-color);
+}

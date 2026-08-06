@@ -1,0 +1,39 @@
+{
+  "variantName": "hero-banner",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "created": "2026-08-05T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://wknd.site/us/en.html",
+    "originPage": "WKND homepage (homepage template)",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "hero",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "background image + title + description + CTA",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "single full-bleed banner with overlaid heading/text/CTA",
+      "section-introducing feature banners",
+      "large promotional call-to-action banners"
+    ],
+    "notSuitableFor": [
+      "multi-slide rotators (use carousel-hero)",
+      "inline content images",
+      "repeating teaser grids (use cards-teaser)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/us/en", "/us/en/adventures"],
+    "reuseCount": 2,
+    "lastUsed": "2026-08-05T00:00:00.000Z"
+  }
+}

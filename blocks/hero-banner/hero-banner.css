@@ -1,0 +1,90 @@
+/* hero-banner — WKND "Next Adventures" overlay banner */
+
+/* Values extracted from wknd.site/us/en (div.teaser.cmp-teaser--hero.cmp-teaser--imagebottom) */
+
+/* full-bleed: remove EDS section max-width/padding around this block */
+.hero-banner-container .hero-banner-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+/* ---- Image (row 1) ---- */
+.hero-banner picture {
+  display: block;
+  line-height: 0;
+}
+
+.hero-banner picture img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* ---- Text content (row 2) ---- */
+
+/* mobile: stacked below image, transparent, no overlay */
+.hero-banner > div:last-child > div {
+  padding: 0 14px;
+}
+
+.hero-banner h2 {
+  margin: 18px 0 0;
+  font-family: var(--heading-font-family);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 54px;
+  text-transform: none;
+  color: var(--text-color);
+}
+
+.hero-banner p {
+  margin: 0;
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  line-height: 31.5px;
+  color: var(--text-color);
+}
+
+/* CTA link — solid yellow WKND button (not brand-token blue) */
+.hero-banner p:last-of-type {
+  margin: 18px 0;
+}
+
+.hero-banner a:any-link {
+  display: inline-block;
+  padding: 14px 35px;
+  background-color: #ffea00;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.hero-banner a:any-link:hover {
+  text-decoration: none;
+}
+
+/* no-image variant (adventure-listing intro hero): plain dark text, no overlay */
+.hero-banner.no-image > div > div {
+  padding: 0;
+}
+
+/* ---- Desktop (>= 900px): full-bleed image + centered white overlay box ---- */
+@media (width >= 900px) {
+  .hero-banner picture img {
+    height: 640px;
+  }
+
+  .hero-banner:not(.no-image) > div:last-child > div {
+    position: relative;
+    box-sizing: border-box;
+    max-width: 1192px;
+    margin: -180px auto 0;
+    padding: 0 28px;
+    background-color: var(--background-color);
+  }
+}

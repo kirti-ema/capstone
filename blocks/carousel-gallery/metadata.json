@@ -1,0 +1,40 @@
+{
+  "variantName": "carousel-gallery",
+  "baseBlock": "carousel",
+  "version": "1.0.0",
+  "created": "2026-08-05T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://wknd.site/us/en/adventures/bali-surf-camp.html",
+    "originPage": "WKND adventure detail page (adventure-detail template)",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "gallery",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "image-only slides",
+    "buttonCount": 0,
+    "imageCount": 1,
+    "slides": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "full-bleed image galleries at the top of detail pages",
+      "photo-only rotators with no overlaid text",
+      "adventure/article hero image galleries"
+    ],
+    "notSuitableFor": [
+      "rotators with per-slide title/description/CTA overlays (use carousel-hero)",
+      "single static banners (use hero-banner)",
+      "text-heavy content sliders"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/us/en/adventures/bali-surf-camp"],
+    "reuseCount": 1,
+    "lastUsed": "2026-08-05T00:00:00.000Z"
+  }
+}

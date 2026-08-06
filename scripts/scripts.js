@@ -10,6 +10,7 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  toClassName,
 } from './aem.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
@@ -143,6 +144,37 @@ function decorateButtons(main) {
 }
 
 /**
+ * Reads each section's "Section Metadata" block, applies its values as
+ * section classes / data attributes, then removes the block. This project's
+ * aem.js decorateSections does not process section metadata, so it is handled
+ * here (mirrors the standard AEM boilerplate behavior).
+ * @param {Element} main The main element
+ */
+function toCamelCaseLocal(name) {
+  return name.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+}
+
+function decorateSectionMetadata(main) {
+  main.querySelectorAll('div.section-metadata').forEach((meta) => {
+    const section = meta.closest('.section');
+    if (!section) { meta.remove(); return; }
+    [...meta.children].forEach((row) => {
+      if (row.children.length < 2) return;
+      const key = toClassName(row.children[0].textContent);
+      const value = row.children[1].textContent.trim();
+      if (key === 'style') {
+        value.split(',').map((s) => toClassName(s.trim())).filter(Boolean)
+          .forEach((cls) => section.classList.add(cls));
+      } else {
+        section.dataset[toCamelCaseLocal(key)] = value;
+      }
+    });
+    const wrapper = meta.closest('.section-metadata-wrapper') || meta;
+    wrapper.remove();
+  });
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -151,6 +183,7 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
+  decorateSectionMetadata(main);
   decorateBlocks(main);
   decorateButtons(main);
 }

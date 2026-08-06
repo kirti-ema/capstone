@@ -1,0 +1,129 @@
+/* tabs-filter -- category filter tab bar + teaser-card grid per panel.
+   Visual values extracted from https://wknd.site/us/en/adventures.html
+   (div.tabs.panelcontainer). Card grid mirrors the cards-teaser block. */
+
+/* ---- Tab bar ---- */
+.tabs-filter .tabs-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 18px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tabs-filter .tabs-filter-list button {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs); /* 14px */
+  font-weight: 400;
+  line-height: 21px;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: unset;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.tabs-filter .tabs-filter-list button[aria-selected='true'] {
+  background-color: var(--dark-color);
+  color: var(--background-color);
+  cursor: default;
+}
+
+/* ---- Tab panels ---- */
+.tabs-filter .tabs-filter-panel {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.tabs-filter .tabs-filter-panel[aria-hidden='true'] {
+  display: none;
+}
+
+/* ---- Teaser-card grid (matches cards-teaser) ---- */
+.tabs-filter .tabs-filter-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px 14px;
+}
+
+@media (width >= 600px) {
+  .tabs-filter .tabs-filter-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 900px) {
+  .tabs-filter .tabs-filter-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.tabs-filter .tabs-filter-cards > li {
+  border: 0;
+  background-color: initial;
+}
+
+.tabs-filter .tabs-filter-card-image {
+  line-height: 0;
+}
+
+.tabs-filter .tabs-filter-card-image img {
+  width: 100%;
+  aspect-ratio: 13 / 10;
+  object-fit: cover;
+}
+
+.tabs-filter .tabs-filter-card-body {
+  margin: 0;
+}
+
+/* title: body font, uppercase, dark (not link-blue) */
+.tabs-filter .tabs-filter-card-body h3 {
+  margin: 8px 0 0;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m); /* 18px */
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
+.tabs-filter .tabs-filter-card-body h3 a:any-link {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.tabs-filter .tabs-filter-card-body h3 a:hover {
+  color: var(--text-color);
+  text-decoration: underline;
+}
+
+/* description: muted grey, uppercase, single-line ellipsis */
+.tabs-filter .tabs-filter-card-body p {
+  margin: 16px 0 0;
+  font-size: var(--body-font-size-xs); /* 14px */
+  line-height: 1.5;
+  color: #696969;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* EDS wraps the tab label text in a <p>; reset its default margin */
+.tabs-filter .tabs-filter-list button p {
+  margin: 0;
+}

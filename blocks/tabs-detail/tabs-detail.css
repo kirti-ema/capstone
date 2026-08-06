@@ -1,0 +1,80 @@
+/* Block: tabs-detail — WKND adventure detail tabs (Overview / Itinerary / What to Bring) */
+
+/* Values extracted from source computed styles (wknd.site). */
+
+/* --- Tab list --- */
+.tabs-detail .tabs-detail-list {
+  display: flex;
+  gap: 0;
+  margin: 18px 0;
+  padding: 0;
+  max-width: 100%;
+  list-style: none;
+  overflow-x: auto;
+}
+
+/* --- Tab buttons (inactive = default) --- */
+.tabs-detail .tabs-detail-list button.tabs-detail-tab {
+  flex: 0 0 auto;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  font-weight: 400;
+  line-height: 21px;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.tabs-detail .tabs-detail-tab p {
+  margin: 0;
+}
+
+/* --- Active tab: dark fill, white text --- */
+.tabs-detail .tabs-detail-list button.tabs-detail-tab[aria-selected='true'] {
+  border-bottom-color: var(--dark-color);
+  background-color: var(--dark-color);
+  color: var(--background-color);
+  cursor: default;
+}
+
+/* --- Tab panel --- */
+.tabs-detail .tabs-detail-panel {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--text-color);
+  font-size: var(--body-font-size-m);
+  line-height: 27px;
+}
+
+.tabs-detail .tabs-detail-panel[aria-hidden='true'] {
+  display: none;
+}
+
+/* --- Panel body copy --- */
+.tabs-detail .tabs-detail-panel p {
+  margin: 0 0 13.5px;
+  line-height: 45px;
+  text-align: justify;
+}
+
+.tabs-detail .tabs-detail-panel img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tabs-detail .tabs-detail-panel ul {
+  margin: 0 0 13.5px;
+  padding-left: 1.5em;
+}

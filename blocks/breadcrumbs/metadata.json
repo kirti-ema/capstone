@@ -1,0 +1,40 @@
+{
+  "variantName": "breadcrumbs",
+  "baseBlock": "breadcrumbs",
+  "version": "1.0.0",
+  "created": "2026-08-05T00:00:00.000Z",
+  "isBaseBlock": true,
+  "note": "New base block authored from scratch. No vanilla breadcrumbs block exists in the Block Collection or boilerplate library. Breadcrumbs are navigation chrome derived from site hierarchy.",
+  "sourceContext": {
+    "originUrl": "https://wknd.site/us/en/adventures/bali-surf-camp.html",
+    "originPage": "WKND adventure detail page (adventure-detail template)",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "compact",
+    "purpose": "navigation",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "one crumb per row; ancestor crumbs are links, last crumb is current-page text",
+    "buttonCount": 0,
+    "imageCount": 0,
+    "rows": 2
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "breadcrumb trails on detail/interior pages",
+      "site-hierarchy navigation trails (Section > Current Page)"
+    ],
+    "notSuitableFor": [
+      "primary site navigation menus (use header)",
+      "in-page tab or section navigation (use tabs)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/us/en/adventures/bali-surf-camp", "/us/en/magazine/arctic-surfing"],
+    "reuseCount": 2,
+    "lastUsed": "2026-08-05T00:00:00.000Z"
+  }
+}
