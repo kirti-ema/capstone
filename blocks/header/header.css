@@ -29,7 +29,7 @@ header nav .nav-utility {
   gap: 20px;
   width: 100%;
   box-sizing: border-box;
-  padding: 8px max(24px, calc((100% - 1200px) / 2 + 24px));
+  padding: 4px max(24px, calc((100% - 1200px) / 2 + 24px));
   background-color: var(--dark-color);
   color: #ebebeb;
 }
@@ -63,7 +63,7 @@ header nav .nav-tools {
     /* full-bleed dark strip; inner content aligned to the 1200px column */
     width: 100vw;
     margin-left: calc(50% - 50vw);
-    padding: 8px max(32px, calc(50vw - 600px + 32px));
+    padding: 4px max(32px, calc(50vw - 600px + 32px));
   }
 
   header nav .nav-brand {
@@ -238,13 +238,14 @@ header nav .nav-search-icon {
 }
 
 header nav .nav-search input {
+  width: 110px;
   border: 0;
   padding: 0;
   background: transparent;
   color: var(--text-color);
   font-family: var(--body-font-family);
-  font-size: var(--body-font-size-xs);
-  text-transform: uppercase;
+  font-size: 12px;
+  text-transform: none;
   outline: none;
 }
 
