@@ -358,6 +358,14 @@ main .section.featured .default-content-wrapper > p:first-child {
   font-weight: 700;
 }
 
+/* body copy is 14px/1.75 in the source teaser (not the 18px site body); this
+   also sets the text-column density that drives the block's overall height */
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.featured .default-content-wrapper > h2 + p {
+  font-size: 14px;
+  line-height: 1.75;
+}
+
 /* "Full Article" CTA — the source renders it as the yellow WKND button
    (same as the hero CTA), not a plain link. Target the paragraph that holds
    the link (the picture paragraph has no direct <a>). */
