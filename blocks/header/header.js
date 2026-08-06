@@ -133,14 +133,25 @@ export default async function decorate(block) {
     if (section) section.classList.add(`nav-${c}`);
   });
 
-  // brand logo link — strip button styling
+  // brand — swap the text brand link for the git-served WKND logo (kept out of
+  // the content doc so the content source can't rewrite its asset path).
   const navBrand = nav.querySelector('.nav-brand');
   if (navBrand) {
-    const brandLink = navBrand.querySelector('a.button');
+    const brandLink = navBrand.querySelector('a');
     if (brandLink) {
       brandLink.className = '';
       const bc = brandLink.closest('.button-container');
       if (bc) bc.className = '';
+      if (!brandLink.querySelector('img')) {
+        const label = brandLink.textContent.trim() || 'WKND';
+        brandLink.textContent = '';
+        const logo = document.createElement('img');
+        logo.src = '/icons/wknd-logo.svg';
+        logo.alt = `${label} Logo`;
+        logo.width = 128;
+        logo.height = 48;
+        brandLink.append(logo);
+      }
     }
   }
 
