@@ -67,6 +67,19 @@ footer ul.footer-nav a {
   letter-spacing: 0.02em;
 }
 
+/* mobile (<900px): the source stacks the footer nav links in a vertical
+   column and uses a slightly smaller logo */
+@media (width < 900px) {
+  footer ul.footer-nav {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  footer .footer-brand img {
+    width: 88px;
+  }
+}
+
 footer .footer-follow {
   font-size: 16px;
   font-weight: 600;
