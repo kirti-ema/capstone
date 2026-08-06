@@ -261,8 +261,11 @@ header nav .nav-search input {
   padding: 0;
   background: transparent;
   color: var(--text-color);
-  font-family: var(--body-font-family);
+
+  /* match the source search field exactly: Arial 12px, not the site body font */
+  font-family: arial, helvetica, sans-serif;
   font-size: 12px;
+  font-weight: 400;
 
   /* share the nav links' 1.6 line-height so the placeholder text sits on the
      same vertical rhythm as the adjacent "ABOUT US" item */
