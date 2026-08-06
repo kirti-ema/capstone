@@ -107,9 +107,18 @@ function decorateLanguage(tools) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment
+  // load nav as fragment. Path differs by environment: the local dev server
+  // serves imported content under /content/, while the aem.live pipeline serves
+  // it from the root. Resolve accordingly so the nav loads in both.
   const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/content/nav';
+  let navPath;
+  if (navMeta) {
+    navPath = new URL(navMeta, window.location).pathname;
+  } else if (window.location.pathname.startsWith('/content/')) {
+    navPath = '/content/nav';
+  } else {
+    navPath = '/nav';
+  }
   const fragment = await loadFragment(navPath);
 
   // decorate nav DOM
@@ -124,7 +133,7 @@ export default async function decorate(block) {
     if (section) section.classList.add(`nav-${c}`);
   });
 
-  // brand logo link — strip button styling and resolve relative image path
+  // brand logo link — strip button styling
   const navBrand = nav.querySelector('.nav-brand');
   if (navBrand) {
     const brandLink = navBrand.querySelector('a.button');
@@ -133,15 +142,6 @@ export default async function decorate(block) {
       const bc = brandLink.closest('.button-container');
       if (bc) bc.className = '';
     }
-    // fragment relative image paths (e.g. images/logo.svg) resolve against the
-    // page URL, not the nav doc — rebase them to the nav fragment folder.
-    const navBase = navPath.substring(0, navPath.lastIndexOf('/') + 1);
-    navBrand.querySelectorAll('img[src]').forEach((img) => {
-      const raw = img.getAttribute('src');
-      if (raw && !raw.startsWith('/') && !raw.startsWith('http') && !raw.startsWith('data:')) {
-        img.src = `${navBase}${raw}`;
-      }
-    });
   }
 
   // tools: search stays in the main (white) bar; sign-in + language move to a
