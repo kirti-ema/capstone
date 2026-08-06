@@ -87,7 +87,10 @@ body.appear {
 }
 
 header {
-  height: var(--nav-height);
+  min-height: var(--nav-height);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 header .header,
