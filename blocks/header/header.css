@@ -235,19 +235,24 @@ header nav .nav-tools {
 header nav .nav-search {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   height: 42px;
   border: 0;
   padding: 0 32px 0 8px;
   background: rgb(235 235 235 / 54%);
 }
 
+/* magnifier — sized to ~18px and drawn with a heavier circle + handle so it
+   reads as clearly as the source's icon-font glyph; flex-centred in the box.
+   Mirrored to match the source: circular head to the upper-right, handle
+   extending to the lower-left. */
 header nav .nav-search-icon {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-  background: currentcolor;
-  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14"/></svg>') center / contain no-repeat;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  align-self: center;
+  background: var(--text-color);
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round" d="M13.5 10.5m-6.5 0a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0 -13 0M8.5 15.5L3 21"/></svg>') center / contain no-repeat;
 }
 
 header nav .nav-search input {
@@ -258,6 +263,10 @@ header nav .nav-search input {
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: 12px;
+
+  /* share the nav links' 1.6 line-height so the placeholder text sits on the
+     same vertical rhythm as the adjacent "ABOUT US" item */
+  line-height: 1.6;
   outline: none;
 }
 
