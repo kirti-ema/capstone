@@ -242,17 +242,16 @@ header nav .nav-search {
   background: rgb(235 235 235 / 54%);
 }
 
-/* magnifier — sized to ~18px and drawn with a heavier circle + handle so it
-   reads as clearly as the source's icon-font glyph; flex-centred in the box.
-   Mirrored to match the source: circular head to the upper-right, handle
-   extending to the lower-left. */
+/* magnifier — the exact SVG the WKND source uses for .cmp-search__icon
+   (viewBox 0 0 1152 1152: head upper-right, handle to the lower-left).
+   Applied as a mask so it takes the theme text color; flex-centred in the box. */
 header nav .nav-search-icon {
   width: 18px;
   height: 18px;
   flex: 0 0 18px;
   align-self: center;
   background: var(--text-color);
-  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round" d="M13.5 10.5m-6.5 0a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0 -13 0M8.5 15.5L3 21"/></svg>') center / contain no-repeat;
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1152 1152"><path fill="black" d="M672,0C406.903,0,192,214.903,192,480c0,95.7,28.011,184.855,76.275,259.725C181.646,826.354,48.075,959.925,36,972c-18,18-36,36-36,72s18,54,36,72s36.012,36,72,36s54-18,72-36c12.075-12.075,145.646-145.646,232.275-232.275C487.144,931.988,576.3,960,672,960c265.097,0,480-214.903,480-480C1152,214.903,937.097,0,672,0z M672,816c-185.568,0-336-150.433-336-336c0-185.568,150.432-336,336-336c185.567,0,336,150.432,336,336C1008,665.567,857.567,816,672,816z"/></svg>') center / contain no-repeat;
 }
 
 header nav .nav-search input {
