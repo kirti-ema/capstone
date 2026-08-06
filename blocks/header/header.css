@@ -231,8 +231,12 @@ header nav .nav-tools {
 }
 
 /* search form — matches source: 42px tall, lighter semi-transparent grey,
-   magnifier 8px from the left edge, placeholder text starting at 32px */
+   magnifier 8px from the left edge, placeholder text starting at 32px.
+   Nudged ~2px down so the icon/text sit on the same line as the nav links,
+   matching the source (its box centre sits ~1px below the nav-text centre). */
 header nav .nav-search {
+  position: relative;
+  top: 2px;
   display: flex;
   align-items: center;
   gap: 6px;
