@@ -410,6 +410,17 @@ main .section.featured .default-content-wrapper picture img {
     background-color: #ebebeb;
   }
 
+  /* inter-line gaps matching the source: label→heading 31px, heading→body 18px
+     and body→CTA 18px. Grid items don't collapse margins, so a margin-top on
+     each following element produces the exact gap. */
+  main .section.featured .default-content-wrapper > h2 {
+    margin-top: 31px;
+  }
+
+  main .section.featured .default-content-wrapper > h2 + p {
+    margin-top: 18px;
+  }
+
   main .section.featured .default-content-wrapper > p:first-child {
     padding-top: 63px;
   }
@@ -420,6 +431,7 @@ main .section.featured .default-content-wrapper picture img {
 
   /* stylelint-disable-next-line no-descending-specificity */
   main .section.featured .default-content-wrapper > p:has(> a) {
+    margin-top: 18px;
     padding-bottom: 36px;
   }
 
