@@ -43,6 +43,8 @@ header nav .nav-tools {
 }
 
 @media (width >= 900px) {
+  /* main bar: capped at 1200px and centered (32px padding → matches the
+     source's side gap); the dark utility band breaks out to full width. */
   header nav {
     display: grid;
     grid-template:
@@ -50,24 +52,28 @@ header nav .nav-tools {
       'brand sections tools' / auto 1fr auto;
     align-items: center;
     column-gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
   }
 
   header nav .nav-utility {
     grid-area: utility;
-    padding: 8px max(32px, calc((100% - 1200px) / 2 + 32px));
+
+    /* full-bleed dark strip; inner content aligned to the 1200px column */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 8px max(32px, calc(50vw - 600px + 32px));
   }
 
   header nav .nav-brand {
     grid-area: brand;
-    padding: 12px 0 12px max(32px, calc((100% - 1200px) / 2 + 32px));
+    padding: 12px 0;
   }
 
   header nav .nav-sections { grid-area: sections; }
 
-  header nav .nav-tools {
-    grid-area: tools;
-    padding-right: max(32px, calc((100% - 1200px) / 2 + 32px));
-  }
+  header nav .nav-tools { grid-area: tools; }
 }
 
 /* hamburger (mobile only) */
