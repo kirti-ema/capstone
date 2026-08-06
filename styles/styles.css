@@ -395,6 +395,10 @@ main .section.featured .default-content-wrapper picture img {
 @media (width >= 900px) {
   main .section.featured .default-content-wrapper {
     grid-template-columns: 62% 38%;
+
+    /* text rows size to content and sit at the top of the column; the image
+       spans them all to give the grey box its (image-driven) height */
+    align-items: start;
   }
 
   /* text content sits in the right column as a grey padded box */
@@ -419,10 +423,15 @@ main .section.featured .default-content-wrapper picture img {
     padding-bottom: 36px;
   }
 
-  /* image (last paragraph) occupies the left column, full height, no box padding */
+  /* image (picture paragraph) occupies the left column and spans every text
+     row. `1 / -1` does NOT span implicit grid rows (it resolves to row 1
+     only), which left the label stretched and the rest of the text spilling
+     below the image — so span a large fixed count instead. */
   main .section.featured .default-content-wrapper > p:last-child:has(picture) {
-    grid-row: 1 / -1;
+    grid-row: 1 / span 50;
     grid-column: 1;
+    align-self: stretch;
+    min-height: 100%;
     padding: 0;
     background: none;
   }
