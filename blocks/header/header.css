@@ -50,7 +50,10 @@ header nav .nav-tools {
       'utility utility utility'
       'brand sections tools' / auto 1fr auto;
     align-items: center;
-    column-gap: 32px;
+
+    /* 34px between the nav links and the search box — equal to the inter-link
+       gap so nav-link and link→search spacing match, aligned with the source */
+    column-gap: 34px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 32px;
@@ -199,7 +202,9 @@ header nav .nav-sections li {
   header nav .nav-sections ul {
     display: flex;
     justify-content: flex-end;
-    gap: 32px;
+
+    /* 34px between links, matching the source's per-link 0 17px padding */
+    gap: 34px;
   }
 
   header nav .nav-sections li {
