@@ -457,3 +457,37 @@ main .section.featured .default-content-wrapper picture img {
     background: none;
   }
 }
+
+/* cards-teaser sections (Recent Articles / Next Adventures listings) — the
+   source gives each h2 a short yellow accent underline and renders the
+   trailing "All Articles" / "All Trips" links as yellow WKND buttons. Scoped
+   to the cards-teaser section so other headings/links are unaffected. */
+main .section.cards-teaser-container .default-content-wrapper h2::after {
+  content: '';
+  display: block;
+  width: 84px;
+  margin-top: 12px;
+  border-bottom: 2px solid #ffea00;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.cards-teaser-container .default-content-wrapper p > a:only-child {
+  display: inline-block;
+  padding: 16px 32px;
+  background-color: #ffea00;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+/* stylelint-disable no-descending-specificity */
+main .section.cards-teaser-container .default-content-wrapper p > a:only-child:hover,
+main .section.cards-teaser-container .default-content-wrapper p > a:only-child:focus-visible {
+  background-color: #e6d300;
+  color: var(--text-color);
+  text-decoration: none;
+}
+/* stylelint-enable no-descending-specificity */
