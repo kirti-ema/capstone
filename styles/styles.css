@@ -358,6 +358,13 @@ main .section.featured .default-content-wrapper > p:first-child {
   font-weight: 700;
 }
 
+/* the source keeps the teaser heading at a fixed 36px/54 at all widths;
+   the site's global h2 scale drops to 28px below 900px, so pin it here */
+main .section.featured .default-content-wrapper > h2 {
+  font-size: 36px;
+  line-height: 54px;
+}
+
 /* body copy is 14px/1.75 in the source teaser (not the 18px site body); this
    also sets the text-column density that drives the block's overall height */
 /* stylelint-disable-next-line no-descending-specificity */
