@@ -1,25 +1,18 @@
 /* cards-teaser -- article/adventure teaser grid.
    Visual values extracted from https://wknd.site/us/en.html (div.image-list.list). */
 
+/* Fluid wrap matching the source: it lays the cards out as ~274px items
+   (260px image + 14px gutter) that wrap by available width — 4 → 3 → 2 → 1 as
+   the viewport narrows — rather than at fixed breakpoints. auto-fill with a
+   260px min column reproduces those same transitions (≈1140 / ≈860 / ≈590px)
+   while still filling the row on the standard mobile-first grid. */
 .cards-teaser > ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 32px 14px;
-}
-
-@media (width >= 600px) {
-  .cards-teaser > ul {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (width >= 900px) {
-  .cards-teaser > ul {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
 }
 
 /* cards are borderless/backgroundless teasers on the source */
