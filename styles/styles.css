@@ -371,6 +371,18 @@ main .section.cards-teaser-container .default-content-wrapper h2::after {
   border-bottom: 2px solid #ffea00;
 }
 
+/* section divider: the source draws a full-width 1px #ebebeb rule between the
+   "All Articles" button and the "Next Adventures" heading (64px above / 93px
+   below). Content is authored in DA (no <hr> to add), so reproduce it as a
+   border-top on the heading that follows the button paragraph — this uniquely
+   targets "Next Adventures" (other headings don't follow a button). */
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.cards-teaser-container .default-content-wrapper p:has(> a:only-child) + h2 {
+  margin-top: 64px;
+  padding-top: 93px;
+  border-top: 1px solid #ebebeb;
+}
+
 /* stylelint-disable-next-line no-descending-specificity */
 main .section.cards-teaser-container .default-content-wrapper p > a:only-child {
   display: inline-block;
