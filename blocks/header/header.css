@@ -4,6 +4,12 @@ header .nav-wrapper {
   background-color: var(--background-color);
   width: 100%;
   z-index: 10;
+
+  /* the utility band breaks out to 100vw; clip absorbs the scrollbar-width
+     overflow that 100vw introduces (and any sub-pixel rounding) so the header
+     never forces a horizontal page scrollbar. clip (not hidden) does not create
+     a scroll container, so the sticky header keeps working. */
+  overflow-x: clip;
 }
 
 header nav {
@@ -59,7 +65,9 @@ header nav .nav-tools {
   header nav .nav-utility {
     grid-area: utility;
 
-    /* full-bleed dark strip; SIGN IN left, EN-US right (source spreads them) */
+    /* full-bleed dark strip; SIGN IN left, EN-US right (source spreads them).
+       overflow-x:clip on .nav-wrapper absorbs the scrollbar-width the 100vw
+       breakout introduces, so it never forces a horizontal page scrollbar. */
     width: 100vw;
     margin-left: calc(50% - 50vw);
     justify-content: space-between;
@@ -102,7 +110,9 @@ header nav .nav-tools {
        ~73px left of the content-column edge (constant across widths), so the
        cluster sits above the nav links rather than flush with the search box.
        Add that 73px to the right padding; keep the max() guard for narrow
-       desktop widths. */
+       desktop widths. margin-inline: calc(50% - 50vw) breaks the band out of
+       the centered nav symmetrically; overflow-x:clip on .nav-wrapper absorbs
+       the scrollbar-width the 100vw introduces so no page scrollbar appears. */
     width: 100vw;
     margin-left: calc(50% - 50vw);
     padding: 4px 32px;
