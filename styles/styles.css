@@ -322,7 +322,10 @@ main > .section {
 }
 
 main > .section > div {
-  max-width: 1200px;
+  /* content cap matches the source (1136px content region; the 32px side
+     padding on top makes the centered box 1200px, so margins/insets align
+     with wknd.site at every width >= the cap) */
+  max-width: 1136px;
   margin: auto;
   padding: 0 24px;
 }
