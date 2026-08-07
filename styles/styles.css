@@ -356,6 +356,13 @@ main .section.highlight {
    source gives each h2 a short yellow accent underline and renders the
    trailing "All Articles" / "All Trips" links as yellow WKND buttons. Scoped
    to the cards-teaser section so other headings/links are unaffected. */
+
+/* match the source's heading spacing above the card grid (13.5px, vs the
+   global default-content h2 margin) */
+main .section.cards-teaser-container .default-content-wrapper h2 {
+  margin-bottom: 13.5px;
+}
+
 main .section.cards-teaser-container .default-content-wrapper h2::after {
   content: '';
   display: block;
