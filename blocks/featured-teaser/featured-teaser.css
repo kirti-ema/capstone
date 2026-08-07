@@ -1,0 +1,115 @@
+/* Featured Teaser block — WKND "Featured Article" promo.
+   Mobile: text then image, stacked. Desktop (>=900px): image left, grey text
+   box right. Values migrated from the source-verified default-content styling;
+   because the text is now a single grid cell, the grey box is naturally
+   continuous (no per-element padding-top stripe hack needed). */
+
+.featured-teaser {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  align-items: stretch;
+}
+
+/* image column — the image sits inside a <p> then a <picture>; both must be
+   block-level and full-width so the img fills the cell width at every width.
+   Declared before the text rules so specificity descends cleanly. */
+.featured-teaser .featured-teaser-image,
+.featured-teaser .featured-teaser-image p,
+.featured-teaser .featured-teaser-image picture {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+
+.featured-teaser .featured-teaser-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* text column — eyebrow / heading / body / CTA */
+.featured-teaser .featured-teaser-text > * {
+  margin: 0;
+}
+
+/* "Featured Article" eyebrow label is bold in the source */
+.featured-teaser .featured-teaser-eyebrow {
+  font-weight: 700;
+}
+
+/* the source keeps the teaser heading at a fixed 36px/54 at all widths (the
+   site's global h2 scale drops to 28px below 900px), so pin it here */
+.featured-teaser .featured-teaser-text h2 {
+  margin-top: 31px;
+  font-size: 36px;
+  line-height: 54px;
+}
+
+/* body copy is 14px/1.75 in the source teaser (not the 18px site body) */
+.featured-teaser .featured-teaser-text h2 + p {
+  margin-top: 18px;
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* "Full Article" CTA — the source renders it as the yellow WKND button
+   (same as the hero CTA), not a plain link */
+.featured-teaser .featured-teaser-cta {
+  margin-top: 18px;
+}
+
+.featured-teaser .featured-teaser-cta a:any-link {
+  display: inline-block;
+  padding: 14px 35px;
+  background-color: #ffea00;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.featured-teaser .featured-teaser-cta a:hover,
+.featured-teaser .featured-teaser-cta a:focus-visible {
+  background-color: #e6d300;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+/* The source switches to the horizontal layout below 900px — it is already
+   side-by-side at 768px (image ~60% left, grey box ~40% right). Use the 600px
+   tablet breakpoint (the standard breakpoint <=768) so the tablet view matches
+   the source; base mobile (<600px) stays stacked. */
+@media (width >= 600px) {
+  /* image left (62%), grey text box right (38%); both cells share row 1 and
+     stretch to the taller of the two, giving the grey box its image-driven
+     height */
+  .featured-teaser {
+    grid-template-columns: 62% 38%;
+    align-items: stretch;
+  }
+
+  /* fill the full row height so the image matches the grey text box (source
+     sizes both to the taller column). Every node in the img's height chain
+     — cell → p → picture → img — must carry the 100% for it to resolve. */
+  .featured-teaser .featured-teaser-image,
+  .featured-teaser .featured-teaser-image p,
+  .featured-teaser .featured-teaser-image picture,
+  .featured-teaser .featured-teaser-image img {
+    grid-column: 1;
+    grid-row: 1;
+    height: 100%;
+  }
+
+  /* text sits in the right column as a grey padded box. Top padding (63px)
+     matches the source's eyebrow inset; 36px sides/bottom match the source. */
+  .featured-teaser .featured-teaser-text {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 63px 36px 36px;
+    background-color: #ebebeb;
+  }
+}

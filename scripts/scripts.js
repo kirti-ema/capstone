@@ -75,6 +75,35 @@ function buildWidgetAutoBlocks(main) {
 }
 
 /**
+ * Promotes the "Featured Article" section into a featured-teaser block.
+ *
+ * The section is authored as loose default content (eyebrow, heading, body,
+ * CTA, image) tagged with `Style=featured`. The aem.live pipeline bakes that
+ * into a top-level `<div class="featured">`, while other environments may still
+ * carry a raw section-metadata cell whose value is "featured" — detect either.
+ * Runs before decorateSections, so we operate on the raw top-level section div.
+ * The text elements and the image are grouped into a two-cell block row so the
+ * block decorator/CSS can lay them out.
+ * @param {Element} main The container element
+ */
+function buildFeaturedAutoBlock(main) {
+  const section = [...main.children].find((div) => div.classList.contains('featured')
+    || [...div.querySelectorAll('div.section-metadata div > div')]
+      .some((cell) => toClassName(cell.textContent) === 'featured'));
+  if (!section || section.querySelector('.featured-teaser')) return;
+
+  // collect the content elements (skip any section-metadata marker block)
+  const meta = section.querySelector('div.section-metadata');
+  const content = [...section.children].filter((el) => el !== meta);
+  const picture = content.find((el) => el.querySelector('picture'));
+  const textEls = content.filter((el) => el !== picture);
+  if (!picture || textEls.length === 0) return;
+
+  const block = buildBlock('featured-teaser', [[{ elems: textEls }, { elems: [picture] }]]);
+  section.prepend(block);
+}
+
+/**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
@@ -97,6 +126,7 @@ function buildAutoBlocks(main) {
         });
       });
     }
+    buildFeaturedAutoBlock(main);
     buildWidgetAutoBlocks(main);
   } catch (error) {
     // eslint-disable-next-line no-console
