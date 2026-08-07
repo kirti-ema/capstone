@@ -34,9 +34,11 @@
   margin: 0;
 }
 
-/* "Featured Article" eyebrow label is bold in the source */
+/* "Featured Article" eyebrow label is bold in the source, with a tall 45px
+   line-height (matches the source's computed value at this size) */
 .featured-teaser .featured-teaser-eyebrow {
   font-weight: 700;
+  line-height: 45px;
 }
 
 /* the source keeps the teaser heading at a fixed 36px/54 at all widths (the
