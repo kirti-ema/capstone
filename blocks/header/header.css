@@ -284,7 +284,13 @@ header nav .nav-tools {
 }
 
 @media (width < 900px) {
-  header nav .nav-tools { justify-content: flex-end; }
+  /* min-width:0 lets this grid item's track shrink below its content's
+     min-content (the search box) on very narrow screens — without it the
+     fixed-size search box forces horizontal page overflow at ~<370px. */
+  header nav .nav-tools {
+    justify-content: flex-end;
+    min-width: 0;
+  }
 }
 
 /* search form — matches source: 42px tall, lighter semi-transparent grey,
@@ -428,12 +434,18 @@ header nav .nav-language-list a:hover { background: var(--light-color); }
 
   /* search box: the source box runs flush to the right screen edge and is a
      touch wider (~207px). Bleed past the 14px nav gutter and widen the input to
-     match (box = 8 + 18 icon + 6 gap + 143 input + 32 = 207px). */
+     match (box = 8 + 18 icon + 6 gap + 143 input + 32 = 207px). max-width caps
+     it at that size; min-width:0 lets it shrink below its content on very narrow
+     screens (like the source, which drops to ~160px at 320px) so the header
+     never forces horizontal page overflow. */
   header nav .nav-search {
     margin-right: -14px;
+    min-width: 0;
+    max-width: 207px;
   }
 
   header nav .nav-search input {
     width: 143px;
+    min-width: 0;
   }
 }
