@@ -383,6 +383,15 @@ main .section.cards-teaser-container .default-content-wrapper p:has(> a:only-chi
   border-top: 1px solid #ebebeb;
 }
 
+/* the source sets a 32px gap between the last card's description and the
+   "All Articles" / "All Trips" button (ours inherited only the ~14px default
+   paragraph margin). Scope to the button paragraph so card image/title/columns
+   are untouched. */
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.cards-teaser-container .default-content-wrapper p:has(> a:only-child) {
+  margin-top: 32px;
+}
+
 /* stylelint-disable-next-line no-descending-specificity */
 main .section.cards-teaser-container .default-content-wrapper p > a:only-child {
   display: inline-block;
