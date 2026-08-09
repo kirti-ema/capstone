@@ -248,9 +248,14 @@ a:hover {
 }
 
 /* sidebar related-article link: dark title over muted date, 5px left rule,
-   8px/16px padding. Placed after the generic link rules so its color wins. */
+   8px/16px padding, and a fixed 120px content box (source uses 90pt height with
+   content-box, so total item ≈ 136px) — this gives each story the source's tall,
+   evenly-sized card with generous empty space below the text. Placed after the
+   generic link rules so its color wins. */
 main .breadcrumbs-container .article-aside li a:any-link {
   display: block;
+  box-sizing: content-box;
+  height: 120px;
   padding: 8px 16px;
   border-left: 5px solid #ebebeb;
   color: var(--text-color);
