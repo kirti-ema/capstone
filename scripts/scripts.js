@@ -178,6 +178,29 @@ function buildArticleLayout(main) {
   leftEls.forEach((el) => mainCol.append(el));
   asideCol.append(asideWrapper);
   layout.append(mainCol, asideCol);
+
+  // Related-article links come in as "<a>Title Weekday, DD Mon YYYY</a>". The
+  // source splits each into a dark uppercase title over a muted date line, with
+  // a left rule on the link. Split title/date into spans the CSS can style.
+  const dateRe = /\s+((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,\s+\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})$/;
+  asideWrapper.querySelectorAll('li a').forEach((a) => {
+    if (a.querySelector('.article-related-title')) return;
+    const text = a.textContent.trim();
+    const m = text.match(dateRe);
+    const title = m ? text.slice(0, m.index).trim() : text;
+    const date = m ? m[1] : '';
+    a.textContent = '';
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'article-related-title';
+    titleSpan.textContent = title;
+    a.append(titleSpan);
+    if (date) {
+      const dateSpan = document.createElement('span');
+      dateSpan.className = 'article-related-date';
+      dateSpan.textContent = date;
+      a.append(dateSpan);
+    }
+  });
 }
 
 function buildFeaturedAutoBlock(main) {

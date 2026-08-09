@@ -188,7 +188,19 @@ main .breadcrumbs-container .default-content-wrapper p {
   text-align: justify;
 }
 
-/* sidebar related-article list — plain list, spaced items */
+/* Sidebar "SHARE THIS STORY" + related articles. Source: heading 14px/600
+   uppercase with ~23px below; each related link is a dark uppercase title over
+   a muted grey date, with a 5px #ebebeb left rule + 16px indent. */
+main .breadcrumbs-container .article-aside h5 {
+  margin: 0 0 23px;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs); /* 14px */
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
 main .breadcrumbs-container .article-aside ul {
   margin: 0;
   padding: 0;
@@ -196,7 +208,24 @@ main .breadcrumbs-container .article-aside ul {
 }
 
 main .breadcrumbs-container .article-aside li {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
+}
+
+main .breadcrumbs-container .article-related-title {
+  display: block;
+  font-size: var(--body-font-size-m); /* 18px */
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--text-color); /* dark, not link-blue */
+}
+
+main .breadcrumbs-container .article-related-date {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.25;
+  text-transform: uppercase;
+  color: #696969;
 }
 
 input,
@@ -216,6 +245,16 @@ a:any-link {
 a:hover {
   color: var(--link-hover-color);
   text-decoration: underline;
+}
+
+/* sidebar related-article link: dark title over muted date, 5px left rule.
+   Placed after the generic link rules so its color/decoration wins. */
+main .breadcrumbs-container .article-aside li a:any-link {
+  display: block;
+  padding-left: 16px;
+  border-left: 5px solid #ebebeb;
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 /* buttons */
