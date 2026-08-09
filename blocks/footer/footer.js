@@ -77,6 +77,9 @@ export default async function decorate(block) {
         if (!platform) return;
         const label = a.textContent.trim();
         a.setAttribute('aria-label', label);
+        // source uses non-navigating placeholder anchors (#facebookwknd etc.);
+        // DA rewrites them to "/", so normalize to "#" to match the source.
+        a.setAttribute('href', '#');
         a.innerHTML = `${SOCIAL_ICONS[platform]}<span class="footer-social-label">${label}</span>`;
       });
     }
