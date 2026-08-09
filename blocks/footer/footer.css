@@ -137,10 +137,11 @@ footer .footer-social-label {
   border: 0;
 }
 
-/* legal / attribution — source uses 12px/1.25 (smaller than the site body) */
+/* legal / attribution — source uses 12px/1.25 (smaller than the site body)
+   with solid #f7f7f7 text (not dimmed) */
 footer .footer-legal {
   padding-top: 24px;
-  color: rgb(235 235 235 / 85%);
+  color: #f7f7f7;
   font-size: 12px;
   line-height: 1.25;
 }
@@ -150,7 +151,7 @@ footer .footer-legal p + p {
 }
 
 footer .footer-legal a:any-link {
-  color: #ebebeb;
+  color: #f7f7f7;
   text-decoration: underline;
 }
 
