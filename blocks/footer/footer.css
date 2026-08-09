@@ -7,6 +7,12 @@ footer {
   color: #ebebeb;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-xs);
+
+  /* source leaves a ~178px gap before the footer (a section-ending separator
+     with 64px top+bottom margins plus the footer's own 48px margin-top). The
+     last section's 40px bottom margin collapses with this one (adjacent margins
+     — the larger wins, not the sum), so set the full 178px here to match. */
+  margin-top: 178px;
 }
 
 footer .footer {
