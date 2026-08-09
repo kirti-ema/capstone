@@ -104,24 +104,17 @@
   cursor: default;
 }
 
-/* article image — the locked preview blurs its image so the content reads as
-   gated (an enhancement beyond the source, which shows it un-blurred). Source
-   gap button -> image is ~21px. */
+/* article image — shown sharp/in full, matching the source (which applies no
+   blur or fade to these locked images). Source gap button -> image is ~21px. */
 .members-only-image {
   margin-top: 21px;
   line-height: 0;
-  overflow: hidden;
 }
 
 .members-only-image img {
   width: 100%;
   aspect-ratio: 9 / 5;
   object-fit: cover;
-
-  /* blur the locked image; scale(1.05) hides the soft transparent edge the
-     blur creates so the frame stays fully covered */
-  filter: blur(6px);
-  transform: scale(1.05);
 }
 
 @media (width >= 600px) {
