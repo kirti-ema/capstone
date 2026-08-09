@@ -32,8 +32,9 @@ footer .footer a:any-link {
   text-decoration: none;
 }
 
+/* source footer links only gain an underline on hover — the color does not
+   brighten (nav links stay #ebebeb, legal links stay #f7f7f7) */
 footer .footer a:hover {
-  color: #fff;
   text-decoration: underline;
 }
 
@@ -117,9 +118,12 @@ footer ul.footer-social a:any-link {
   color: var(--dark-color);
 }
 
+/* no hover state — the source's footer social tiles have no hover feedback
+   (tile stays #ebebeb, glyph stays dark, no underline) */
 footer ul.footer-social a:hover {
-  background-color: #fff;
-  color: #000;
+  background-color: #ebebeb;
+  color: var(--dark-color);
+  text-decoration: none;
 }
 
 footer ul.footer-social svg {
