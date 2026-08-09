@@ -13,6 +13,24 @@ export default function decorate(block) {
     ul.append(li);
   });
   ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
+
+  // Make the card image clickable to the same destination as the title, like
+  // the source (image + title both link to the article). Wrap the picture in an
+  // anchor cloned from the title link. It's aria-hidden + tabindex=-1 so it is
+  // mouse-clickable but does NOT add a duplicate keyboard/screen-reader stop —
+  // the title remains the single meaningful link per card.
+  ul.querySelectorAll('li').forEach((li) => {
+    const titleLink = li.querySelector('.cards-teaser-card-body h3 a[href]');
+    const picture = li.querySelector('.cards-teaser-card-image picture');
+    if (!titleLink || !picture || picture.closest('a')) return;
+    const imgLink = document.createElement('a');
+    imgLink.href = titleLink.getAttribute('href');
+    imgLink.setAttribute('aria-hidden', 'true');
+    imgLink.setAttribute('tabindex', '-1');
+    picture.replaceWith(imgLink);
+    imgLink.append(picture);
+  });
+
   block.replaceChildren(ul);
 
   // The "All Articles" / "All Trips" CTAs are section-level default content

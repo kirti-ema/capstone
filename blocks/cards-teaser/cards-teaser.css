@@ -25,6 +25,12 @@
   line-height: 0;
 }
 
+/* the image is wrapped in an anchor (cards-teaser.js) so it links to the
+   article like the title; make it block so it doesn't disturb image sizing */
+.cards-teaser .cards-teaser-card-image a {
+  display: block;
+}
+
 .cards-teaser .cards-teaser-card-image img {
   width: 100%;
   aspect-ratio: 13 / 10;
