@@ -100,6 +100,8 @@ main .section.cards-profile-container > .default-content-wrapper {
   margin-top: 16px;
 }
 
+/* no hover state — the source's contributor social icons have no hover
+   feedback (glyph stays #ebebeb, background stays dark, no transform) */
 .cards-profile a.cards-profile-social-link:any-link {
   display: flex;
   align-items: center;
@@ -108,12 +110,6 @@ main .section.cards-profile-container > .default-content-wrapper {
   height: 48px;
   background-color: #202020;
   color: #ebebeb;
-  text-decoration: none;
-}
-
-.cards-profile a.cards-profile-social-link:hover {
-  background-color: #000;
-  color: #fff;
   text-decoration: none;
 }
 
