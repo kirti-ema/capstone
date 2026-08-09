@@ -68,15 +68,37 @@ function decorateSearch(tools) {
   wrapper.replaceWith(form);
 }
 
+// Maps the country segment (first path part of each locale href, e.g. /us/en)
+// to a display name + flag asset. The source groups the flat locale list by
+// country; the content only carries a flat list, so the grouping is derived
+// here from the href. Order defines the dropdown group order (matches source).
+const COUNTRIES = [
+  { code: 'us', name: 'United States' },
+  { code: 'ca', name: 'Canada' },
+  { code: 'ch', name: 'Switzerland' },
+  { code: 'de', name: 'Germany' },
+  { code: 'fr', name: 'France' },
+  { code: 'es', name: 'Spain' },
+  { code: 'it', name: 'Italy' },
+];
+
 /**
  * Builds the language dropdown from the locale list in the tools section.
- * The list of locales lives in nav.plain.html; behavior is added here.
+ * The list of locales lives in nav.plain.html as a flat list; the country
+ * grouping (name + flag) is derived here from each locale's href, since the
+ * content source only stores the flat list. Renders 7 country groups matching
+ * the source: flag + country name + that country's locale codes as separate
+ * links, with the current locale marked active.
  * @param {Element} tools The nav-tools container
  */
 function decorateLanguage(tools) {
   const list = tools.querySelector('ul');
   if (!list) return;
   const items = [...list.querySelectorAll('a')];
+  if (!items.length) return;
+
+  // country segment of an href like "/us/en" -> "us"
+  const countryOf = (a) => (a.getAttribute('href') || '').split('/').filter(Boolean)[0] || '';
   const current = items.find((a) => window.location.pathname.startsWith(a.getAttribute('href')))
     || items[0];
 
@@ -88,13 +110,39 @@ function decorateLanguage(tools) {
   toggle.className = 'nav-language-toggle';
   toggle.setAttribute('aria-expanded', 'false');
   toggle.setAttribute('aria-haspopup', 'true');
-  toggle.innerHTML = `<span class="nav-language-flag" aria-hidden="true"></span>${(current ? current.textContent : 'en-US').toUpperCase()}`;
+  toggle.innerHTML = `<span class="nav-language-flag nav-language-flag-${countryOf(current)}" aria-hidden="true"></span>${(current ? current.textContent : 'en-US').toUpperCase()}`;
 
-  // Insert langNav where the list is, THEN move the list into langNav
-  // (avoids a circular replaceWith on a node that becomes langNav's own child).
+  // Build the grouped list: one row per country, in COUNTRIES order, containing
+  // only the countries that actually have locales in the content list.
+  const grouped = document.createElement('ul');
+  grouped.className = 'nav-language-list';
+  COUNTRIES.forEach(({ code, name }) => {
+    const localeLinks = items.filter((a) => countryOf(a) === code);
+    if (!localeLinks.length) return;
+
+    const group = document.createElement('li');
+    group.className = `nav-language-group nav-language-group-${code}`;
+
+    const title = document.createElement('span');
+    title.className = 'nav-language-country';
+    title.textContent = name;
+
+    const codes = document.createElement('ul');
+    codes.className = 'nav-language-codes';
+    localeLinks.forEach((a) => {
+      const li = document.createElement('li');
+      a.textContent = a.textContent.trim().toUpperCase();
+      if (a === current) a.classList.add('nav-language-active');
+      li.append(a);
+      codes.append(li);
+    });
+
+    group.append(title, codes);
+    grouped.append(group);
+  });
+
   list.replaceWith(langNav);
-  list.className = 'nav-language-list';
-  langNav.append(toggle, list);
+  langNav.append(toggle, grouped);
 
   toggle.addEventListener('click', () => {
     const open = toggle.getAttribute('aria-expanded') === 'true';
