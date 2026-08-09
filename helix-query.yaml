@@ -9,6 +9,10 @@ indices:
     include:
       - '/us/en/magazine/**'
     exclude:
+      # the magazine landing page itself (it would otherwise appear as a card in
+      # its own "All Articles" list and in homepage "Recent Articles")
+      - '/us/en/magazine'
+      # locked "Members Only" articles must never surface in public lists
       - '/us/en/magazine/members-only/**'
     target: /us/en/magazine/query-index.json
     properties:
