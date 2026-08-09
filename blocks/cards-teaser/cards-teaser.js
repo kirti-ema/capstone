@@ -99,21 +99,20 @@ function buildCardFromEntry(entry) {
 }
 
 /**
- * Dynamic mode: the block holds a link to a query-index .json plus an optional
+ * Dynamic mode: the block holds a query-index .json URL plus an optional
  * numeric max-card limit. Fetch the index, sort most-recent first, and render
  * one card per entry. On empty/error the block is removed so no broken layout
  * or empty box is left behind (the section heading + CTA remain).
  * @param {Element} block The block element
- * @param {HTMLAnchorElement} jsonLink The authored link to the query index
+ * @param {string} rawHref The authored query-index URL (from a link or text)
  * @param {Element} section The block's section (for CTA tagging after removal)
  */
-async function decorateDynamic(block, jsonLink, section) {
-  // Normalize the authored href to a same-origin path. The query-index .json
+async function decorateDynamic(block, rawHref, section) {
+  // Normalize the authored URL to a same-origin path. The query-index .json
   // is not served with CORS headers, so a cross-origin fetch (e.g. a page on
   // *.aem.live or localhost fetching from *.aem.page) is blocked. Authors may
   // paste a full https URL; reduce it to its pathname (+query) so the fetch is
   // always same-origin and resolves on preview, live, and local alike.
-  const rawHref = jsonLink.getAttribute('href');
   let jsonUrl = rawHref;
   try {
     const u = new URL(rawHref, window.location.href);
@@ -167,13 +166,17 @@ async function decorateDynamic(block, jsonLink, section) {
 export default async function decorate(block) {
   const section = block.closest('.section');
 
-  // Dynamic mode is opt-in: a lone link to a .json index inside the authored
-  // table. Static card rows link to article pages (never .json), so existing
+  // Dynamic mode is opt-in: a query-index .json URL inside the authored table.
+  // Accept it either as a link (<a href="…json">) or as plain text (authors
+  // often paste a URL that DA renders as text, not a link). Static card rows
+  // link to article pages (never .json) and carry no .json text, so existing
   // instances ("Recent Articles" fallback, "Where do you want to go?", magazine
   // "All Articles") never match and are untouched.
   const jsonLink = block.querySelector('a[href*=".json"]');
-  if (jsonLink) {
-    await decorateDynamic(block, jsonLink, section);
+  const jsonText = jsonLink ? null
+    : (block.textContent.match(/https?:\/\/\S+\.json|\/\S+\.json/) || [])[0];
+  if (jsonLink || jsonText) {
+    await decorateDynamic(block, jsonLink ? jsonLink.getAttribute('href') : jsonText, section);
   } else {
     decorateStatic(block);
   }
