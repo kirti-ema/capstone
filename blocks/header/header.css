@@ -265,12 +265,26 @@ header nav .nav-sections li {
     display: flex;
     justify-content: flex-end;
 
-    /* 34px between links, matching the source's per-link 0 17px padding */
-    gap: 34px;
+    /* spacing comes from each link's 17px horizontal padding (matches the
+       source's per-link 15px 17px), so the yellow hover fill covers a padded
+       block rather than hugging the text; no extra gap */
+    gap: 0;
   }
 
   header nav .nav-sections li {
     padding: 0;
+  }
+
+  /* source pads each nav link 15px 17px so the hover fills a yellow block */
+  header nav .nav-sections a:any-link {
+    display: inline-block;
+    padding: 15px 17px;
+  }
+
+  /* source nav-link hover: solid yellow block, text stays dark */
+  header nav .nav-sections a:hover {
+    background-color: #ffea00;
+    color: var(--text-color);
   }
 }
 
@@ -283,7 +297,9 @@ header nav .nav-sections a:any-link {
   letter-spacing: 0.02em;
 }
 
-header nav .nav-sections a:hover { color: var(--link-color); }
+/* base hover keeps text dark (desktop adds the yellow block above); the source
+   never turns nav links blue */
+header nav .nav-sections a:hover { color: var(--text-color); }
 
 /* tools — search + language + sign-in */
 header nav .nav-tools {
