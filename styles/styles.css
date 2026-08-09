@@ -180,6 +180,14 @@ main > div {
   margin: 40px 16px;
 }
 
+/* Magazine article body — the source sets a loose 45px line-height and
+   justifies the long-form paragraphs. Scoped to the article's default content
+   in a breadcrumbs-container section (detail pages). */
+main .breadcrumbs-container .default-content-wrapper p {
+  line-height: 45px;
+  text-align: justify;
+}
+
 input,
 textarea,
 select,
