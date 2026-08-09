@@ -125,6 +125,29 @@ h4 { font-size: var(--heading-font-size-m); }
 h5 { font-size: var(--heading-font-size-s); }
 h6 { font-size: var(--heading-font-size-xs); }
 
+/* Article/adventure detail pages (a breadcrumbs-container section) — the WKND
+   source renders the page title (H1) at 40px, not the site's 54px xxl. */
+main .breadcrumbs-container .default-content-wrapper h1 {
+  font-size: 40px;
+  line-height: 1.5;
+}
+
+/* Magazine articles carry a byline (H4 "By …") the source styles as a small,
+   bold, uppercase label — not the default 20px heading. */
+main .breadcrumbs-container .default-content-wrapper h4 {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s); /* 16px */
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* The imported Content Fragment repeats the article title as an H3 right after
+   the byline; the WKND source hides this (display:none). Suppress the repeated
+   title (byline H4 immediately followed by the duplicate H3). */
+main .breadcrumbs-container .default-content-wrapper h4 + h3 {
+  display: none;
+}
+
 p,
 dl,
 ol,
