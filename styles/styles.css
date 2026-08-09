@@ -188,6 +188,27 @@ main .breadcrumbs-container .default-content-wrapper p {
   text-align: justify;
 }
 
+/* Pull-quote — the source renders the article blockquote as a large serif
+   quote (36px Asar / 54px, left-aligned, 14px pad), NOT body text. Our content
+   wraps the quote text in a <p>, which otherwise inherits the justified body
+   paragraph rule above, so style both the blockquote and its inner <p>. */
+main .breadcrumbs-container .default-content-wrapper blockquote {
+  margin: 0 0 18px;
+  padding: 14px;
+  border: 0;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+main .breadcrumbs-container .default-content-wrapper blockquote p {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 54px;
+  color: var(--text-color);
+  text-align: left;
+}
+
 /* Sidebar "SHARE THIS STORY" + related articles. Source: heading 14px/600
    uppercase with ~23px below; each related link is a dark uppercase title over
    a muted grey date, with a 5px #ebebeb left rule + 16px indent. */
@@ -299,6 +320,7 @@ main .breadcrumbs-container .article-download h3 a:any-link {
 
 /* "Get the Full Story" — 16px uppercase label (overrides the justified article
    body paragraph rule for the sidebar widget) */
+/* stylelint-disable-next-line no-descending-specificity */
 main .breadcrumbs-container .article-download > p {
   margin: 0;
   font-size: var(--body-font-size-s); /* 16px */
