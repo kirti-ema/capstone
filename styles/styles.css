@@ -417,3 +417,25 @@ main .section.cards-teaser-container .default-content-wrapper p:has(> a:only-chi
 main .section.cards-teaser-container .default-content-wrapper p:has(> a:only-child) {
   margin-top: 32px;
 }
+
+/* section divider before the footer: the source draws the same 1px #ebebeb
+   rule (64px below the button) between the final "All Trips" button and the
+   footer. Unlike the "All Articles" divider there is no following element to
+   hang a border on — "All Trips" is the last content wrapper — so draw it as
+   an out-of-flow ::after on that button paragraph. Being absolutely positioned
+   it adds no height, so the footer's existing 178px top gap is preserved and
+   the rule lands 64px below the button (≈114px above the footer), matching the
+   source. Scoped to :last-child so only "All Trips" is targeted. */
+/* stylelint-disable-next-line no-descending-specificity */
+main .section.cards-teaser-container > .default-content-wrapper:last-child p:has(> a:only-child) {
+  position: relative;
+}
+
+main .section.cards-teaser-container > .default-content-wrapper:last-child p:has(> a:only-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: calc(100% + 64px);
+  border-top: 1px solid #ebebeb;
+}
