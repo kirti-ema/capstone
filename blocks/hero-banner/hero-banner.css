@@ -46,24 +46,11 @@
   color: var(--text-color);
 }
 
-/* CTA link — solid yellow WKND button (not brand-token blue) */
+/* CTA link — solid yellow WKND button (see .wknd-button in styles.css); the
+   block decorator adds the shared class, so only the surrounding spacing is
+   set here */
 .hero-banner p:last-of-type {
   margin: 18px 0;
-}
-
-/* solid yellow WKND button; no hover state — the source's See Trip button has
-   no hover feedback */
-.hero-banner a:any-link {
-  display: inline-block;
-  padding: 14px 35px;
-  background-color: #ffea00;
-  color: var(--text-color);
-  font-family: var(--body-font-family);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 21px;
-  text-transform: uppercase;
-  text-decoration: none;
 }
 
 /* no-image variant (adventure-listing intro hero): plain dark text, no overlay */

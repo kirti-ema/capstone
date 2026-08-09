@@ -56,29 +56,11 @@
   line-height: 1.75;
 }
 
-/* "Full Article" CTA — the source renders it as the yellow WKND button
-   (same as the hero CTA), not a plain link */
+/* "Full Article" CTA — the source renders it as the shared yellow WKND button
+   (see .wknd-button in styles.css); the decorator adds the class, so only the
+   surrounding spacing is set here */
 .featured-teaser .featured-teaser-cta {
   margin-top: 18px;
-}
-
-.featured-teaser .featured-teaser-cta a:any-link {
-  display: inline-block;
-  padding: 14px 35px;
-  background-color: #ffea00;
-  color: var(--text-color);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
-  text-transform: uppercase;
-  text-decoration: none;
-}
-
-.featured-teaser .featured-teaser-cta a:hover,
-.featured-teaser .featured-teaser-cta a:focus-visible {
-  background-color: #e6d300;
-  color: var(--text-color);
-  text-decoration: none;
 }
 
 /* The source switches to the horizontal layout below 900px — it is already

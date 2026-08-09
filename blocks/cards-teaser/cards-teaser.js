@@ -14,4 +14,16 @@ export default function decorate(block) {
   });
   ul.querySelectorAll('picture > img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
   block.replaceChildren(ul);
+
+  // The "All Articles" / "All Trips" CTAs are section-level default content
+  // (a paragraph whose only child is a single link), not part of the block.
+  // Tag them with the shared yellow WKND button class so they match the CTAs
+  // in the other blocks. Scoped to this block's section to mirror the section
+  // that carries the styling.
+  const section = block.closest('.section');
+  if (section) {
+    section.querySelectorAll(':scope > .default-content-wrapper p > a:only-child').forEach((a) => {
+      a.classList.add('wknd-button');
+    });
+  }
 }

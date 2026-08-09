@@ -75,7 +75,12 @@ function createSlide(row, slideIndex, carouselId) {
   slide.classList.add('carousel-hero-slide');
 
   row.querySelectorAll(':scope > div').forEach((column, colIdx) => {
-    column.classList.add(`carousel-hero-slide-${colIdx === 0 ? 'image' : 'content'}`);
+    const role = colIdx === 0 ? 'image' : 'content';
+    column.classList.add(`carousel-hero-slide-${role}`);
+    // the CTA link in the content column is the shared yellow WKND button
+    if (role === 'content') {
+      column.querySelectorAll('a[href]').forEach((a) => a.classList.add('wknd-button'));
+    }
     slide.append(column);
   });
 

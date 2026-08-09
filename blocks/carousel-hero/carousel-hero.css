@@ -97,32 +97,10 @@
   color: var(--text-color);
 }
 
-/* CTA — yellow uppercase button */
+/* CTA — solid yellow WKND button (see .wknd-button in styles.css); the block
+   decorator adds the shared class, so only the surrounding spacing is set here */
 .carousel-hero .carousel-hero-slide-content p:last-child {
   margin: 18px 0;
-}
-
-.carousel-hero .carousel-hero-slide-content a:any-link {
-  display: inline-block;
-  padding: 14px 35px;
-  background-color: #ffea00;
-  color: var(--text-color);
-  font-family: var(--body-font-family);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: normal;
-  text-transform: uppercase;
-  text-decoration: none;
-  border: 0;
-  border-radius: 0;
-}
-
-.carousel-hero .carousel-hero-slide-content a:any-link:hover,
-.carousel-hero .carousel-hero-slide-content a:any-link:focus-visible {
-  background-color: #e6d300;
-  color: var(--text-color);
-  text-decoration: none;
 }
 
 /* Indicator dots — centered under the slide */

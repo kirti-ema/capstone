@@ -29,5 +29,7 @@ export default function decorate(block) {
     const ctaLink = textCol.querySelector('p a[href]');
     const ctaP = ctaLink ? ctaLink.closest('p') : null;
     if (ctaP) ctaP.classList.add('featured-teaser-cta');
+    // the CTA is the shared yellow WKND button
+    if (ctaLink) ctaLink.classList.add('wknd-button');
   }
 }
