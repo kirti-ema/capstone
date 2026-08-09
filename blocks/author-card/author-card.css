@@ -11,6 +11,48 @@
   border-top: 1px solid #ebebeb;
 }
 
+/* Source lays the bio out as a horizontal row: circular photo on the left, the
+   name + role stacked beside it (25px gap, vertically centred), and the social
+   icon tiles to the right on the same row. Reproduce with a grid: photo spans
+   both text rows, name/role in column 2, social in column 3. Stacks on mobile. */
+@media (width >= 600px) {
+  .author-card {
+    display: grid;
+
+    /* photo | name/role | social — all sized to content; the name column is
+       capped so the social tiles sit just to its right like the source (social
+       begins ~14px after the name text, not pushed to the far column edge) */
+    grid-template-columns: auto minmax(auto, 469px) auto;
+    grid-template-rows: auto auto;
+    column-gap: 25px;
+    align-items: center;
+    justify-content: start;
+  }
+
+  .author-card-photo {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+
+  .author-card-name {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  .author-card-role {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+  }
+
+  .author-card-social {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    margin: 0;
+  }
+}
+
 /* circular author photo (source: 60px, border-radius 50%, cover) */
 .author-card-photo {
   margin: 0;
