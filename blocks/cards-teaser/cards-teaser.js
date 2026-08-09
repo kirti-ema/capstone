@@ -108,7 +108,19 @@ function buildCardFromEntry(entry) {
  * @param {Element} section The block's section (for CTA tagging after removal)
  */
 async function decorateDynamic(block, jsonLink, section) {
-  const jsonUrl = jsonLink.getAttribute('href');
+  // Normalize the authored href to a same-origin path. The query-index .json
+  // is not served with CORS headers, so a cross-origin fetch (e.g. a page on
+  // *.aem.live or localhost fetching from *.aem.page) is blocked. Authors may
+  // paste a full https URL; reduce it to its pathname (+query) so the fetch is
+  // always same-origin and resolves on preview, live, and local alike.
+  const rawHref = jsonLink.getAttribute('href');
+  let jsonUrl = rawHref;
+  try {
+    const u = new URL(rawHref, window.location.href);
+    jsonUrl = `${u.pathname}${u.search}`;
+  } catch (e) {
+    // keep rawHref if it isn't a parseable URL
+  }
 
   // optional limit: the first cell whose text is a plain integer
   const limitText = [...block.querySelectorAll('div')]
