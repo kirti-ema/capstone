@@ -129,7 +129,11 @@ function buildMagazineListingBlocks(main) {
     const headings = [...div.querySelectorAll('h2')].map((h) => toClassName(h.textContent));
     return headings.includes('all-articles') && headings.includes('members-only');
   });
-  if (!wrapper || wrapper.querySelector('.cards-teaser, .featured-teaser, .members-only')) return;
+  // Re-entrancy guard keyed only on this builder's OWN markers. An authored
+  // cards-teaser (e.g. a dynamic json-index "All Articles") is NOT a marker —
+  // otherwise its presence would wrongly suppress the Featured/Members Only
+  // builds on this same page.
+  if (!wrapper || wrapper.querySelector('.featured-teaser, .members-only')) return;
 
   const kids = [...wrapper.children];
   const isPicture = (el) => el && el.querySelector('picture');
@@ -157,8 +161,11 @@ function buildMagazineListingBlocks(main) {
   }
 
   // --- 2. All Articles -> cards-teaser ---
+  // Skip if the author already placed a cards-teaser here (e.g. a dynamic
+  // json-index listing) — only reshape the flat <ul> when no block exists.
   const allArticlesH = kids.find((el) => headingText(el) === 'all-articles');
-  const list = allArticlesH && allArticlesH.nextElementSibling && allArticlesH.nextElementSibling.tagName === 'UL'
+  const list = allArticlesH && !wrapper.querySelector('.cards-teaser')
+    && allArticlesH.nextElementSibling && allArticlesH.nextElementSibling.tagName === 'UL'
     ? allArticlesH.nextElementSibling : null;
   if (list) {
     // Each <li> is: <p><a><picture></a></p> then <p><a>Title</a>Description</p>.
