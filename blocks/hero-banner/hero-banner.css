@@ -51,6 +51,8 @@
   margin: 18px 0;
 }
 
+/* solid yellow WKND button; no hover state — the source's See Trip button has
+   no hover feedback */
 .hero-banner a:any-link {
   display: inline-block;
   padding: 14px 35px;
@@ -61,10 +63,6 @@
   font-weight: 600;
   line-height: 21px;
   text-transform: uppercase;
-  text-decoration: none;
-}
-
-.hero-banner a:any-link:hover {
   text-decoration: none;
 }
 
