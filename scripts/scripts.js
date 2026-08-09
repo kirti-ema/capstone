@@ -133,6 +133,53 @@ function buildAuthorBioBlock(main) {
   slot.replaceWith(buildBlock('author-card', rows));
 }
 
+/**
+ * Lays a magazine article out in two columns like the source: a ~67.5% left
+ * column (title, byline, body, author card) and a ~23% right sidebar (SHARE
+ * THIS STORY + related articles), separated by a ~10% gap. The hero image and
+ * breadcrumb stay full-width above the columns.
+ *
+ * Runs in decorateMain AFTER decorateSections/decorateBlocks, so the section's
+ * children are already the final wrappers/blocks:
+ *   [hero dcw] [breadcrumbs-wrapper] [title/body dcw] [author-card-wrapper]
+ *   [share/related dcw]
+ * We wrap the left-column wrappers and the sidebar wrapper in two column divs
+ * inside a grid. Blocks (e.g. author-card) are still found by loadSection via a
+ * descendant query, so nesting them is safe. Identified by the article shape
+ * (a breadcrumbs-container section whose last wrapper holds "SHARE THIS STORY").
+ * @param {Element} main The container element
+ */
+function buildArticleLayout(main) {
+  const section = [...main.querySelectorAll('.section.breadcrumbs-container')]
+    .find((s) => [...s.querySelectorAll('h5')].some((h) => toClassName(h.textContent) === 'share-this-story'));
+  if (!section || section.querySelector(':scope > .article-layout')) return;
+
+  const children = [...section.children];
+  const asideWrapper = children.find((c) => [...c.querySelectorAll('h5')]
+    .some((h) => toClassName(h.textContent) === 'share-this-story'));
+  const breadcrumb = children.find((c) => c.classList.contains('breadcrumbs-wrapper'));
+  if (!asideWrapper || !breadcrumb) return;
+
+  // left column = everything after the breadcrumb and before the sidebar
+  // (title/body wrapper + author-card); right column = the sidebar wrapper.
+  const startIdx = children.indexOf(breadcrumb) + 1;
+  const asideIdx = children.indexOf(asideWrapper);
+  const leftEls = children.slice(startIdx, asideIdx);
+  if (!leftEls.length) return;
+
+  const layout = document.createElement('div');
+  layout.className = 'article-layout';
+  const mainCol = document.createElement('div');
+  mainCol.className = 'article-main';
+  const asideCol = document.createElement('div');
+  asideCol.className = 'article-aside';
+  // anchor the layout where the left content starts, then move content in
+  breadcrumb.after(layout);
+  leftEls.forEach((el) => mainCol.append(el));
+  asideCol.append(asideWrapper);
+  layout.append(mainCol, asideCol);
+}
+
 function buildFeaturedAutoBlock(main) {
   const section = [...main.children].find((div) => div.classList.contains('featured')
     || [...div.querySelectorAll('div.section-metadata div > div')]
@@ -390,6 +437,10 @@ export function decorateMain(main) {
   decorateSectionMetadata(main);
   decorateBlocks(main);
   decorateButtons(main);
+  // runs last: groups a magazine article's decorated wrappers into two columns
+  // (body + sidebar). After decorateSections/decorateBlocks so wrappers/blocks
+  // exist; loadSection still finds nested blocks via its descendant query.
+  buildArticleLayout(main);
 }
 
 /**

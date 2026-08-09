@@ -188,6 +188,17 @@ main .breadcrumbs-container .default-content-wrapper p {
   text-align: justify;
 }
 
+/* sidebar related-article list — plain list, spaced items */
+main .breadcrumbs-container .article-aside ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+main .breadcrumbs-container .article-aside li {
+  margin-bottom: 24px;
+}
+
 input,
 textarea,
 select,
@@ -397,6 +408,25 @@ main > .section:first-of-type {
 @media (width >= 900px) {
   main > .section > div {
     padding: 0 32px;
+  }
+
+  /* Magazine article two-column layout (buildArticleLayout groups the decorated
+     wrappers). Source: ~67.5% body column + ~10% gap + ~23% sidebar (SHARE THIS
+     STORY + related). Hero + breadcrumb stay full-width above (outside
+     .article-layout). Single column below 900px (this rule doesn't apply). */
+  main .breadcrumbs-container .article-layout {
+    display: grid;
+    grid-template-columns: 67.5% 22.9%;
+    column-gap: 9.6%;
+    align-items: start;
+    padding: 0 32px;
+  }
+
+  /* the two columns manage their own spacing; reset the section gutter/margins
+     on the inner wrappers so they don't double up inside the grid */
+  main .breadcrumbs-container .article-layout > div {
+    min-width: 0;
+    padding: 0;
   }
 }
 
