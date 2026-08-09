@@ -46,14 +46,11 @@
   color: var(--text-color);
 }
 
+/* no hover state — the source cards-teaser titles have no hover feedback
+   (no color shift, no underline) */
 .cards-teaser .cards-teaser-card-body h3 a:any-link {
   color: var(--text-color);
   text-decoration: none;
-}
-
-.cards-teaser .cards-teaser-card-body h3 a:hover {
-  color: var(--text-color);
-  text-decoration: underline;
 }
 
 /* description: muted grey, uppercase, single-line ellipsis */

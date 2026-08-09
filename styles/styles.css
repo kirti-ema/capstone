@@ -392,6 +392,8 @@ main .section.cards-teaser-container .default-content-wrapper p:has(> a:only-chi
   margin-top: 32px;
 }
 
+/* solid yellow WKND button; no hover/focus color change — the source's
+   All Articles / All Trips buttons have no hover feedback */
 /* stylelint-disable-next-line no-descending-specificity */
 main .section.cards-teaser-container .default-content-wrapper p > a:only-child {
   display: inline-block;
@@ -404,12 +406,3 @@ main .section.cards-teaser-container .default-content-wrapper p > a:only-child {
   text-transform: uppercase;
   text-decoration: none;
 }
-
-/* stylelint-disable no-descending-specificity */
-main .section.cards-teaser-container .default-content-wrapper p > a:only-child:hover,
-main .section.cards-teaser-container .default-content-wrapper p > a:only-child:focus-visible {
-  background-color: #e6d300;
-  color: var(--text-color);
-  text-decoration: none;
-}
-/* stylelint-enable no-descending-specificity */
