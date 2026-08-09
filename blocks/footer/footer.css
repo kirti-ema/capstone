@@ -82,6 +82,13 @@ footer ul.footer-nav a {
    with Follow Us / social / legal spanning full width beneath — reproduce that
    with a two-column grid rather than a single stacked column. */
 @media (width < 900px) {
+  /* the source tightens the gap below the social row to ~36px on mobile (vs
+     ~55px on desktop). With the legal block's 24px padding-top, a 12px
+     padding-bottom here yields the 36px source gap. Desktop keeps 32px. */
+  footer .footer-top {
+    padding-bottom: 12px;
+  }
+
   footer .footer-top .default-content-wrapper {
     display: grid;
     grid-template-columns: auto 1fr;
