@@ -4,6 +4,27 @@ import { loadFragment } from '../fragment/fragment.js';
 // media query match that indicates desktop width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+/**
+ * Marks the nav link matching the current page as active. A link is active
+ * when the current path equals its href or is a descendant of it (so a section
+ * link like /magazine stays highlighted on its article pages too, matching the
+ * source). Sets both a class (for styling) and aria-current="page" (a11y).
+ * @param {Element} scope The container holding the nav links
+ * @param {string} activeClass The class to add to the active link
+ */
+export function markActiveNavLink(scope, activeClass) {
+  if (!scope) return;
+  const path = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+  scope.querySelectorAll('a[href]').forEach((a) => {
+    const href = (a.getAttribute('href') || '').replace(/\.html$/, '').replace(/\/$/, '');
+    if (!href || href === '/' || href === '#') return;
+    if (path === href || path.startsWith(`${href}/`)) {
+      a.classList.add(activeClass);
+      a.setAttribute('aria-current', 'page');
+    }
+  });
+}
+
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
@@ -183,6 +204,9 @@ export default async function decorate(block) {
     const section = nav.children[i];
     if (section) section.classList.add(`nav-${c}`);
   });
+
+  // highlight the nav item for the current page (yellow block, like the source)
+  markActiveNavLink(nav.querySelector('.nav-sections'), 'nav-active');
 
   // brand — swap the text brand link for the git-served WKND logo (kept out of
   // the content doc so the content source can't rewrite its asset path).

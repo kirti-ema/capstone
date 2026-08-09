@@ -298,6 +298,13 @@ header nav .nav-sections li {
     background-color: #ffea00;
     color: var(--text-color);
   }
+
+  /* current-page nav item: same solid yellow block as hover, persistent
+     (source marks the active item with a permanent yellow highlight) */
+  header nav .nav-sections a.nav-active:any-link {
+    background-color: #ffea00;
+    color: var(--text-color);
+  }
 }
 
 header nav .nav-sections a:any-link {

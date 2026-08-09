@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { markActiveNavLink } from '../header/header.js';
 
 // Inline social glyphs (fill=currentColor so CSS controls color).
 const SOCIAL_ICONS = {
@@ -68,7 +69,11 @@ export default async function decorate(block) {
       }
     }
 
-    if (navList) navList.classList.add('footer-nav');
+    if (navList) {
+      navList.classList.add('footer-nav');
+      // underline the nav item for the current page (matches the source)
+      markActiveNavLink(navList, 'footer-nav-active');
+    }
     if (followP && followP.tagName === 'P') followP.classList.add('footer-follow');
     if (socialList) {
       socialList.classList.add('footer-social');
