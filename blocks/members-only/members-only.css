@@ -23,9 +23,22 @@
 
 .members-only-card {
   max-width: 360px;
+
+  /* the source fades the ENTIRE locked card (title, ribbon/lock, teaser,
+     button and image) with opacity: 0.65 on the card wrapper — that group
+     fade is the "locked content" treatment, not a blur on the image. */
+  opacity: 0.65;
 }
 
 .members-only-card-body > * {
+  margin: 0;
+}
+
+/* the teaser and Read More cells wrap their text in a <p> that carries default
+   paragraph margins; zero them so each cell hugs its text (matches the source's
+   compact button/teaser height rather than puffing them out). */
+.members-only-teaser p,
+.members-only-readmore p {
   margin: 0;
 }
 
@@ -109,39 +122,27 @@
   cursor: default;
 }
 
-/* article image — a light blur is applied as a deliberate "locked content"
-   treatment for this build. NOTE: the source renders these images sharp (no
-   blur); this is an intentional divergence, not a source match. The source's
-   image *display* is preserved: fixed 200px height + object-fit:cover + full
-   width, so both cards stay bottom-aligned. Source gap button -> image ~21px. */
+/* article image — rendered sharp, exactly like the source (the "locked" fade
+   comes from opacity: 0.65 on the whole card, not from the image). Source
+   display: fixed 200px height + object-fit: cover + full width, so both cards
+   stay bottom-aligned. Source gap button -> image ~21px. */
 .members-only-image {
   margin-top: 21px;
   line-height: 0;
-
-  /* clip the soft, semi-transparent edge the blur creates so the 200px frame
-     stays fully covered with no gap */
-  overflow: hidden;
 }
 
-/* the image sits inside a <p> wrapper; overflow:hidden above makes this frame a
-   block formatting context, so that <p>'s default margins can't collapse and
-   would inflate the frame past 200px. Zero them so the frame is exactly the
-   image's 200px. */
+/* the image sits inside a <p> wrapper; zero its default margins so the frame
+   is exactly the image's 200px. */
 .members-only-image p {
   margin: 0;
   line-height: 0;
 }
 
 .members-only-image img {
-  display: block; /* block box = frame is exactly 200px (no inline baseline gap) */
+  display: block; /* no inline baseline gap under the image */
   width: 100%;
   height: 200px;
   object-fit: cover;
-
-  /* light locked-content blur; scale(1.03) pushes the blurred edge past the
-     frame so no transparent border shows (clipped by the frame's overflow) */
-  filter: blur(3px);
-  transform: scale(1.03);
 }
 
 @media (width >= 600px) {
