@@ -1,0 +1,94 @@
+/* Members Only — locked article previews on the magazine listing page.
+   Two previews side by side; each is a "locked" card: a yellow padlock badge
+   over the title, an inert grey "Read More" button (not a link — gated until
+   sign-in), and the article image shown in full below the button. Values
+   extracted from https://wknd.site/us/en/magazine.html. */
+
+.members-only {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px 28px;
+  justify-content: start;
+
+  /* the source draws a 1px #ebebeb rule between the "Sign in…" message and the
+     previews; rendered as the block's top border (full content width) */
+  padding-top: 40px;
+  border-top: 1px solid #ebebeb;
+}
+
+.members-only-card {
+  max-width: 360px;
+}
+
+.members-only-card-body > * {
+  margin: 0;
+}
+
+/* title — same card-title treatment as cards-teaser (18px/600 uppercase dark),
+   with the yellow padlock badge overlapping its left edge like the source */
+.members-only-title {
+  position: relative;
+  padding-left: 34px;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m); /* 18px */
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
+.members-only-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  transform: translateY(-50%);
+  background-color: #ffea00;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23202020' d='M12 2a5 5 0 0 0-5 5v3H5v12h14V10h-2V7a5 5 0 0 0-5-5zm3 8H9V7a3 3 0 0 1 6 0v3z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
+}
+
+/* teaser — muted grey uppercase, matches cards-teaser description */
+.members-only-teaser {
+  margin-top: 16px;
+  font-size: var(--body-font-size-xs); /* 14px */
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: #696969;
+}
+
+/* Read More — inert grey button (source renders it as a non-link that does
+   nothing until sign-in) */
+.members-only-readmore {
+  display: inline-block;
+  margin-top: 32px;
+  padding: 7px 14px;
+  background-color: #ebebeb;
+  color: #696969;
+  font-size: var(--body-font-size-xs); /* 14px */
+  line-height: 1.5;
+  text-transform: uppercase;
+  cursor: default;
+}
+
+/* article image — shown in full (no blur/grayscale), below the button */
+.members-only-image {
+  margin-top: 18px;
+  line-height: 0;
+}
+
+.members-only-image img {
+  width: 100%;
+  aspect-ratio: 9 / 5;
+  object-fit: cover;
+}
+
+@media (width >= 600px) {
+  .members-only {
+    grid-template-columns: repeat(2, minmax(0, 360px));
+  }
+}

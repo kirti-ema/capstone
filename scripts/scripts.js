@@ -86,6 +86,13 @@ function buildWidgetAutoBlocks(main) {
  * block decorator/CSS can lay them out.
  * @param {Element} main The container element
  */
+function buildFeaturedTeaserBlock(textEls, picture) {
+  // shared featured-teaser assembly: one row, two cells (text | image). Used by
+  // both the homepage (Style=featured section) and the magazine listing's
+  // "Featured Article" run, so the block is built one way in one place.
+  return buildBlock('featured-teaser', [[{ elems: textEls }, { elems: [picture] }]]);
+}
+
 function buildFeaturedAutoBlock(main) {
   const section = [...main.children].find((div) => div.classList.contains('featured')
     || [...div.querySelectorAll('div.section-metadata div > div')]
@@ -99,8 +106,127 @@ function buildFeaturedAutoBlock(main) {
   const textEls = content.filter((el) => el !== picture);
   if (!picture || textEls.length === 0) return;
 
-  const block = buildBlock('featured-teaser', [[{ elems: textEls }, { elems: [picture] }]]);
-  section.prepend(block);
+  section.prepend(buildFeaturedTeaserBlock(textEls, picture));
+}
+
+/**
+ * Promotes the magazine listing page's three sections into blocks.
+ *
+ * The magazine listing (/us/en/magazine) is authored as one flat run of
+ * default content — no Style markers, no block wrappers — so unlike the
+ * homepage its "Featured Article" and "All Articles" don't auto-promote. This
+ * decorates that flat content in place (no content-file edits) into the same
+ * blocks the homepage uses, plus the members-only block:
+ *   1. "Featured Article" run  -> featured-teaser (shared builder above)
+ *   2. "All Articles" <ul>      -> cards-teaser (same block as Recent Articles)
+ *   3. "Members Only" previews  -> members-only (locked cards)
+ * Guarded to the magazine listing shape by the presence of both the
+ * "All Articles" and "Members Only" headings, so it never fires elsewhere.
+ * @param {Element} main The container element
+ */
+function buildMagazineListingBlocks(main) {
+  const wrapper = [...main.children].find((div) => {
+    const headings = [...div.querySelectorAll('h2')].map((h) => toClassName(h.textContent));
+    return headings.includes('all-articles') && headings.includes('members-only');
+  });
+  if (!wrapper || wrapper.querySelector('.cards-teaser, .featured-teaser, .members-only')) return;
+
+  const kids = [...wrapper.children];
+  const isPicture = (el) => el && el.querySelector('picture');
+  const headingText = (el) => (el && /^H[1-6]$/.test(el.tagName) ? toClassName(el.textContent) : null);
+
+  // --- 1. Featured Article -> featured-teaser ---
+  // Run starts at the "Featured Article" eyebrow and ends at its image (the
+  // first picture that follows). Everything in between is the text column.
+  const eyebrow = kids.find((el) => el.tagName === 'P' && el.textContent.trim() === 'Featured Article');
+  if (eyebrow) {
+    const run = [];
+    for (let el = eyebrow; el; el = el.nextElementSibling) {
+      run.push(el);
+      if (isPicture(el)) break;
+    }
+    const picture = run.find(isPicture);
+    const textEls = run.filter((n) => !isPicture(n));
+    if (picture && textEls.length) {
+      // buildBlock moves the run elements into the block, so mark the spot with
+      // a placeholder first (anchoring on a moved element would throw).
+      const slot = document.createElement('div');
+      eyebrow.before(slot);
+      slot.replaceWith(buildFeaturedTeaserBlock(textEls, picture));
+    }
+  }
+
+  // --- 2. All Articles -> cards-teaser ---
+  const allArticlesH = kids.find((el) => headingText(el) === 'all-articles');
+  const list = allArticlesH && allArticlesH.nextElementSibling && allArticlesH.nextElementSibling.tagName === 'UL'
+    ? allArticlesH.nextElementSibling : null;
+  if (list) {
+    // Each <li> is: <p><a><picture></a></p> then <p><a>Title</a>Description</p>.
+    // Reshape into the cards-teaser contract — row with an image cell and a
+    // body cell (h3 > title link, then description p). buildBlock wraps each
+    // cell's elems in a div, so pass the raw elements (not pre-wrapped divs).
+    const rows = [...list.children].map((li) => {
+      const imageP = [...li.children].find(isPicture);
+      const bodyP = [...li.children].find((p) => p !== imageP && p.querySelector('a'));
+      const picture = imageP ? imageP.querySelector('picture') : null;
+
+      const cells = [];
+      const titleLink = bodyP ? bodyP.querySelector('a') : null;
+      const h3 = document.createElement('h3');
+      if (titleLink) h3.append(titleLink.cloneNode(true));
+      const bodyEls = [h3];
+      const desc = bodyP && titleLink
+        ? bodyP.textContent.replace(titleLink.textContent, '').trim() : '';
+      if (desc) {
+        const p = document.createElement('p');
+        p.textContent = desc;
+        bodyEls.push(p);
+      }
+      cells.push({ elems: picture ? [picture] : [] });
+      cells.push({ elems: bodyEls });
+      return cells;
+    });
+    const block = buildBlock('cards-teaser', rows);
+    list.before(block);
+    list.remove();
+  }
+
+  // --- 3. Members Only -> members-only ---
+  const membersH = kids.find((el) => headingText(el) === 'members-only');
+  if (membersH) {
+    // the two previews follow the "Sign in…" message; each is
+    // heading + teaser p + "Read More" p + picture p
+    const previews = [];
+    let el = membersH.nextElementSibling;
+    // skip the sign-in message paragraph
+    if (el && el.tagName === 'P') el = el.nextElementSibling;
+    const dividerAnchor = el; // first preview heading
+    while (el) {
+      const title = /^H[1-6]$/.test(el.tagName) ? el : null;
+      const teaser = title && title.nextElementSibling;
+      const readmore = teaser && teaser.nextElementSibling;
+      const image = readmore && readmore.nextElementSibling;
+      if (title && teaser && readmore && isPicture(image)) {
+        previews.push([title, teaser, readmore, image]);
+        el = image.nextElementSibling;
+      } else {
+        el = el.nextElementSibling;
+      }
+    }
+    if (previews.length && dividerAnchor) {
+      const rows = previews.map(([title, teaser, readmore, image]) => [
+        { elems: [title] }, { elems: [teaser] }, { elems: [readmore] }, { elems: [image] },
+      ]);
+      // mark the insertion spot before buildBlock moves the preview elements
+      // (dividerAnchor is a preview element that gets moved into the block).
+      // The source's divider above the previews is reproduced as a border-top
+      // on the block in CSS — a separate classed <div> would be mistaken for a
+      // block by decorateBlocks.
+      const slot = document.createElement('div');
+      dividerAnchor.before(slot);
+      slot.replaceWith(buildBlock('members-only', rows));
+    }
+  }
 }
 
 /**
@@ -127,6 +253,7 @@ function buildAutoBlocks(main) {
       });
     }
     buildFeaturedAutoBlock(main);
+    buildMagazineListingBlocks(main);
     buildWidgetAutoBlocks(main);
   } catch (error) {
     // eslint-disable-next-line no-console
