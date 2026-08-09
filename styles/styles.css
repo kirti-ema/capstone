@@ -247,12 +247,22 @@ a:hover {
   text-decoration: underline;
 }
 
-/* sidebar related-article link: dark title over muted date, 5px left rule.
-   Placed after the generic link rules so its color/decoration wins. */
+/* sidebar related-article link: dark title over muted date, 5px left rule,
+   8px/16px padding. Placed after the generic link rules so its color wins. */
 main .breadcrumbs-container .article-aside li a:any-link {
   display: block;
-  padding-left: 16px;
+  padding: 8px 16px;
   border-left: 5px solid #ebebeb;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: all 0s;
+}
+
+/* hover: source fills the item yellow and darkens the left rule (title/date
+   colors unchanged, no underline) */
+main .breadcrumbs-container .article-aside li a:hover {
+  background-color: #ffea00;
+  border-left-color: var(--text-color);
   color: var(--text-color);
   text-decoration: none;
 }
