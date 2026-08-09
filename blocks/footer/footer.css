@@ -15,6 +15,14 @@ footer {
   margin-top: 178px;
 }
 
+/* Article/adventure detail pages (those with a breadcrumbs section) have no
+   section-ending separator before the footer — the source leaves only the
+   footer's own 48px top margin there. Scope the shallower gap to those pages so
+   the homepage/listing separator spacing above stays intact. */
+main:has(.breadcrumbs-container) ~ footer {
+  margin-top: 48px;
+}
+
 footer .footer {
   max-width: 1200px;
   margin: 0 auto;
