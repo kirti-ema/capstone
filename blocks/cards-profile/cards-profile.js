@@ -49,6 +49,10 @@ export default function decorate(block) {
       const label = a.textContent.trim();
       a.className = 'cards-profile-social-link';
       a.setAttribute('aria-label', label || platform);
+      // the source uses non-navigating placeholder anchors for these contributor
+      // socials; Document Authoring rewrites the placeholders to "/" on publish,
+      // so normalize back to "#" to match the source (no real destination).
+      a.setAttribute('href', '#');
       a.innerHTML = `${SOCIAL_ICONS[platform]}<span class="cards-profile-social-label">${label}</span>`;
       const p = a.closest('p');
       social.append(a);
