@@ -134,7 +134,12 @@ async function decorateDynamic(block, rawHref, section) {
   block.replaceChildren(ul);
 
   try {
-    const resp = await fetch(jsonUrl);
+    // The query index is served with a long max-age (client cache ~2h), so a
+    // plain fetch would keep showing a stale listing and miss newly published
+    // articles until that expires. 'no-cache' forces a revalidation round-trip
+    // (a cheap 304 when unchanged, fresh data when the index changed), so a
+    // freshly published article appears on the next page load.
+    const resp = await fetch(jsonUrl, { cache: 'no-cache' });
     if (!resp.ok) throw new Error(`query-index ${resp.status}`);
     const json = await resp.json();
     let entries = Array.isArray(json.data) ? json.data : [];
