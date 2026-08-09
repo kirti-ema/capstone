@@ -144,25 +144,43 @@ async function decorateDynamic(block, rawHref, section) {
     const json = await resp.json();
     const all = Array.isArray(json.data) ? json.data : [];
 
-    // Curated listing: an authored numeric cardOrder selects an article into
-    // the listing and sets its position (ascending). Blank/non-numeric = not
-    // shown. This reproduces the source's hand-picked, ordered selection rather
-    // than a recency feed (all articles share a near-identical lastModified).
+    // An authored numeric cardOrder selects an article into a curated listing
+    // and sets its position (ascending). Two instance behaviours, keyed on
+    // whether a max-card limit was authored (column 1):
+    //  - CURATED (a limit is set, e.g. homepage "Recent Articles"): show ONLY
+    //    articles that have a cardOrder, sorted ascending, capped. Blank = not
+    //    shown; nothing else is appended. Reproduces the source's hand-picked,
+    //    ordered selection (articles share a near-identical lastModified, so a
+    //    recency sort can't reproduce a curated set).
+    //  - FULL (no limit, e.g. magazine "All Articles"): show EVERY article.
+    //    Ones with a cardOrder lead, in ascending order; the rest follow by
+    //    most-recent. The exclusion behaviour never hides an article here.
     const orderOf = (e) => {
       const n = parseFloat(e.cardOrder);
       return Number.isFinite(n) ? n : NaN;
     };
-    let entries = all.filter((e) => Number.isFinite(orderOf(e)));
+    const ordered = all
+      .filter((e) => Number.isFinite(orderOf(e)))
+      .sort((a, b) => orderOf(a) - orderOf(b));
 
-    // Fallback: if NO article has been given a card-order yet (e.g. before the
-    // metadata is authored/indexed), don't show an empty listing — fall back to
-    // the full set ordered most-recent-first so the section still renders.
-    if (!entries.length) {
-      entries = [...all].sort((a, b) => Number(b.lastModified || 0) - Number(a.lastModified || 0));
+    let entries;
+    if (limit > 0) {
+      // curated + capped
+      entries = ordered.slice(0, limit);
+      // safety net: if nothing has a cardOrder yet (before metadata is
+      // authored/indexed), fall back to most-recent so it never renders empty.
+      if (!entries.length) {
+        entries = [...all]
+          .sort((a, b) => Number(b.lastModified || 0) - Number(a.lastModified || 0))
+          .slice(0, limit);
+      }
     } else {
-      entries.sort((a, b) => orderOf(a) - orderOf(b));
+      // full listing: ordered ones first, then the remainder by most-recent
+      const rest = all
+        .filter((e) => !Number.isFinite(orderOf(e)))
+        .sort((a, b) => Number(b.lastModified || 0) - Number(a.lastModified || 0));
+      entries = [...ordered, ...rest];
     }
-    if (limit > 0) entries = entries.slice(0, limit);
 
     if (!entries.length) {
       block.remove();
