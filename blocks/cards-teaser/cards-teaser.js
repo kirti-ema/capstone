@@ -155,21 +155,26 @@ async function decorateDynamic(block, rawHref, section) {
     //    shown; nothing else is appended. Reproduces the source's hand-picked,
     //    ordered selection (articles share a near-identical lastModified, so a
     //    recency sort can't reproduce a curated set).
-    //  - FULL (no limit, e.g. magazine "All Articles"): show EVERY article.
-    //    Ones with a cardOrder lead, in ascending order; the rest follow by
-    //    most-recent. The exclusion behaviour never hides an article here.
+    //  - FULL (no limit, e.g. magazine "All Articles"): show EVERY article,
+    //    sorted alphabetically by title (A→Z) — cardOrder is IGNORED here.
+    //    The source's magazine listing is title-sorted (verified: "Ultimate
+    //    Guide to LA Skateparks" sorts by title, not by its guide-la-skateparks
+    //    path). cardOrder exists only to curate the capped instance, and every
+    //    article carries one for the homepage, so it must not leak into this
+    //    listing's order.
     const orderOf = (e) => {
       const n = parseFloat(e.cardOrder);
       return Number.isFinite(n) ? n : NaN;
     };
-    const ordered = all
-      .filter((e) => Number.isFinite(orderOf(e)))
-      .sort((a, b) => orderOf(a) - orderOf(b));
+    const byTitle = (a, b) => (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' });
 
     let entries;
     if (limit > 0) {
-      // curated + capped
-      entries = ordered.slice(0, limit);
+      // curated + capped: only card-ordered articles, ascending, capped.
+      entries = all
+        .filter((e) => Number.isFinite(orderOf(e)))
+        .sort((a, b) => orderOf(a) - orderOf(b))
+        .slice(0, limit);
       // safety net: if nothing has a cardOrder yet (before metadata is
       // authored/indexed), fall back to most-recent so it never renders empty.
       if (!entries.length) {
@@ -178,11 +183,8 @@ async function decorateDynamic(block, rawHref, section) {
           .slice(0, limit);
       }
     } else {
-      // full listing: ordered ones first, then the remainder by most-recent
-      const rest = all
-        .filter((e) => !Number.isFinite(orderOf(e)))
-        .sort((a, b) => Number(b.lastModified || 0) - Number(a.lastModified || 0));
-      entries = [...ordered, ...rest];
+      // full listing: every article, alphabetical by title (cardOrder ignored).
+      entries = [...all].sort(byTitle);
     }
 
     if (!entries.length) {
