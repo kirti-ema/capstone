@@ -201,6 +201,30 @@ function buildArticleLayout(main) {
       a.append(dateSpan);
     }
   });
+
+  // Some articles (e.g. LA Skateparks) carry an extra "Download PDF" widget in
+  // the sidebar between "SHARE THIS STORY" and the related list: a title link,
+  // a "Get the Full Story" line, a file-metadata list, and a download button.
+  // Group it into .article-download so the CSS can style it without touching the
+  // related list. The related list is the last <ul> whose items link out;
+  // everything between the share heading and that list is the widget.
+  const shareHeading = [...asideWrapper.querySelectorAll('h5')]
+    .find((h) => toClassName(h.textContent) === 'share-this-story');
+  const relatedList = [...asideWrapper.querySelectorAll('ul')].find((ul) => ul.querySelector('li a'));
+  if (shareHeading && relatedList && !asideWrapper.querySelector('.article-download')) {
+    const widgetEls = [];
+    let node = shareHeading.nextElementSibling;
+    while (node && node !== relatedList) {
+      widgetEls.push(node);
+      node = node.nextElementSibling;
+    }
+    if (widgetEls.length) {
+      const widget = document.createElement('div');
+      widget.className = 'article-download';
+      shareHeading.after(widget);
+      widgetEls.forEach((el) => widget.append(el));
+    }
+  }
 }
 
 function buildFeaturedAutoBlock(main) {

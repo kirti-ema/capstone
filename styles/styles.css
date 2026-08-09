@@ -272,6 +272,93 @@ main .breadcrumbs-container .article-aside li a:hover {
   text-decoration: none;
 }
 
+/* Sidebar "Download PDF" widget (some articles, e.g. LA Skateparks). Source: a
+   14px/600 uppercase title link, a 16px uppercase "Get the Full Story" line, a
+   file-metadata list showing only the values (labels hidden) in 12px grey, and
+   a dark full-width download button with white 18px text. Separated from the
+   related list below by ~50px. */
+main .breadcrumbs-container .article-download {
+  margin: 24px 0 50px;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+main .breadcrumbs-container .article-download h3 {
+  margin: 7px 0 0;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs); /* 14px */
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
+main .breadcrumbs-container .article-download h3 a:any-link {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+/* "Get the Full Story" — 16px uppercase label (overrides the justified article
+   body paragraph rule for the sidebar widget) */
+main .breadcrumbs-container .article-download > p {
+  margin: 0;
+  font-size: var(--body-font-size-s); /* 16px */
+  font-weight: 600;
+  line-height: 2.5;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--text-color);
+}
+
+/* file-metadata list: values only, stacked, 12px grey. The source hides the
+   labels (Filename/Size/Format) and shows just the values. */
+main .breadcrumbs-container .article-download ul {
+  margin: 4.5px 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+main .breadcrumbs-container .article-download ul li {
+  margin: 0;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+main .breadcrumbs-container .article-download ul li p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+  text-align: left;
+  color: #696969;
+}
+
+/* hide the metadata label (first <p> in each item) — source shows values only */
+main .breadcrumbs-container .article-download ul li p:first-child {
+  display: none;
+}
+
+/* dark download button — full-width block, white 18px text, no radius */
+/* stylelint-disable-next-line no-descending-specificity */
+main .breadcrumbs-container .article-download > p:last-child {
+  margin: 0;
+}
+
+main .breadcrumbs-container .article-download > p:last-child a:any-link {
+  display: inline-block;
+  padding: 15px 32px;
+  background-color: var(--text-color);
+  color: #fff;
+  font-size: var(--body-font-size-m); /* 18px */
+  font-weight: 400;
+  line-height: 1;
+  text-align: left;
+  text-decoration: none;
+}
+
+main .breadcrumbs-container .article-download > p:last-child a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
 /* buttons */
 p.button-wrapper {
   margin: 12px 0;
@@ -430,6 +517,7 @@ main img {
 /* standalone default-content images (a paragraph containing only a picture)
    fill the full content column, matching the WKND source (article/FAQ lead
    images span the whole content width, not a narrower cap) */
+/* stylelint-disable-next-line no-descending-specificity */
 main .default-content-wrapper p:has(> picture:only-child) {
   margin-top: 16px;
   margin-bottom: 16px;
