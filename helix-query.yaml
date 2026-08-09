@@ -35,3 +35,11 @@ indices:
         select: none
         value: |
           parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
+      # Curated listing position, authored per article via a "Card Order"
+      # metadata field (renders as <meta name="card-order">). A number means
+      # "show at this position" (ascending); blank means "not shown" in curated
+      # listings. Lets authors control selection + order instead of recency.
+      cardOrder:
+        select: head > meta[name="card-order"]
+        value: |
+          attribute(el, 'content')

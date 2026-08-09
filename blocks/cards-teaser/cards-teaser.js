@@ -142,10 +142,26 @@ async function decorateDynamic(block, rawHref, section) {
     const resp = await fetch(jsonUrl, { cache: 'no-cache' });
     if (!resp.ok) throw new Error(`query-index ${resp.status}`);
     const json = await resp.json();
-    let entries = Array.isArray(json.data) ? json.data : [];
+    const all = Array.isArray(json.data) ? json.data : [];
 
-    // most-recent first (lastModified is epoch seconds as a string/number)
-    entries.sort((a, b) => Number(b.lastModified || 0) - Number(a.lastModified || 0));
+    // Curated listing: an authored numeric cardOrder selects an article into
+    // the listing and sets its position (ascending). Blank/non-numeric = not
+    // shown. This reproduces the source's hand-picked, ordered selection rather
+    // than a recency feed (all articles share a near-identical lastModified).
+    const orderOf = (e) => {
+      const n = parseFloat(e.cardOrder);
+      return Number.isFinite(n) ? n : NaN;
+    };
+    let entries = all.filter((e) => Number.isFinite(orderOf(e)));
+
+    // Fallback: if NO article has been given a card-order yet (e.g. before the
+    // metadata is authored/indexed), don't show an empty listing — fall back to
+    // the full set ordered most-recent-first so the section still renders.
+    if (!entries.length) {
+      entries = [...all].sort((a, b) => Number(b.lastModified || 0) - Number(a.lastModified || 0));
+    } else {
+      entries.sort((a, b) => orderOf(a) - orderOf(b));
+    }
     if (limit > 0) entries = entries.slice(0, limit);
 
     if (!entries.length) {
