@@ -24,11 +24,17 @@
   margin: 0;
 }
 
-/* title — same card-title treatment as cards-teaser (18px/600 uppercase dark),
-   with the yellow padlock badge overlapping its left edge like the source */
+/* title — same card-title treatment as cards-teaser (18px/600 uppercase dark).
+   The source marks it "locked" with a diagonal corner-ribbon (a yellow right
+   triangle) that sits in front of and tucks under the title's first letters,
+   with the lock glyph centered on the ribbon. Reproduced with two layered
+   pseudo-elements anchored to the title's top-left. */
 .members-only-title {
   position: relative;
-  padding-left: 34px;
+
+  /* the ribbon is 32px wide and tucks under the first letters — the source
+     overlaps the title text by ~10px, so inset the text ~22px (32 − 10) */
+  padding-left: 22px;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m); /* 18px */
   font-weight: 600;
@@ -37,19 +43,39 @@
   color: var(--text-color);
 }
 
+/* the ribbon: a 32px box whose top-left half is yellow (folded-corner flag),
+   drawn with a linear-gradient like the source. Overlaps the title's left edge
+   and first letters; z-index keeps it in front of the text. */
 .members-only-title::before {
   content: '';
   position: absolute;
+  top: 0;
   left: 0;
-  top: 50%;
-  width: 30px;
-  height: 30px;
-  transform: translateY(-50%);
-  background-color: #ffea00;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  background-image: linear-gradient(
+    to left top,
+    rgb(255 255 255 / 0%) 0,
+    rgb(255 255 255 / 0%) 50%,
+    #ffea00 50%,
+    #ffea00 100%
+  );
+}
+
+/* the lock glyph, centered over the ribbon's yellow (upper-left) area */
+.members-only-title::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 2;
+  width: 15px;
+  height: 15px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23202020' d='M12 2a5 5 0 0 0-5 5v3H5v12h14V10h-2V7a5 5 0 0 0-5-5zm3 8H9V7a3 3 0 0 1 6 0v3z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 16px;
+  background-size: contain;
 }
 
 /* teaser — muted grey uppercase, matches cards-teaser description */
