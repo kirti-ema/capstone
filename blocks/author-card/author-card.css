@@ -1,0 +1,97 @@
+/* Author bio card below a magazine article body. Values extracted from
+   https://wknd.site/us/en/magazine/arctic-surfing.html. The source draws a
+   1px #ebebeb rule above the card (its <hr>/separator), then a circular 60px
+   author photo, the author name (24px Asar), role (12px grey uppercase), and
+   three 48px dark social icon tiles reusing the footer's icon set. */
+
+.author-card {
+  /* divider above the card — the source's separator rule */
+  margin-top: 18px;
+  padding-top: 27px;
+  border-top: 1px solid #ebebeb;
+}
+
+/* circular author photo (source: 60px, border-radius 50%, cover) */
+.author-card-photo {
+  margin: 0;
+  line-height: 0;
+}
+
+.author-card-photo picture,
+.author-card-photo img {
+  display: block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* author name — heading font, 24px, dark (source cmp-teaser title treatment) */
+.author-card-name * {
+  margin: 0 0 4px;
+  font-family: var(--heading-font-family);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-color);
+  text-transform: none;
+}
+
+/* role — small grey uppercase label */
+.author-card-role,
+.author-card-role * {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #696969;
+}
+
+/* social icon tiles — 48px dark square with a light glyph, abutting (gap 0),
+   matching the footer social tiles */
+.author-card-social {
+  margin: 21px 0 0;
+}
+
+.author-card-social,
+.author-card-social ul,
+.author-card-social p {
+  display: flex;
+  gap: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.author-card-social a:any-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: var(--dark-color);
+  color: #ebebeb;
+}
+
+/* no hover state — source's social tiles have no hover feedback */
+.author-card-social a:hover {
+  background-color: var(--dark-color);
+  color: #ebebeb;
+}
+
+.author-card-social svg {
+  width: 20px;
+  height: 20px;
+}
+
+.author-card-social-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

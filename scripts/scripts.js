@@ -93,6 +93,46 @@ function buildFeaturedTeaserBlock(textEls, picture) {
   return buildBlock('featured-teaser', [[{ elems: textEls }, { elems: [picture] }]]);
 }
 
+/**
+ * Promotes the author bio group at the foot of a magazine article into an
+ * author-card block (circular photo, name, role, social icon tiles).
+ *
+ * The article is flat default content ending with: [author photo <p>],
+ * [name H2], [role <p>], [social links <p>], then a "SHARE THIS STORY" H5.
+ * We locate that H5 and pull the four preceding elements into the block, so no
+ * content-file edits are needed. Guarded to fire only when the group matches.
+ * @param {Element} main The container element
+ */
+function buildAuthorBioBlock(main) {
+  // Runs before decorateSections, so operate on the raw top-level section div
+  // (the .default-content-wrapper class doesn't exist yet at this point).
+  const wrapper = [...main.children]
+    .find((w) => [...w.querySelectorAll('h5')].some((h) => toClassName(h.textContent) === 'share-this-story'));
+  if (!wrapper || wrapper.querySelector('.author-card')) return;
+
+  const share = [...wrapper.querySelectorAll('h5')].find((h) => toClassName(h.textContent) === 'share-this-story');
+  if (!share) return;
+
+  // the social links <p> is the element immediately before "SHARE THIS STORY"
+  const socials = share.previousElementSibling;
+  const isSocial = socials && socials.tagName === 'P' && socials.querySelector('a');
+  if (!isSocial) return;
+  const role = socials.previousElementSibling; // "Skater, Writer"
+  const name = role && role.previousElementSibling; // H2 author name
+  const photo = name && name.previousElementSibling; // author photo <p><picture>
+  const hasPhoto = photo && photo.querySelector('picture');
+  if (!name || !/^H[1-6]$/.test(name.tagName) || !role || !hasPhoto) return;
+
+  // mark the insertion spot BEFORE buildBlock moves the elements (buildBlock
+  // detaches them, so anchor on a placeholder inserted while photo is still
+  // in place).
+  const slot = document.createElement('div');
+  photo.before(slot);
+  // one cell per row: photo, name, role, socials (buildBlock wraps each in a div)
+  const rows = [photo, name, role, socials].map((el) => [{ elems: [el] }]);
+  slot.replaceWith(buildBlock('author-card', rows));
+}
+
 function buildFeaturedAutoBlock(main) {
   const section = [...main.children].find((div) => div.classList.contains('featured')
     || [...div.querySelectorAll('div.section-metadata div > div')]
@@ -261,6 +301,7 @@ function buildAutoBlocks(main) {
     }
     buildFeaturedAutoBlock(main);
     buildMagazineListingBlocks(main);
+    buildAuthorBioBlock(main);
     buildWidgetAutoBlocks(main);
   } catch (error) {
     // eslint-disable-next-line no-console
