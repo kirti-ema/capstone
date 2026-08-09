@@ -109,21 +109,39 @@
   cursor: default;
 }
 
-/* article image — shown sharp/in full, matching the source (which applies no
-   blur or fade to these locked images). Source gap button -> image is ~21px. */
+/* article image — a light blur is applied as a deliberate "locked content"
+   treatment for this build. NOTE: the source renders these images sharp (no
+   blur); this is an intentional divergence, not a source match. The source's
+   image *display* is preserved: fixed 200px height + object-fit:cover + full
+   width, so both cards stay bottom-aligned. Source gap button -> image ~21px. */
 .members-only-image {
   margin-top: 21px;
+  line-height: 0;
+
+  /* clip the soft, semi-transparent edge the blur creates so the 200px frame
+     stays fully covered with no gap */
+  overflow: hidden;
+}
+
+/* the image sits inside a <p> wrapper; overflow:hidden above makes this frame a
+   block formatting context, so that <p>'s default margins can't collapse and
+   would inflate the frame past 200px. Zero them so the frame is exactly the
+   image's 200px. */
+.members-only-image p {
+  margin: 0;
   line-height: 0;
 }
 
 .members-only-image img {
+  display: block; /* block box = frame is exactly 200px (no inline baseline gap) */
   width: 100%;
-
-  /* fixed height (not aspect-ratio) so both cards' images align at the same
-     height regardless of card width or the photo's native proportions — matches
-     the source, which uses height:200px + object-fit:cover */
   height: 200px;
   object-fit: cover;
+
+  /* light locked-content blur; scale(1.03) pushes the blurred edge past the
+     frame so no transparent border shows (clipped by the frame's overflow) */
+  filter: blur(3px);
+  transform: scale(1.03);
 }
 
 @media (width >= 600px) {
