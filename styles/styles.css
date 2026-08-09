@@ -327,8 +327,8 @@ main img {
 }
 
 /* standalone default-content images (a paragraph containing only a picture)
-   are constrained to the source's content-column width rather than the full
-   section width — matches WKND article/FAQ lead images */
+   fill the full content column, matching the WKND source (article/FAQ lead
+   images span the whole content width, not a narrower cap) */
 main .default-content-wrapper p:has(> picture:only-child) {
   margin-top: 16px;
   margin-bottom: 16px;
@@ -337,7 +337,6 @@ main .default-content-wrapper p:has(> picture:only-child) {
 main .default-content-wrapper p:has(> picture:only-child) picture,
 main .default-content-wrapper p:has(> picture:only-child) img {
   display: block;
-  max-width: 750px;
   width: 100%;
 }
 
