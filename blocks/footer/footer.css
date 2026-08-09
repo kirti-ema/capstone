@@ -95,7 +95,9 @@ footer .footer-follow {
 
 footer ul.footer-social {
   display: flex;
-  gap: 2px;
+
+  /* source tiles abut with no gap between them */
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -138,12 +140,13 @@ footer .footer-social-label {
 }
 
 /* legal / attribution — source uses 12px/1.25 (smaller than the site body)
-   with solid #f7f7f7 text (not dimmed) */
+   with solid #f7f7f7 text (not dimmed), justified like the source */
 footer .footer-legal {
   padding-top: 24px;
   color: #f7f7f7;
   font-size: 12px;
   line-height: 1.25;
+  text-align: justify;
 }
 
 footer .footer-legal p + p {
