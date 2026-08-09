@@ -133,8 +133,13 @@ main .breadcrumbs-container .default-content-wrapper h1 {
 }
 
 /* Magazine articles carry a byline (H4 "By …") the source styles as a small,
-   bold, uppercase label — not the default 20px heading. */
+   bold, uppercase label — not the default 20px heading. The source gives it
+   ~21.3px breathing room above and below; our byline collapses margins with the
+   adjacent H1 and body paragraph, so its larger 21.3px margin wins on both
+   sides, reproducing the source's title→byline and byline→body gaps. */
 main .breadcrumbs-container .default-content-wrapper h4 {
+  margin-top: 21.3px;
+  margin-bottom: 21.3px;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-s); /* 16px */
   font-weight: 600;
