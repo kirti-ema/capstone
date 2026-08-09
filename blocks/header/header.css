@@ -10,6 +10,18 @@ header .nav-wrapper {
      never forces a horizontal page scrollbar. clip (not hidden) does not create
      a scroll container, so the sticky header keeps working. */
   overflow-x: clip;
+
+  /* box-shadow-only transition so the scroll shadow fades in with the existing
+     shrink (does not affect layout) */
+  transition: box-shadow 0.3s;
+}
+
+/* scroll shadow: the source header has no shadow at the top of the page and
+   gains one only once scrolled (driven by body.scrolly there; by the
+   header.nav-scrolled class here). Exact source value:
+   rgba(0,0,0,0.26) 0 8px 20px 0. */
+header.nav-scrolled .nav-wrapper {
+  box-shadow: 0 8px 20px 0 rgb(0 0 0 / 26%);
 }
 
 header nav {
