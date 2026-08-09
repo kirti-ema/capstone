@@ -77,11 +77,33 @@ footer ul.footer-nav a {
 }
 
 /* mobile (<900px): the source stacks the footer nav links in a vertical
-   column and uses a slightly smaller logo */
+   column and uses a slightly smaller logo. The logo and that nav column sit
+   side by side on the first row (logo left, nav indented ~28px to its right),
+   with Follow Us / social / legal spanning full width beneath — reproduce that
+   with a two-column grid rather than a single stacked column. */
 @media (width < 900px) {
+  footer .footer-top .default-content-wrapper {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 28px;
+    align-items: start;
+  }
+
+  footer .footer-brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   footer ul.footer-nav {
+    grid-column: 2;
+    grid-row: 1;
     flex-direction: column;
     gap: 16px;
+  }
+
+  footer .footer-follow,
+  footer ul.footer-social {
+    grid-column: 1 / -1;
   }
 
   footer .footer-brand img {
