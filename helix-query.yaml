@@ -1,0 +1,33 @@
+version: 1
+
+indices:
+  # Magazine articles (US). Feeds the dynamic cards-teaser listing used by
+  # "Recent Articles" (homepage) and "All Articles" (magazine). Locked
+  # "Members Only" articles are excluded so they never surface in public lists.
+  # Add a matching /ca/en/magazine index with the same shape when CA is in scope.
+  magazine:
+    include:
+      - '/us/en/magazine/**'
+    exclude:
+      - '/us/en/magazine/members-only/**'
+    target: /us/en/magazine/query-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      # og:image is an absolute URL; store just the path so it resolves in any
+      # environment (preview, live, local). createOptimizedPicture uses the
+      # pathname anyway.
+      image:
+        select: head > meta[property="og:image"]
+        value: |
+          match(attribute(el, 'content'), 'https:\/\/[^/]+(\/.*)')
+      lastModified:
+        select: none
+        value: |
+          parseTimestamp(headers('last-modified'), 'ddd, DD MMM YYYY hh:mm:ss GMT')
