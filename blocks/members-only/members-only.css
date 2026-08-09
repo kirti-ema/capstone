@@ -11,8 +11,13 @@
   justify-content: start;
 
   /* the source draws a 1px #ebebeb rule between the "Sign in…" message and the
-     previews; rendered as the block's top border (full content width) */
-  padding-top: 40px;
+     previews; rendered as the block's top border (full content width). Source
+     spacing: ~50px between the message and the rule, ~65px between the rule and
+     the card row. The message contributes ~5px of its own bottom gap, so
+     margin-top 45px lands the rule ~50px below it; padding-top 64px = ~65px
+     below the rule to the card. */
+  margin-top: 50px;
+  padding-top: 50px;
   border-top: 1px solid #ebebeb;
 }
 
