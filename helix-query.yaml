@@ -43,3 +43,12 @@ indices:
         select: head > meta[name="card-order"]
         value: |
           attribute(el, 'content')
+      # Dedicated card thumbnail, authored as a plain-text image path in a
+      # "Card Image" metadata field (renders as <meta name="card-image">).
+      # MUST be authored as TEXT, not an <img> — an <img> in a metadata cell
+      # fails to resolve (emits about:error and corrupts og:image). When set,
+      # the listing card uses this instead of the article's hero (og:image).
+      cardImage:
+        select: head > meta[name="card-image"]
+        value: |
+          attribute(el, 'content')

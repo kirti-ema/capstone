@@ -67,15 +67,18 @@ function decorateStatic(block) {
 function buildCardFromEntry(entry) {
   const li = document.createElement('li');
 
-  // image cell (only if the entry has an image — degrade gracefully otherwise)
+  // image cell (only if the entry has an image — degrade gracefully otherwise).
+  // Prefer the authored, dedicated card thumbnail (cardImage) over the article's
+  // hero (image/og:image) so curated listings can match a specific crop.
   const imageDiv = document.createElement('div');
   imageDiv.className = 'cards-teaser-card-image';
-  if (entry.image) {
+  const cardImg = entry.cardImage || entry.image;
+  if (cardImg) {
     const imgLink = document.createElement('a');
     imgLink.href = entry.path;
     imgLink.setAttribute('aria-hidden', 'true');
     imgLink.setAttribute('tabindex', '-1');
-    imgLink.append(createOptimizedPicture(entry.image, entry.title || '', false, [{ width: '750' }]));
+    imgLink.append(createOptimizedPicture(cardImg, entry.title || '', false, [{ width: '750' }]));
     imageDiv.append(imgLink);
   }
 
