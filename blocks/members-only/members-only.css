@@ -32,9 +32,9 @@
 .members-only-title {
   position: relative;
 
-  /* the ribbon is 32px wide and tucks under the first letters — the source
-     overlaps the title text by ~10px, so inset the text ~22px (32 − 10) */
-  padding-left: 22px;
+  /* the ribbon is 44px wide and tucks under the first letters — the source
+     overlaps the title text by ~16px, so inset the text ~28px (44 − 16) */
+  padding-left: 28px;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m); /* 18px */
   font-weight: 600;
@@ -43,17 +43,18 @@
   color: var(--text-color);
 }
 
-/* the ribbon: a 32px box whose top-left half is yellow (folded-corner flag),
-   drawn with a linear-gradient like the source. Overlaps the title's left edge
-   and first letters; z-index keeps it in front of the text. */
+/* the ribbon: a 44px box whose top-left half is yellow (folded-corner flag),
+   drawn with a linear-gradient like the source (sized up to match the source's
+   larger badge). Overlaps the title's left edge and first letters; z-index
+   keeps it in front of the text. */
 .members-only-title::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   z-index: 1;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   background-image: linear-gradient(
     to left top,
     rgb(255 255 255 / 0%) 0,
@@ -63,24 +64,26 @@
   );
 }
 
-/* the lock glyph, centered over the ribbon's yellow (upper-left) area */
+/* the lock glyph, centered over the ribbon's yellow (upper-left) area — sized
+   to fill the larger triangle like the source */
 .members-only-title::after {
   content: '';
   position: absolute;
-  top: 3px;
-  left: 3px;
+  top: 4px;
+  left: 4px;
   z-index: 2;
-  width: 15px;
-  height: 15px;
+  width: 22px;
+  height: 22px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23202020' d='M12 2a5 5 0 0 0-5 5v3H5v12h14V10h-2V7a5 5 0 0 0-5-5zm3 8H9V7a3 3 0 0 1 6 0v3z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
 }
 
-/* teaser — muted grey uppercase, matches cards-teaser description */
+/* teaser — muted grey uppercase, matches cards-teaser description. Source gap
+   title -> teaser is ~9px (the title's own 9px bottom margin), so 0 here. */
 .members-only-teaser {
-  margin-top: 16px;
+  margin-top: 9px;
   font-size: var(--body-font-size-xs); /* 14px */
   line-height: 1.5;
   text-transform: uppercase;
@@ -88,10 +91,10 @@
 }
 
 /* Read More — inert grey button (source renders it as a non-link that does
-   nothing until sign-in) */
+   nothing until sign-in). Source gap teaser -> button is ~28px. */
 .members-only-readmore {
   display: inline-block;
-  margin-top: 32px;
+  margin-top: 28px;
   padding: 7px 14px;
   background-color: #ebebeb;
   color: #696969;
@@ -101,16 +104,24 @@
   cursor: default;
 }
 
-/* article image — shown in full (no blur/grayscale), below the button */
+/* article image — the locked preview blurs its image so the content reads as
+   gated (an enhancement beyond the source, which shows it un-blurred). Source
+   gap button -> image is ~21px. */
 .members-only-image {
-  margin-top: 18px;
+  margin-top: 21px;
   line-height: 0;
+  overflow: hidden;
 }
 
 .members-only-image img {
   width: 100%;
   aspect-ratio: 9 / 5;
   object-fit: cover;
+
+  /* blur the locked image; scale(1.05) hides the soft transparent edge the
+     blur creates so the frame stays fully covered */
+  filter: blur(6px);
+  transform: scale(1.05);
 }
 
 @media (width >= 600px) {
