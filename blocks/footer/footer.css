@@ -163,7 +163,8 @@ footer .footer-legal a:any-link {
     padding: 16px 32px 24px;
   }
 
-  /* top band: logo left | nav (center) | Follow Us label | social icons */
+  /* top band: logo left | nav (left, right after logo) | Follow Us label |
+     social icons. The 1fr nav column pushes Follow Us/social to the right. */
   footer .footer-top .default-content-wrapper {
     display: grid;
     grid-template-columns: auto 1fr auto auto;
@@ -173,9 +174,10 @@ footer .footer-legal a:any-link {
 
   footer .footer-brand { grid-column: 1; }
 
+  /* source sits the nav left (right after the logo), not centered in its column */
   footer ul.footer-nav {
     grid-column: 2;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   footer .footer-follow {
