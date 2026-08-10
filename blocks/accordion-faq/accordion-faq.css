@@ -3,6 +3,74 @@
  * Decorated DOM: details.accordion-faq-item > (summary.accordion-faq-item-label > p) + div.accordion-faq-item-body
  */
 
+/* --- FAQs page layout ---
+ * The source lays the page out in two columns: FAQ content (H1, hero image,
+ * intro, accordion) fills a ~748px left column, and the "Need more help?"
+ * sidebar sits in a ~291px right column top-aligned with the H1. Below 900px it
+ * collapses to a single column. Scoped to .accordion-faq-container (the FAQs
+ * section) so no other page is affected. Section wrappers in order:
+ *   1. .default-content-wrapper  (H1 + hero image + intro)  -> left, row 1
+ *   2. .accordion-faq-wrapper    (the accordion)            -> left, row 2
+ *   3. .default-content-wrapper  ("Need more help?")        -> right, rows 1-2
+ */
+
+/* FAQs H1 — source renders it at 40px (not the 54px xxl default) with the WKND
+   yellow accent underline, like the other landing headings. */
+main .section.accordion-faq-container .default-content-wrapper h1 {
+  font-size: 40px;
+  line-height: 1.5;
+  margin-bottom: 13.5px;
+}
+
+main .section.accordion-faq-container .default-content-wrapper h1::after {
+  content: '';
+  display: block;
+  width: 84px;
+  margin-top: 12px;
+  border-bottom: 2px solid #ffea00;
+}
+
+@media (width >= 900px) {
+  main .section.accordion-faq-container {
+    display: grid;
+
+    /* left content ~65.8% + ~8.6% gap + right sidebar ~25.6% within the 1136px
+       content cap — matches the source's 748px / 291px split */
+    grid-template-columns: 65.8% 25.6%;
+    column-gap: 8.6%;
+    align-items: start;
+    max-width: 1136px;
+    margin: 40px auto;
+    padding: 0 32px;
+  }
+
+  /* the columns manage their own width; drop the generic per-wrapper cap */
+  /* stylelint-disable-next-line no-descending-specificity */
+  main .section.accordion-faq-container > div {
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* left column: the H1/image/intro block (row 1) + the accordion (row 2) */
+  main .section.accordion-faq-container > .default-content-wrapper:first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  main .section.accordion-faq-container > .accordion-faq-wrapper {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* right sidebar: the "Need more help?" block, top-aligned across both rows */
+  main .section.accordion-faq-container > .default-content-wrapper:last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
 .accordion-faq .accordion-faq-item {
   margin: 0;
   border: 0;
@@ -72,4 +140,10 @@
   line-height: 24.5px;
   color: var(--text-color);
   text-align: justify;
+}
+
+/* intro paragraph under the hero image — source line-height is 45px. Placed
+   after the accordion item rules so specificity is non-descending. */
+main .section.accordion-faq-container > .default-content-wrapper:first-child p {
+  line-height: 45px;
 }
