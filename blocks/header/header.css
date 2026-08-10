@@ -401,6 +401,121 @@ header nav .nav-utility .nav-signin {
 
 header nav .nav-utility .nav-signin:hover { color: #fff; }
 
+/* Sign In modal — opened from the utility-bar link. Matches the source: a dark
+   panel centered over a dimmed backdrop, white serif headings with a yellow
+   accent under the title, dark bordered fields, and a yellow submit button. */
+.nav-signin-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+  background-color: rgb(0 0 0 / 45%);
+}
+
+.nav-signin-backdrop[hidden] { display: none; }
+
+.nav-signin-modal {
+  position: relative;
+  box-sizing: border-box;
+  width: 450px;
+  max-width: 100%;
+  margin-top: 80px;
+  padding: 40px;
+  background-color: #202020;
+  color: #fff;
+}
+
+.nav-signin-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.nav-signin-title {
+  margin: 0 0 13.5px;
+  font-family: var(--heading-font-family);
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+}
+
+.nav-signin-title::after {
+  content: '';
+  display: block;
+  width: 84px;
+  margin-top: 12px;
+  border-bottom: 2px solid #ffea00;
+}
+
+.nav-signin-welcome {
+  margin: 27px 0 18px;
+  font-family: var(--heading-font-family);
+  font-size: 24px;
+  font-weight: 400;
+  color: #fff;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.nav-signin-form input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 0 18px;
+  padding: 18px 16px;
+  border: 1px solid #696969;
+  background: none;
+  color: #fff;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.nav-signin-form input::placeholder {
+  color: #a0a0a0;
+  text-transform: uppercase;
+}
+
+.nav-signin-forgot {
+  margin: 0 0 18px;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+.nav-signin-forgot a:any-link {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.nav-signin-submit {
+  margin: 0;
+  padding: 12px 40px;
+  border: 0;
+  border-radius: 0;
+  background-color: #ffea00;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 /* language dropdown */
 header nav .nav-language { position: relative; }
 

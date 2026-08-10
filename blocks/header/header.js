@@ -175,6 +175,54 @@ function decorateLanguage(tools) {
 }
 
 /**
+ * Wires the utility-bar "Sign In" link to open a modal matching the source: a
+ * dark panel with the "Sign In" heading (yellow accent), "Welcome Back",
+ * username/password fields, a "Forgot your password?" link and a yellow
+ * "Sign In" button. The form is presentational (the WKND demo has no auth
+ * backend). The modal + backdrop are built once and toggled with a class.
+ * @param {HTMLAnchorElement} signIn the Sign In link
+ */
+function decorateSignIn(signIn) {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'nav-signin-backdrop';
+  backdrop.setAttribute('hidden', '');
+  backdrop.innerHTML = `
+    <div class="nav-signin-modal" role="dialog" aria-modal="true" aria-label="Sign In">
+      <button type="button" class="nav-signin-close" aria-label="Close">&times;</button>
+      <h1 class="nav-signin-title">Sign In</h1>
+      <h3 class="nav-signin-welcome">Welcome Back</h3>
+      <form class="nav-signin-form">
+        <input type="text" name="username" placeholder="Username" aria-label="Username" autocomplete="username">
+        <input type="password" name="password" placeholder="Password" aria-label="Password" autocomplete="current-password">
+        <p class="nav-signin-forgot"><a href="#">Forgot your password?</a></p>
+        <button type="submit" class="nav-signin-submit">Sign In</button>
+      </form>
+    </div>`;
+  document.body.append(backdrop);
+
+  const modal = backdrop.querySelector('.nav-signin-modal');
+  const open = () => {
+    backdrop.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+    modal.querySelector('input')?.focus();
+  };
+  const close = () => {
+    backdrop.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+    signIn.focus();
+  };
+
+  signIn.addEventListener('click', (e) => { e.preventDefault(); open(); });
+  backdrop.querySelector('.nav-signin-close').addEventListener('click', close);
+  backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !backdrop.hasAttribute('hidden')) close();
+  });
+  // presentational only — no auth backend, so don't navigate on submit
+  backdrop.querySelector('.nav-signin-form').addEventListener('submit', (e) => e.preventDefault());
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
@@ -244,6 +292,7 @@ export default async function decorate(block) {
     if (signIn) {
       signIn.classList.add('nav-signin');
       navUtility.append(signIn.closest('p') || signIn);
+      decorateSignIn(signIn);
     }
     decorateLanguage(navTools); // builds .nav-language from the locale list
     const langNav = navTools.querySelector('.nav-language');
