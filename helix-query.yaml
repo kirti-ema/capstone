@@ -121,3 +121,5 @@ indices:
         select: head > meta[name="featured"]
         value: |
           attribute(el, 'content')
+
+# (re-sync marker: force code-bus refresh)
