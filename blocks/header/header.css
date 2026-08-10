@@ -391,6 +391,72 @@ header nav .nav-search input::placeholder {
   opacity: 1;
 }
 
+/* Clear (×) button — appears once the field has text, replacing the magnifier
+   on the right side (matching the source, where an × swaps in for the icon). */
+header nav .nav-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-color);
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+header nav .nav-search-clear[hidden] { display: none; }
+
+header nav .nav-search-clear::before {
+  content: '\00d7';
+  font-size: 18px;
+}
+
+/* Live autocomplete dropdown — dark panel of matching page titles, matching the
+   source's cmp-search__results (bg #202020, light rows, highlighted matches). */
+header nav .nav-search-results {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  width: 322px;
+  max-width: 90vw;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: #202020;
+}
+
+header nav .nav-search-results[hidden] { display: none; }
+
+header nav .nav-search-suggestion {
+  margin: 0;
+}
+
+header nav .nav-search-suggestion a:any-link {
+  display: block;
+  padding: 18px 16px;
+  color: #ebebeb;
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+header nav .nav-search-suggestion a:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+/* highlighted matched substring within a suggestion */
+header nav .nav-search-suggestion mark {
+  background-color: #ebebeb;
+  color: #202020;
+}
+
 /* sign-in (in dark utility band) */
 header nav .nav-utility .nav-signin {
   color: #ebebeb;

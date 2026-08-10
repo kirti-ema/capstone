@@ -1,5 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { fetchIndex, byTitle } from '../../scripts/query-index.js';
 
 // media query match that indicates desktop width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -66,6 +67,40 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  * input/form is created here (form controls do not live in the fragment).
  * @param {Element} tools The nav-tools container
  */
+// Search suggestion sources: the magazine + adventures query indexes provide
+// the searchable page titles (articles + adventures), matching the source's
+// autocomplete corpus. Fetched once, lazily, on first keystroke.
+const SEARCH_INDEXES = ['/us/en/magazine/query-index.json', '/us/en/adventures/query-index.json'];
+
+/**
+ * Builds a suggestion row: the page title with the typed query substring wrapped
+ * in <mark> for highlighting (matching the source's cmp-search__item-mark),
+ * linking to the entry's path.
+ * @param {Object} entry a query-index row { path, title }
+ * @param {string} q the current query (already lower-cased)
+ * @returns {HTMLLIElement}
+ */
+function buildSuggestion(entry, q) {
+  const li = document.createElement('li');
+  li.className = 'nav-search-suggestion';
+  li.setAttribute('role', 'option');
+  const a = document.createElement('a');
+  a.href = entry.path;
+  const title = entry.title || '';
+  const idx = title.toLowerCase().indexOf(q);
+  if (idx >= 0) {
+    a.append(
+      document.createTextNode(title.slice(0, idx)),
+      Object.assign(document.createElement('mark'), { textContent: title.slice(idx, idx + q.length) }),
+      document.createTextNode(title.slice(idx + q.length)),
+    );
+  } else {
+    a.textContent = title;
+  }
+  li.append(a);
+  return li;
+}
+
 function decorateSearch(tools) {
   // Match by href OR link text: Document Authoring rewrites the placeholder
   // "#search" href to "/" on publish, so text is the reliable signal.
@@ -75,7 +110,6 @@ function decorateSearch(tools) {
   const form = document.createElement('form');
   form.className = 'nav-search';
   form.setAttribute('role', 'search');
-  form.action = '/us/en/search';
   const label = document.createElement('span');
   label.className = 'nav-search-icon';
   label.setAttribute('aria-hidden', 'true');
@@ -84,9 +118,63 @@ function decorateSearch(tools) {
   input.name = 'q';
   input.placeholder = trigger.textContent.trim() || 'Search';
   input.setAttribute('aria-label', 'Search');
-  form.append(label, input);
+  input.setAttribute('autocomplete', 'off');
+  // clear (×) button — shown only when the field has text, matching the source
+  const clear = document.createElement('button');
+  clear.type = 'button';
+  clear.className = 'nav-search-clear';
+  clear.setAttribute('aria-label', 'Clear');
+  clear.hidden = true;
+  // suggestions dropdown (dark panel), matching the source's live autocomplete
+  const results = document.createElement('ul');
+  results.className = 'nav-search-results';
+  results.setAttribute('role', 'listbox');
+  results.hidden = true;
+  form.append(label, input, clear, results);
   const wrapper = trigger.closest('p') || trigger;
   wrapper.replaceWith(form);
+
+  // lazy-load the searchable titles once, on first interaction
+  let corpus = null;
+  const loadCorpus = async () => {
+    if (corpus) return corpus;
+    const lists = await Promise.all(SEARCH_INDEXES.map((u) => fetchIndex(u).catch(() => [])));
+    // de-dupe by path, keep entries with a title, sort alphabetically
+    const seen = new Set();
+    corpus = lists.flat().filter((e) => {
+      if (!e.title || !e.path || seen.has(e.path)) return false;
+      seen.add(e.path);
+      return true;
+    }).sort(byTitle);
+    return corpus;
+  };
+
+  const closeResults = () => { results.hidden = true; results.replaceChildren(); };
+
+  const render = async () => {
+    const q = input.value.trim().toLowerCase();
+    clear.hidden = !input.value;
+    if (!q) { closeResults(); return; }
+    const data = await loadCorpus();
+    const matches = data.filter((e) => e.title.toLowerCase().includes(q)).slice(0, 8);
+    if (!matches.length) { closeResults(); return; }
+    results.replaceChildren(...matches.map((e) => buildSuggestion(e, q)));
+    results.hidden = false;
+  };
+
+  input.addEventListener('input', render);
+  input.addEventListener('focus', render);
+  clear.addEventListener('click', () => {
+    input.value = '';
+    clear.hidden = true;
+    closeResults();
+    input.focus();
+  });
+  // Enter must NOT auto-navigate; selection happens by clicking a suggestion.
+  form.addEventListener('submit', (e) => e.preventDefault());
+  // close the dropdown when focus/click leaves the search
+  document.addEventListener('click', (e) => { if (!form.contains(e.target)) closeResults(); });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeResults(); });
 }
 
 // Maps the country segment (first path part of each locale href, e.g. /us/en)
