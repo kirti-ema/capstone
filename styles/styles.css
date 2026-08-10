@@ -140,6 +140,23 @@ main .tabs-filter-container .default-content-wrapper h1 {
   line-height: 1.5;
 }
 
+/* Adventures landing "Current Adventures" H2 — the source gives it the same
+   short yellow accent underline as the homepage cards-teaser headings (84px,
+   2px #ffea00, 13.5px below). The intro "Experience the world" H2 lives inside
+   the hero-banner block (not a .default-content-wrapper), so this scoped
+   selector only matches "Current Adventures". */
+main .tabs-filter-container .default-content-wrapper h2 {
+  margin-bottom: 13.5px;
+}
+
+main .tabs-filter-container .default-content-wrapper h2::after {
+  content: '';
+  display: block;
+  width: 84px;
+  margin-top: 12px;
+  border-bottom: 2px solid #ffea00;
+}
+
 /* Magazine articles carry a byline (H4 "By …") the source styles as a small,
    bold, uppercase label — not the default 20px heading. The source gives it
    ~21.3px breathing room above and below; our byline collapses margins with the
