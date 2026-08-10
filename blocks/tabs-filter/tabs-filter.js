@@ -1,4 +1,5 @@
 import { toClassName, createOptimizedPicture } from '../../scripts/aem.js';
+import { fetchIndex, byTitle } from '../../scripts/query-index.js';
 
 /**
  * Converts the inner "Cards Teaser" table of a tab panel into a
@@ -44,10 +45,141 @@ function decorateCards(panel) {
 }
 
 /**
+ * Splits an authored category value into a list. Categories are authored as a
+ * single value or a comma-separated list (e.g. "Cycling, Travel") so one
+ * adventure can appear under multiple tabs. Empty/blank yields no categories.
+ * @param {string} value the raw category field
+ * @returns {string[]}
+ */
+function splitCategories(value) {
+  return (value || '')
+    .split(',')
+    .map((c) => c.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Builds one authored tab row — a tab-name cell followed by a "Cards Teaser"
+ * table of the given entries — matching exactly the inline structure the static
+ * path (decorateCards) consumes, so dynamic and authored tabs render identically.
+ * @param {string} tabName the tab label
+ * @param {Array} entries query-index rows to render as cards (in order)
+ * @returns {HTMLElement} the row div
+ */
+function buildTabRow(tabName, entries) {
+  const row = document.createElement('div');
+
+  const nameCell = document.createElement('div');
+  nameCell.textContent = tabName;
+
+  const tableCell = document.createElement('div');
+  const table = document.createElement('table');
+  const tbody = document.createElement('tbody');
+  entries.forEach((entry) => {
+    const tr = document.createElement('tr');
+    const imgTd = document.createElement('td');
+    const cardImg = entry.cardImage || entry.image;
+    if (cardImg) {
+      imgTd.append(createOptimizedPicture(cardImg, entry.title || '', false, [{ width: '750' }]));
+    }
+    const bodyTd = document.createElement('td');
+    const h3 = document.createElement('h3');
+    h3.id = toClassName(entry.title || '');
+    const a = document.createElement('a');
+    a.href = entry.path;
+    a.textContent = entry.title || '';
+    h3.append(a);
+    bodyTd.append(h3);
+    if (entry.description) {
+      const p = document.createElement('p');
+      p.textContent = entry.description;
+      bodyTd.append(p);
+    }
+    tr.append(imgTd, bodyTd);
+    tbody.append(tr);
+  });
+  table.append(tbody);
+  tableCell.append(table);
+
+  row.append(nameCell, tableCell);
+  return row;
+}
+
+/**
+ * Dynamic mode: the block holds a query-index .json URL plus an optional
+ * tab-order cell (comma-separated tab labels; "All" first). Fetch the index and
+ * replace the block's children with authored-shape tab rows — an "All" tab
+ * (every entry) plus one tab per category — so the static decoration below
+ * renders them identically. Cards within each tab are sorted alphabetically by
+ * title (matching the source listing). If no tab order is authored, tabs are
+ * derived from the categories present, sorted alphabetically, with "All" first.
+ * @param {Element} block the tabs-filter block
+ * @param {string} rawHref the authored index URL
+ * @returns {Promise<boolean>} true if dynamic rows were built
+ */
+async function decorateDynamic(block, rawHref) {
+  // optional tab order: a cell listing labels, e.g. "All, Climbing, Cycling…"
+  // (any cell that isn't the json URL and contains a comma or a known label).
+  const tabOrderCell = [...block.querySelectorAll('div')]
+    .map((d) => d.textContent.trim())
+    .find((t) => t && !/\.json/i.test(t) && t.includes(','));
+  const authoredOrder = tabOrderCell
+    ? tabOrderCell.split(',').map((t) => t.trim()).filter(Boolean)
+    : null;
+
+  try {
+    const data = await fetchIndex(rawHref);
+    if (!data.length) { block.remove(); return false; }
+
+    // categories present across all entries
+    const present = new Set();
+    data.forEach((e) => splitCategories(e.category).forEach((c) => present.add(c)));
+
+    // tab labels: authored order (kept only if it has entries, "All" always),
+    // else "All" + categories present alphabetically.
+    let tabs;
+    if (authoredOrder) {
+      tabs = authoredOrder.filter((t) => t.toLowerCase() === 'all' || present.has(t));
+    } else {
+      tabs = ['All', ...[...present].sort((a, b) => a.localeCompare(b))];
+    }
+    if (!tabs.some((t) => t.toLowerCase() === 'all')) tabs.unshift('All');
+
+    const rows = tabs.map((tab) => {
+      const entries = (tab.toLowerCase() === 'all'
+        ? [...data]
+        : data.filter((e) => splitCategories(e.category).includes(tab)))
+        .sort(byTitle);
+      return buildTabRow(tab, entries);
+    });
+    block.replaceChildren(...rows);
+    return true;
+  } catch (e) {
+    // network/parse failure — leave no broken block behind
+    // eslint-disable-next-line no-console
+    console.warn('tabs-filter: failed to load dynamic listing', e);
+    block.remove();
+    return false;
+  }
+}
+
+/**
  * loads and decorates the tabs-filter block
  * @param {Element} block The block element
  */
 export default async function decorate(block) {
+  // Dynamic mode is opt-in: a query-index .json URL inside the authored table.
+  // Inline-authored tabs (static <table> per tab) carry no .json and are
+  // untouched, so existing instances render byte-identically. On failure the
+  // block is removed, so skip the static decoration below.
+  const jsonLink = block.querySelector('a[href*=".json"]');
+  const jsonText = jsonLink ? null
+    : (block.textContent.match(/https?:\/\/\S+\.json|\/\S+\.json/) || [])[0];
+  if (jsonLink || jsonText) {
+    const built = await decorateDynamic(block, jsonLink ? jsonLink.getAttribute('href') : jsonText);
+    if (!built) return;
+  }
+
   // build tablist
   const tablist = document.createElement('div');
   tablist.className = 'tabs-filter-list';
