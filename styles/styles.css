@@ -390,16 +390,20 @@ main .breadcrumbs-container .article-download > p {
   color: var(--text-color);
 }
 
-/* file-metadata list: values only, stacked, 12px grey. The source hides the
-   labels (Filename/Size/Format) and shows just the values. */
+/* file-metadata list: values only, 12px grey uppercase. The source hides the
+   labels (Filename/Size/Format) and shows just the values, flowing them INLINE
+   — filename + size share the first line, format wraps to the next — with a
+   12px gap between values, not stacked one per line. */
 main .breadcrumbs-container .article-download ul {
+  display: flex;
+  flex-wrap: wrap;
   margin: 4.5px 0 18px;
   padding: 0;
   list-style: none;
 }
 
 main .breadcrumbs-container .article-download ul li {
-  margin: 0;
+  margin: 0 12px 0 0;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
@@ -409,6 +413,7 @@ main .breadcrumbs-container .article-download ul li p {
   line-height: 1.5;
   font-weight: 400;
   text-align: left;
+  text-transform: uppercase;
   color: #696969;
 }
 
