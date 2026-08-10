@@ -8,8 +8,9 @@ import {
 
 /**
  * Builds the two authored rows a hero-banner expects from a query-index entry —
- * row 1: an image cell wrapping the picture; row 2: a content cell with the
- * title (h2), description, and a "See Trip" CTA to the adventure. This matches
+ * row 1: an image cell wrapping the picture (authored cardImage preferred over
+ * the page hero image); row 2: a content cell with the title (h2), description,
+ * and a "See Trip" CTA to the adventure. This matches
  * the inline-authored hero-banner shape exactly, so the block's own decoration
  * and CSS (image detection, overlay box, wknd-button) treat it identically.
  * @param {Object} entry a query-index row { path, title, description, image, cardImage }
@@ -18,8 +19,9 @@ import {
 function buildFeaturedRows(entry) {
   const imageRow = document.createElement('div');
   const imageCell = document.createElement('div');
-  // large full-bleed hero → prefer the page's hero image over the small card crop
-  const img = entry.image || entry.cardImage;
+  // prefer an authored card crop (cardImage) over the page's hero (image), so a
+  // curated listing can pin a specific crop — same precedence as cards-teaser.
+  const img = entry.cardImage || entry.image;
   if (img) {
     imageCell.append(createOptimizedPicture(img, entry.title || '', false, [{ width: '2000' }]));
   }
