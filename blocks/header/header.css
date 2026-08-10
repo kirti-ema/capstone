@@ -391,6 +391,13 @@ header nav .nav-search input::placeholder {
   opacity: 1;
 }
 
+/* hide the browser's native type=search clear/decoration controls — we render
+   our own × clear button (nav-search-clear), so the native one would double up */
+header nav .nav-search input::-webkit-search-cancel-button,
+header nav .nav-search input::-webkit-search-decoration {
+  appearance: none;
+}
+
 /* Clear (×) button — appears once the field has text, replacing the magnifier
    on the right side (matching the source, where an × swaps in for the icon). */
 header nav .nav-search-clear {
