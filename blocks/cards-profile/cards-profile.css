@@ -25,6 +25,42 @@ main .section.cards-profile-container > .default-content-wrapper {
   grid-column: 1 / -1;
 }
 
+/* --- Default content above the cards, matched to the source About page --- */
+
+/* H1 "About Us" — the source renders it at 40px (not the 54px xxl default). */
+main .section.cards-profile-container .default-content-wrapper h1 {
+  font-size: 40px;
+  line-height: 1.5;
+}
+
+/* "Our Contributors" / "WKND Guides" H2 — source gives each the short yellow
+   accent underline (84px, 2px #ffea00) and 13.5px below, like the other WKND
+   section headings. */
+main .section.cards-profile-container .default-content-wrapper h2 {
+  margin-bottom: 13.5px;
+}
+
+main .section.cards-profile-container .default-content-wrapper h2::after {
+  content: '';
+  display: block;
+  width: 84px;
+  margin-top: 12px;
+  border-bottom: 2px solid #ffea00;
+}
+
+/* Intro paragraphs ("Meet the outstanding…", "Meet our extraordinary…") — the
+   source shows them regular weight (not italic) at 14px / line-height 35px. The
+   DA source no longer wraps them in <em>, but normalize any residual italic. */
+main .section.cards-profile-container .default-content-wrapper p {
+  font-size: 14px;
+  line-height: 35px;
+  font-style: normal;
+}
+
+main .section.cards-profile-container .default-content-wrapper p em {
+  font-style: normal;
+}
+
 @media (width >= 600px) {
   main .section.cards-profile-container {
     grid-template-columns: repeat(2, 1fr);
