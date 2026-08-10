@@ -213,7 +213,9 @@ main .breadcrumbs-container .default-content-wrapper blockquote p {
    uppercase with ~23px below; each related link is a dark uppercase title over
    a muted grey date, with a 5px #ebebeb left rule + 16px indent. */
 main .breadcrumbs-container .article-aside h5 {
-  margin: 0 0 23px;
+  /* source drops "SHARE THIS STORY" 23.38px from the sidebar top (heading
+     margin-top) so it aligns with the title row; ~23px below to the list */
+  margin: 23.38px 0 23px;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-xs); /* 14px */
   font-weight: 600;

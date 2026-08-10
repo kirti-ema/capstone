@@ -2,7 +2,8 @@
    small bold uppercase label with ~21.3px breathing room. */
 
 .article-title-heading {
-  margin: 0;
+  /* source drops the title 27px below the breadcrumb (H1 margin-top: 27px) */
+  margin: 27px 0 0;
   font-size: 40px;
   line-height: 1.5;
 }
