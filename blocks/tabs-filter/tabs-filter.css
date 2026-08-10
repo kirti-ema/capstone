@@ -90,25 +90,26 @@
   margin: 0;
 }
 
-/* title: body font, uppercase, dark (not link-blue) */
+/* title: body font, normal case, blue link — matches the WKND source Adventures
+   card titles (18px Source Sans, weight 400, #0045ff, no underline). */
 .tabs-filter .tabs-filter-card-body h3 {
   margin: 8px 0 0;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m); /* 18px */
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.5;
-  text-transform: uppercase;
-  color: var(--text-color);
+  text-transform: none;
+  color: var(--link-color);
 }
 
 .tabs-filter .tabs-filter-card-body h3 a:any-link {
-  color: var(--text-color);
+  color: var(--link-color);
   text-decoration: none;
 }
 
 .tabs-filter .tabs-filter-card-body h3 a:hover {
-  color: var(--text-color);
-  text-decoration: underline;
+  color: var(--link-color);
+  text-decoration: none;
 }
 
 /* description: muted grey, uppercase, single-line ellipsis */
