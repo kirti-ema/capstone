@@ -689,6 +689,30 @@ main > .section:first-of-type {
     grid-column: 2;
     grid-row: 3 / 100;
   }
+
+  /* Adventure detail two-column layout (buildAdventureLayout groups the spec
+     sheet + "Share this Adventure" heading into .detail-rail and the tabs into
+     .detail-body). Source: ~23.15% rail + ~2.46% gap + ~74.38% tabs column, so
+     the rail is ~263px and the tabs ~845px inside the 1136px content cap. The
+     breadcrumb, full-bleed carousel hero, and H1 stay full-width section
+     children above this grid. Single column below 900px (rule doesn't apply). */
+  main .section.tabs-detail-container > .detail-layout {
+    display: grid;
+    grid-template-columns: 23.15% 74.38%;
+    column-gap: 2.46%;
+    align-items: start;
+  }
+
+  /* the grid columns manage their own spacing; reset the generic per-wrapper
+     max-width/centering on the nested wrappers so the grid controls width */
+  /* stylelint-disable-next-line no-descending-specificity */
+  main .section.tabs-detail-container > .detail-layout .detail-rail > div,
+  main .section.tabs-detail-container > .detail-layout .detail-body > div {
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 /* section metadata */

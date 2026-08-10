@@ -227,6 +227,48 @@ function buildArticleLayout(main) {
   }
 }
 
+/**
+ * Adventure detail pages (e.g. bali-surf-camp) render the spec sheet and "Share
+ * this Adventure" heading as a narrow left rail beside the Overview/Itinerary/
+ * What-to-Bring tabs — matching the source, where the content fragment sits in a
+ * ~23% column left of the ~74% tabs column. The breadcrumb, full-bleed carousel
+ * hero, and H1 stay full-width above. We group the rail wrappers (table-specs +
+ * the "Share this Adventure" heading) and the tabs-detail wrapper into a nested
+ * .detail-layout grid; the tabs block is still found by loadSection via its
+ * descendant query, so nesting is safe. Identified by the presence of a
+ * .tabs-detail block in a section.
+ * @param {Element} main The container element
+ */
+function buildAdventureLayout(main) {
+  const section = [...main.querySelectorAll('.section')]
+    .find((s) => s.querySelector(':scope > .tabs-detail-wrapper')
+      && s.querySelector(':scope > .table-specs-wrapper'));
+  if (!section || section.querySelector(':scope > .detail-layout')) return;
+
+  const children = [...section.children];
+  const specs = children.find((c) => c.classList.contains('table-specs-wrapper'));
+  const tabs = children.find((c) => c.classList.contains('tabs-detail-wrapper'));
+  if (!specs || !tabs) return;
+
+  // rail = table-specs + every default-content wrapper between it and the tabs
+  // (the "Share this Adventure" heading); body = the tabs-detail wrapper.
+  const specsIdx = children.indexOf(specs);
+  const tabsIdx = children.indexOf(tabs);
+  const railEls = children.slice(specsIdx, tabsIdx);
+
+  const layout = document.createElement('div');
+  layout.className = 'detail-layout';
+  const rail = document.createElement('div');
+  rail.className = 'detail-rail';
+  const body = document.createElement('div');
+  body.className = 'detail-body';
+  // anchor the layout where the rail content starts, then move content in
+  specs.before(layout);
+  railEls.forEach((el) => rail.append(el));
+  body.append(tabs);
+  layout.append(rail, body);
+}
+
 function buildFeaturedAutoBlock(main) {
   const section = [...main.children].find((div) => div.classList.contains('featured')
     || [...div.querySelectorAll('div.section-metadata div > div')]
@@ -488,6 +530,8 @@ export function decorateMain(main) {
   // (body + sidebar). After decorateSections/decorateBlocks so wrappers/blocks
   // exist; loadSection still finds nested blocks via its descendant query.
   buildArticleLayout(main);
+  // same idea for adventure detail pages: spec-sheet rail + tabs body column.
+  buildAdventureLayout(main);
 }
 
 /**
