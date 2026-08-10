@@ -375,7 +375,9 @@ main .breadcrumbs-container .article-download > p:last-child {
 }
 
 main .breadcrumbs-container .article-download > p:last-child a:any-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   padding: 15px 32px;
   background-color: var(--text-color);
   color: #fff;
@@ -384,6 +386,20 @@ main .breadcrumbs-container .article-download > p:last-child a:any-link {
   line-height: 1;
   text-align: left;
   text-decoration: none;
+}
+
+/* leading download icon (source uses an icon-font glyph before the label; we
+   ship the same download glyph as a self-contained inline SVG so it needs no
+   extra font) — white, ~18px, sitting left of the "Download PDF" text */
+main .breadcrumbs-container .article-download > p:last-child a:any-link::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cline x1='12' y1='15' x2='12' y2='3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 main .breadcrumbs-container .article-download > p:last-child a:hover {
