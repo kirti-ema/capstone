@@ -597,10 +597,12 @@ main > .section:first-of-type {
      two-column grid and its block-wrappers are the grid items — no wrapper
      block, no nesting. Only these pages carry an .article-title block, so scope
      on .article-title-container to leave the still-flat articles
-     (.default-content-wrapper) and adventures untouched. Hero + breadcrumbs +
-     title span both columns (full-width, top); the body sections + author-card
-     fill the left column; the related cards-teaser is the right sidebar.
-     Source: ~67.5% body + ~10% gap + ~22.9% sidebar. */
+     (.default-content-wrapper) and adventures untouched. Only the hero +
+     breadcrumbs span both columns (full-width, top); the TITLE begins the left
+     column so the sidebar aligns to the title row — matching the source, where
+     "SHARE THIS STORY" sits level with the H1, not pushed down to the body.
+     Body sections + author-card fill the left column; the related cards-teaser
+     is the right sidebar. Source: ~67.5% body + ~10% gap + ~22.9% sidebar. */
   main .section.article-title-container {
     display: grid;
     grid-template-columns: 67.5% 22.9%;
@@ -622,17 +624,19 @@ main > .section:first-of-type {
     grid-column: 1;
   }
 
-  /* full-width band above the columns */
+  /* full-width band above the columns (hero + breadcrumb only — the title
+     stays in the left column so the sidebar rises to align with it) */
   main .section.article-title-container > .article-hero-wrapper,
-  main .section.article-title-container > .breadcrumbs-wrapper,
-  main .section.article-title-container > .article-title-wrapper {
+  main .section.article-title-container > .breadcrumbs-wrapper {
     grid-column: 1 / -1;
   }
 
-  /* related articles → right sidebar, top-aligned beside the body column */
+  /* related articles → right sidebar, top-aligned with the title row (row 3:
+     after the full-width hero=1 + breadcrumb=2) so "SHARE THIS STORY" sits
+     level with the H1 like the source */
   main .section.article-title-container > .cards-teaser-wrapper {
     grid-column: 2;
-    grid-row: 4 / 100;
+    grid-row: 3 / 100;
   }
 }
 

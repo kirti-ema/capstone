@@ -28,20 +28,26 @@
   margin: 16px 0;
 }
 
-/* Pull-quote variant — large serif quote, left-aligned, not body text. */
+/* Quote variant. Source renders the article blockquote as body-font text with
+   a left/right indent (NOT a large serif pull-quote): 18px Source Sans Pro,
+   line-height 27px, weight 400, margin 18px 40px, no padding/border. */
 .article-section.quote .article-section-body blockquote {
-  margin: 0 0 18px;
-  padding: 14px;
+  margin: 18px 40px;
+  padding: 0;
   border: 0;
 }
 
 .article-section.quote .article-section-body blockquote,
 .article-section.quote .article-section-body blockquote p {
-  margin: 0;
-  font-family: var(--heading-font-family);
-  font-size: 36px;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m); /* 18px */
   font-weight: 400;
-  line-height: 54px;
+  line-height: 27px;
   color: var(--text-color);
   text-align: left;
+}
+
+/* inner paragraph carries no extra margin; the 18px 40px lives on the blockquote */
+.article-section.quote .article-section-body blockquote p {
+  margin: 0;
 }
