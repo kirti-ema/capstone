@@ -61,3 +61,54 @@ indices:
         select: head > meta[name="publish-date"]
         value: |
           attribute(el, 'content')
+
+  # Adventures (US). Same shape as the magazine index so every dynamic block
+  # reads a feed the same way (scripts/query-index.js). Feeds the homepage
+  # "Next Adventures" listing and the Adventures page's category-filtered tabs.
+  # Adds a `category` field the tabs group by. Add a matching /ca/en/adventures
+  # index with the same shape when CA is in scope.
+  adventures:
+    include:
+      - '/us/en/adventures/**'
+    exclude:
+      # the adventures landing page itself (it would otherwise appear as a card
+      # in its own listing)
+      - '/us/en/adventures'
+    target: /us/en/adventures/query-index.json
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      # og:image is an absolute URL; store just the path so it resolves in any
+      # environment (preview, live, local).
+      image:
+        select: head > meta[property="og:image"]
+        value: |
+          match(attribute(el, 'content'), 'https:\/\/[^/]+(\/.*)')
+      lastModified:
+        select: none
+        value: |
+          parseTimestamp(headers["last-modified"], "ddd, DD MMM YYYY hh:mm:ss GMT")
+      # Curated listing position (see magazine index above).
+      cardOrder:
+        select: head > meta[name="card-order"]
+        value: |
+          attribute(el, 'content')
+      # Dedicated card thumbnail, authored as a plain-text image path (see
+      # magazine index above). MUST be authored as TEXT, not an <img>.
+      cardImage:
+        select: head > meta[name="card-image"]
+        value: |
+          attribute(el, 'content')
+      # Adventure category, authored per page via a "Category" metadata field
+      # (renders as <meta name="category">). The Adventures page's tabs-filter
+      # groups adventures by this value.
+      category:
+        select: head > meta[name="category"]
+        value: |
+          attribute(el, 'content')

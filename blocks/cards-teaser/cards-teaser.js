@@ -1,4 +1,13 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import {
+  fetchIndex,
+  normalizePath,
+  cardOrderOf,
+  byTitle,
+  byCardOrder,
+  byPublishDateDesc,
+  byLastModifiedDesc,
+} from '../../scripts/query-index.js';
 
 /**
  * Tags the section-level "All Articles" / "All Trips" CTA (a paragraph whose
@@ -102,19 +111,6 @@ function buildCardFromEntry(entry) {
 }
 
 /**
- * Parses the human publish-date string the index stores ("Thursday, 9 Jul
- * 2020") to a sortable timestamp. Returns 0 when absent/unparseable so undated
- * entries sort last under a newest-first sort.
- * @param {string} s
- * @returns {number}
- */
-function parsePublishDate(s) {
-  if (!s) return 0;
-  const t = Date.parse(s.replace(/^[A-Za-z]+,\s*/, '')); // drop leading weekday
-  return Number.isNaN(t) ? 0 : t;
-}
-
-/**
  * Builds one "SHARE THIS STORY" related-articles item: a link containing a dark
  * uppercase title over a muted grey date — the source's dated sidebar entry.
  * Reuses the .article-related-title / .article-related-date classes (and the
@@ -154,19 +150,6 @@ function buildRelatedItem(entry) {
  * @param {Element} section The block's section (for CTA tagging after removal)
  */
 async function decorateDynamic(block, rawHref, section) {
-  // Normalize the authored URL to a same-origin path. The query-index .json
-  // is not served with CORS headers, so a cross-origin fetch (e.g. a page on
-  // *.aem.live or localhost fetching from *.aem.page) is blocked. Authors may
-  // paste a full https URL; reduce it to its pathname (+query) so the fetch is
-  // always same-origin and resolves on preview, live, and local alike.
-  let jsonUrl = rawHref;
-  try {
-    const u = new URL(rawHref, window.location.href);
-    jsonUrl = `${u.pathname}${u.search}`;
-  } catch (e) {
-    // keep rawHref if it isn't a parseable URL
-  }
-
   // optional limit: the first cell whose text is a plain integer
   const limitText = [...block.querySelectorAll('div')]
     .map((d) => d.textContent.trim())
@@ -178,7 +161,7 @@ async function decorateDynamic(block, rawHref, section) {
   // results. Both the index path and location.pathname are same-origin paths, so
   // a direct compare works (query-index paths carry no .html/trailing slash).
   const excludeSelf = /\bexclude-self\b/i.test(block.textContent);
-  const currentPath = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
+  const currentPath = normalizePath(window.location.pathname);
 
   // reserve the list up front (empty <ul> has no height, so no layout flash;
   // the raw authored config never shows because the section stays hidden until
@@ -187,22 +170,14 @@ async function decorateDynamic(block, rawHref, section) {
   block.replaceChildren(ul);
 
   try {
-    // The query index is served with a long max-age (client cache ~2h), so a
-    // plain fetch would keep showing a stale listing and miss newly published
-    // articles until that expires. 'no-cache' forces a revalidation round-trip
-    // (a cheap 304 when unchanged, fresh data when the index changed), so a
-    // freshly published article appears on the next page load.
-    const resp = await fetch(jsonUrl, { cache: 'no-cache' });
-    if (!resp.ok) throw new Error(`query-index ${resp.status}`);
-    const json = await resp.json();
-    let all = Array.isArray(json.data) ? json.data : [];
+    // Shared fetch (same-origin normalization + 'no-cache' revalidation + per
+    // page memoization) lives in scripts/query-index.js so every dynamic block
+    // loads its feed the same way.
+    let all = await fetchIndex(rawHref);
 
     // related mode: drop the current article from its own related list.
     if (excludeSelf) {
-      all = all.filter((e) => {
-        const p = (e.path || '').replace(/\.html$/, '').replace(/\/$/, '');
-        return p !== currentPath;
-      });
+      all = all.filter((e) => normalizePath(e.path) !== currentPath);
     }
 
     // An authored numeric cardOrder selects an article into a curated listing
@@ -220,12 +195,6 @@ async function decorateDynamic(block, rawHref, section) {
     //    path). cardOrder exists only to curate the capped instance, and every
     //    article carries one for the homepage, so it must not leak into this
     //    listing's order.
-    const orderOf = (e) => {
-      const n = parseFloat(e.cardOrder);
-      return Number.isFinite(n) ? n : NaN;
-    };
-    const byTitle = (a, b) => (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' });
-
     let entries;
     if (excludeSelf) {
       // "SHARE THIS STORY" related list (magazine article sidebar): every OTHER
@@ -234,20 +203,17 @@ async function decorateDynamic(block, rawHref, section) {
       // source's per-article order is a hand-curated CF list (non-systematic and
       // inconsistent across articles), so it can't be reproduced by a rule;
       // newest-first is a stable, sensible substitute.
-      const ts = (e) => parsePublishDate(e.publishDate);
-      entries = [...all].sort((a, b) => ts(b) - ts(a));
+      entries = [...all].sort(byPublishDateDesc);
     } else if (limit > 0) {
       // curated + capped: only card-ordered articles, ascending, capped.
       entries = all
-        .filter((e) => Number.isFinite(orderOf(e)))
-        .sort((a, b) => orderOf(a) - orderOf(b))
+        .filter((e) => Number.isFinite(cardOrderOf(e)))
+        .sort(byCardOrder)
         .slice(0, limit);
       // safety net: if nothing has a cardOrder yet (before metadata is
       // authored/indexed), fall back to most-recent so it never renders empty.
       if (!entries.length) {
-        entries = [...all]
-          .sort((a, b) => Number(b.lastModified || 0) - Number(a.lastModified || 0))
-          .slice(0, limit);
+        entries = [...all].sort(byLastModifiedDesc).slice(0, limit);
       }
     } else {
       // full listing: every article, alphabetical by title (cardOrder ignored).
