@@ -36,6 +36,11 @@
   margin: 0 0 18px;
   padding: 14px;
   border: 0;
+
+  /* cap the text measure to the source's 712px block width (≈684px inside the
+     14px padding) so the pull-quote wraps at the same words-per-line as the
+     source — our body column is wider, which otherwise fits extra words/line */
+  max-width: 712px;
 }
 
 .article-section.quote .article-section-body blockquote,
