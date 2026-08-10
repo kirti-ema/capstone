@@ -68,8 +68,22 @@
     position: relative;
     box-sizing: border-box;
     max-width: 1192px;
+
+    /* match the source: the box is pulled up 180px and is 180px tall, so its
+       bottom sits flush with the image's bottom edge (text top-aligned, ~76px
+       empty space below). min-height forces the full 180px; the 18px top
+       padding keeps the heading's top margin INSIDE the box (otherwise it
+       collapses out and pushes the box ~18px below the image edge, exposing a
+       strip of photo). */
+    min-height: 180px;
     margin: -180px auto 0;
-    padding: 0 28px;
+    padding: 18px 28px 0;
     background-color: var(--background-color);
+  }
+
+  /* heading margin now lives as the box's top padding (above), so zero it here
+     to avoid doubling the top gap */
+  .hero-banner:not(.no-image) > div:last-child > div h2 {
+    margin-top: 0;
   }
 }
