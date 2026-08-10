@@ -31,9 +31,18 @@
 /* Quote variant — DEFAULT is the large serif pull-quote the WKND source uses
    for most articles (ski-touring, western-australia, guide-la-skateparks; the
    source marks these with a `cmp-text--quote` wrapper): 36px Asar serif,
-   line-height 54px, weight 400, 14px padding, margin 0 0 18px. */
+   line-height 54px, weight 400, 14px padding, margin 0 0 18px. The source wraps
+   the quote AND its attribution line in a grey (#ebebeb) box with a short
+   yellow accent underline between them; authored as two rows here (blockquote,
+   then the attribution paragraph), both inside this block. */
+.article-section.quote {
+  margin: 18px 0;
+  padding: 14px;
+  background-color: #ebebeb;
+}
+
 .article-section.quote .article-section-body blockquote {
-  margin: 0 0 18px;
+  margin: 0;
   padding: 14px;
   border: 0;
 
@@ -43,6 +52,29 @@
   max-width: 712px;
 }
 
+/* short yellow accent underline between the quote and its attribution (source:
+   blockquote::after — 2px solid #ffea00, 80px wide) */
+.article-section.quote .article-section-body blockquote::after {
+  content: "";
+  display: block;
+  width: 80px;
+  margin-top: 14px;
+  border-bottom: 2px solid #ffea00;
+}
+
+/* attribution line (2nd row: "- Sofia Sjöberg" / "noun" / "Jacob Wester …") —
+   18px body text, dark, inside the grey box */
+.article-section.quote .article-section-body:not(:first-child),
+.article-section.quote .article-section-body:not(:first-child) p {
+  margin: 0;
+  padding: 0 14px;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m); /* 18px */
+  line-height: 1.5;
+  color: var(--text-color);
+}
+
+/* stylelint-disable no-descending-specificity */
 .article-section.quote .article-section-body blockquote,
 .article-section.quote .article-section-body blockquote p {
   margin: 0;
@@ -53,13 +85,26 @@
   color: var(--text-color);
   text-align: left;
 }
+/* stylelint-enable no-descending-specificity */
 
 /* "small" modifier — the inline citation-style quote a few articles use
    (e.g. arctic-surfing, whose source has NO cmp-text--quote wrapper): 18px
-   body font, line-height 27px, 40px left/right indent, no padding. */
+   body font, line-height 27px, 40px left/right indent, no padding, and NO grey
+   box / yellow accent (reset the default quote's box). */
+.article-section.quote.small {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+.article-section.quote.small .article-section-body blockquote::after {
+  content: none;
+}
+
 .article-section.quote.small .article-section-body blockquote {
   margin: 18px 40px;
   padding: 0;
+  max-width: none;
 }
 
 .article-section.quote.small .article-section-body blockquote,
