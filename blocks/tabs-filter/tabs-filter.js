@@ -1,5 +1,19 @@
 import { toClassName, createOptimizedPicture } from '../../scripts/aem.js';
-import { fetchIndex, byTitle } from '../../scripts/query-index.js';
+import { fetchIndex, byTitle, byGroupSizeThenTitle } from '../../scripts/query-index.js';
+
+/**
+ * Picks the card-ordering comparator for a tab, matching the source Adventures
+ * page: the "All" and "Travel" tabs list alphabetically by title, while the
+ * activity tabs (Climbing, Cycling, Skiing, Surfing) order ascending by group
+ * size (tiebreak title). Any tab not named here falls back to title order.
+ * @param {string} tab the tab label
+ * @returns {(a: Object, b: Object) => number} comparator
+ */
+function sortForTab(tab) {
+  const t = (tab || '').trim().toLowerCase();
+  const bySize = new Set(['climbing', 'cycling', 'skiing', 'surfing']);
+  return bySize.has(t) ? byGroupSizeThenTitle : byTitle;
+}
 
 /**
  * Converts the inner "Cards Teaser" table of a tab panel into a
@@ -126,9 +140,10 @@ function buildTabRow(tabName, entries) {
  * tab-order cell (comma-separated tab labels; "All" first). Fetch the index and
  * replace the block's children with authored-shape tab rows — an "All" tab
  * (every entry) plus one tab per category — so the static decoration below
- * renders them identically. Cards within each tab are sorted alphabetically by
- * title (matching the source listing). If no tab order is authored, tabs are
- * derived from the categories present, sorted alphabetically, with "All" first.
+ * renders them identically. Cards within each tab are sorted per sortForTab()
+ * (title for All/Travel, group size for the activity tabs), matching the
+ * source listing. If no tab order is authored, tabs are derived from the
+ * categories present, sorted alphabetically, with "All" first.
  * @param {Element} block the tabs-filter block
  * @param {string} rawHref the authored index URL
  * @returns {Promise<boolean>} true if dynamic rows were built
@@ -165,7 +180,7 @@ async function decorateDynamic(block, rawHref) {
       const entries = (tab.toLowerCase() === 'all'
         ? [...data]
         : data.filter((e) => splitCategories(e.category).includes(tab)))
-        .sort(byTitle);
+        .sort(sortForTab(tab));
       return buildTabRow(tab, entries);
     });
     block.replaceChildren(...rows);

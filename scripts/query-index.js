@@ -104,6 +104,28 @@ export function byTitle(a, b) {
   return (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' });
 }
 
+/**
+ * The numeric `groupSize` for an entry, or +Infinity when absent/blank so
+ * entries without a group size sort last under an ascending group-size sort.
+ * @param {Object} entry
+ * @returns {number}
+ */
+export function groupSizeOf(entry) {
+  const n = parseFloat(entry.groupSize);
+  return Number.isFinite(n) ? n : Infinity;
+}
+
+/**
+ * Comparator: ascending by numeric groupSize, tiebroken alphabetically by
+ * title. The Adventures page's category tabs (Climbing/Cycling/Skiing/Surfing)
+ * order their cards this way — matching the source, whose category tabs are
+ * sorted by group size rather than title.
+ */
+export function byGroupSizeThenTitle(a, b) {
+  const d = groupSizeOf(a) - groupSizeOf(b);
+  return d !== 0 ? d : byTitle(a, b);
+}
+
 /** Comparator: ascending by authored cardOrder. */
 export function byCardOrder(a, b) {
   return cardOrderOf(a) - cardOrderOf(b);

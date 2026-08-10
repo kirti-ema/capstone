@@ -121,5 +121,15 @@ indices:
         select: head > meta[name="featured"]
         value: |
           attribute(el, 'content')
-
-# (re-sync marker: force code-bus refresh — 2)
+      # Group size, read positionally from the adventure's spec sheet — every
+      # adventure detail page renders an identical 6-row .table-specs block
+      # (Activity, Adventure Type, Trip Length, Group Size, Difficulty, Price),
+      # so Group Size is always the 4th row and its value the 2nd cell. The
+      # Adventures page's category tabs (Climbing/Cycling/Skiing/Surfing) sort
+      # ascending by this number (tiebreak title). Stored as text; the block
+      # parses it. Positional (not an authored meta) so it stays in sync with
+      # the spec sheet without extra per-page authoring.
+      groupSize:
+        select: main .table-specs > div:nth-of-type(4) > div:nth-of-type(2)
+        value: |
+          textContent(el)
