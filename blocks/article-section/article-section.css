@@ -28,26 +28,38 @@
   margin: 16px 0;
 }
 
-/* Quote variant. Source renders the article blockquote as body-font text with
-   a left/right indent (NOT a large serif pull-quote): 18px Source Sans Pro,
-   line-height 27px, weight 400, margin 18px 40px, no padding/border. */
+/* Quote variant — DEFAULT is the large serif pull-quote the WKND source uses
+   for most articles (ski-touring, western-australia, guide-la-skateparks; the
+   source marks these with a `cmp-text--quote` wrapper): 36px Asar serif,
+   line-height 54px, weight 400, 14px padding, margin 0 0 18px. */
 .article-section.quote .article-section-body blockquote {
-  margin: 18px 40px;
-  padding: 0;
+  margin: 0 0 18px;
+  padding: 14px;
   border: 0;
 }
 
 .article-section.quote .article-section-body blockquote,
 .article-section.quote .article-section-body blockquote p {
-  font-family: var(--body-font-family);
-  font-size: var(--body-font-size-m); /* 18px */
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-size: 36px;
   font-weight: 400;
-  line-height: 27px;
+  line-height: 54px;
   color: var(--text-color);
   text-align: left;
 }
 
-/* inner paragraph carries no extra margin; the 18px 40px lives on the blockquote */
-.article-section.quote .article-section-body blockquote p {
-  margin: 0;
+/* "small" modifier — the inline citation-style quote a few articles use
+   (e.g. arctic-surfing, whose source has NO cmp-text--quote wrapper): 18px
+   body font, line-height 27px, 40px left/right indent, no padding. */
+.article-section.quote.small .article-section-body blockquote {
+  margin: 18px 40px;
+  padding: 0;
+}
+
+.article-section.quote.small .article-section-body blockquote,
+.article-section.quote.small .article-section-body blockquote p {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m); /* 18px */
+  line-height: 27px;
 }
