@@ -1,0 +1,10 @@
+/* Article "Download PDF" sidebar widget. The visual treatment (14px/600 title,
+   16px uppercase "Get the Full Story", values-only file metadata, dark download
+   button) lives in styles.css scoped to
+   `main .breadcrumbs-container .article-download`, shared with the flat-article
+   auto-block rendering so both paths look identical. This file only needs to
+   exist for EDS to load the block; the container defaults are set here. */
+
+.article-download {
+  margin: 24px 0 50px;
+}
