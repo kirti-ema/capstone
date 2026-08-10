@@ -304,6 +304,14 @@ main .breadcrumbs-container .article-download {
   margin: 24px 0 50px;
 }
 
+/* When the widget is relocated into the "SHARE THIS STORY" sidebar block
+   (cards-teaser.js moves it between the heading and the related list, matching
+   the source), space it like the source: ~59px below the heading and 50px
+   above the related list. Overrides the default block margin above. */
+main .breadcrumbs-container .cards-teaser.article-aside .article-download {
+  margin: 59px 0 50px;
+}
+
 /* stylelint-disable-next-line no-descending-specificity */
 main .breadcrumbs-container .article-download h3 {
   margin: 7px 0 0;

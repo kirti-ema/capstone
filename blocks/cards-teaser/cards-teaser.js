@@ -268,6 +268,23 @@ async function decorateDynamic(block, rawHref, section) {
       heading.textContent = 'SHARE THIS STORY';
       entries.forEach((entry) => ul.append(buildRelatedItem(entry)));
       block.replaceChildren(heading, ul);
+
+      // If the article also carries a "Download PDF" widget, the source renders
+      // it in this sidebar — between the "SHARE THIS STORY" heading and the
+      // related list — not in the body column. Our block-per-section layout
+      // authors it as a separate .article-download block (a left-column grid
+      // item); relocate it into this sidebar block, in that same order, so the
+      // column and stacking match the source. The download block already
+      // decorated (blocks load in DOM order, and it precedes this one), and
+      // drop its now-empty section wrapper so it leaves no empty grid cell.
+      if (section) {
+        const download = section.querySelector('.article-download');
+        if (download && !block.contains(download)) {
+          const dlWrapper = download.closest('.article-download-wrapper');
+          ul.before(download);
+          if (dlWrapper && !dlWrapper.childElementCount) dlWrapper.remove();
+        }
+      }
     } else {
       entries.forEach((entry) => ul.append(buildCardFromEntry(entry)));
     }
