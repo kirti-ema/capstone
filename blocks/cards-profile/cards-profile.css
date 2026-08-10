@@ -9,7 +9,7 @@ main .section.cards-profile-container {
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px 24px;
-  max-width: 1200px;
+  max-width: 1136px;
   margin: 40px auto;
   padding: 0 24px;
 }
@@ -32,8 +32,13 @@ main .section.cards-profile-container > .default-content-wrapper {
 }
 
 @media (width >= 900px) {
+  /* Source lays the 4 cards out as fixed 235px columns spread across the
+     1136px content region (not stretched 1fr), so the portraits sit in a
+     tighter group with wider gaps between them — matching wknd.site. */
   main .section.cards-profile-container {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 235px);
+    justify-content: space-between;
+    gap: 32px 0;
     padding: 0 32px;
   }
 }
@@ -84,7 +89,7 @@ main .section.cards-profile-container > .default-content-wrapper {
 
 /* Role / subtitle */
 .cards-profile .cards-profile-card-body h5 {
-  margin: 0 0 4px;
+  margin: 0 0 3.5px;
   font-family: var(--body-font-family);
   font-size: 14px;
   font-weight: 600;
