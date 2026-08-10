@@ -40,6 +40,22 @@ function decorateCards(panel) {
     );
   });
 
+  // Wrap each card image in an anchor to the same destination as its title, so
+  // the image is clickable with a pointer cursor like the title (matching the
+  // cards-teaser "All Articles" cards). aria-hidden + tabindex=-1 keeps it
+  // mouse-clickable without adding a duplicate keyboard/screen-reader stop.
+  ul.querySelectorAll('li').forEach((li) => {
+    const titleLink = li.querySelector('.tabs-filter-card-body a[href]');
+    const picture = li.querySelector('.tabs-filter-card-image picture');
+    if (!titleLink || !picture || picture.closest('a')) return;
+    const imgLink = document.createElement('a');
+    imgLink.href = titleLink.getAttribute('href');
+    imgLink.setAttribute('aria-hidden', 'true');
+    imgLink.setAttribute('tabindex', '-1');
+    picture.replaceWith(imgLink);
+    imgLink.append(picture);
+  });
+
   table.closest('.image-list, div')?.remove?.();
   panel.replaceChildren(ul);
 }
