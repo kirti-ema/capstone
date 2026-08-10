@@ -130,6 +130,13 @@ async function decorateDynamic(block, rawHref, section) {
     .find((t) => /^\d+$/.test(t));
   const limit = limitText ? parseInt(limitText, 10) : 0;
 
+  // "related" instances (e.g. a magazine article's related-articles list) author
+  // an "exclude-self" keyword so the listing drops the current page from its own
+  // results. Both the index path and location.pathname are same-origin paths, so
+  // a direct compare works (query-index paths carry no .html/trailing slash).
+  const excludeSelf = /\bexclude-self\b/i.test(block.textContent);
+  const currentPath = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
+
   // reserve the list up front (empty <ul> has no height, so no layout flash;
   // the raw authored config never shows because the section stays hidden until
   // its blocks finish loading).
@@ -145,7 +152,15 @@ async function decorateDynamic(block, rawHref, section) {
     const resp = await fetch(jsonUrl, { cache: 'no-cache' });
     if (!resp.ok) throw new Error(`query-index ${resp.status}`);
     const json = await resp.json();
-    const all = Array.isArray(json.data) ? json.data : [];
+    let all = Array.isArray(json.data) ? json.data : [];
+
+    // related mode: drop the current article from its own related list.
+    if (excludeSelf) {
+      all = all.filter((e) => {
+        const p = (e.path || '').replace(/\.html$/, '').replace(/\/$/, '');
+        return p !== currentPath;
+      });
+    }
 
     // An authored numeric cardOrder selects an article into a curated listing
     // and sets its position (ascending). Two instance behaviours, keyed on

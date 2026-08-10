@@ -1,0 +1,10 @@
+/* Article hero — full-width lead image at the top of a magazine article.
+   Fills the content column; the source lead image spans the whole width with a
+   1.6 aspect ratio (no max-width cap). */
+
+.article-hero picture,
+.article-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

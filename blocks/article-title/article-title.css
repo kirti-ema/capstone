@@ -1,0 +1,19 @@
+/* Article title + byline. Source: H1 at 40px (not the site 54px xxl), byline a
+   small bold uppercase label with ~21.3px breathing room. */
+
+.article-title-heading {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.5;
+}
+
+.article-title-byline {
+  margin: 21.3px 0;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s); /* 16px */
+  font-weight: 600;
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--text-color);
+}
