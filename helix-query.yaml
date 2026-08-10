@@ -52,3 +52,12 @@ indices:
         select: head > meta[name="card-image"]
         value: |
           attribute(el, 'content')
+      # Editorial publish date, authored per article via a "Publish Date"
+      # metadata field (renders as <meta name="publish-date">), stored as the
+      # human string the source shows (e.g. "Thursday, 9 Jul 2020"). The
+      # "SHARE THIS STORY" related-articles list renders it as the date line
+      # under each title, matching the source's dated sidebar.
+      publishDate:
+        select: head > meta[name="publish-date"]
+        value: |
+          attribute(el, 'content')

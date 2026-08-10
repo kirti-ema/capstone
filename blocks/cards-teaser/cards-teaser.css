@@ -21,6 +21,16 @@
   background-color: initial;
 }
 
+/* "SHARE THIS STORY" related mode: the block also carries .article-aside and
+   renders a dated TEXT list (not the image-card grid). Reset the card-grid ul
+   to a plain block list so the shared .article-aside li spacing (18px) governs,
+   not the 32px grid row-gap. Item/title/date styling comes from the article
+   sidebar rules in styles.css. */
+.cards-teaser.article-aside > ul {
+  display: block;
+  gap: 0;
+}
+
 .cards-teaser .cards-teaser-card-image {
   line-height: 0;
 }

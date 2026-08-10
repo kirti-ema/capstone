@@ -102,6 +102,49 @@ function buildCardFromEntry(entry) {
 }
 
 /**
+ * Parses the human publish-date string the index stores ("Thursday, 9 Jul
+ * 2020") to a sortable timestamp. Returns 0 when absent/unparseable so undated
+ * entries sort last under a newest-first sort.
+ * @param {string} s
+ * @returns {number}
+ */
+function parsePublishDate(s) {
+  if (!s) return 0;
+  const t = Date.parse(s.replace(/^[A-Za-z]+,\s*/, '')); // drop leading weekday
+  return Number.isNaN(t) ? 0 : t;
+}
+
+/**
+ * Builds one "SHARE THIS STORY" related-articles item: a link containing a dark
+ * uppercase title over a muted grey date — the source's dated sidebar entry.
+ * Reuses the .article-related-title / .article-related-date classes (and the
+ * .article-aside item styling) that the flat magazine articles already use, so
+ * the visual treatment (5px left rule, 120px item, yellow hover) is shared.
+ * @param {Object} entry A query-index row: { path, title, publishDate }
+ * @returns {HTMLLIElement}
+ */
+function buildRelatedItem(entry) {
+  const li = document.createElement('li');
+  const a = document.createElement('a');
+  a.href = entry.path;
+
+  const title = document.createElement('span');
+  title.className = 'article-related-title';
+  title.textContent = entry.title || '';
+  a.append(title);
+
+  if (entry.publishDate) {
+    const date = document.createElement('span');
+    date.className = 'article-related-date';
+    date.textContent = entry.publishDate;
+    a.append(date);
+  }
+
+  li.append(a);
+  return li;
+}
+
+/**
  * Dynamic mode: the block holds a query-index .json URL plus an optional
  * numeric max-card limit. Fetch the index, sort most-recent first, and render
  * one card per entry. On empty/error the block is removed so no broken layout
@@ -184,7 +227,16 @@ async function decorateDynamic(block, rawHref, section) {
     const byTitle = (a, b) => (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' });
 
     let entries;
-    if (limit > 0) {
+    if (excludeSelf) {
+      // "SHARE THIS STORY" related list (magazine article sidebar): every OTHER
+      // article, newest first by publish date. Rendered as the source's dated
+      // TEXT list (title over date, no image), not image cards. Note: the
+      // source's per-article order is a hand-curated CF list (non-systematic and
+      // inconsistent across articles), so it can't be reproduced by a rule;
+      // newest-first is a stable, sensible substitute.
+      const ts = (e) => parsePublishDate(e.publishDate);
+      entries = [...all].sort((a, b) => ts(b) - ts(a));
+    } else if (limit > 0) {
       // curated + capped: only card-ordered articles, ascending, capped.
       entries = all
         .filter((e) => Number.isFinite(orderOf(e)))
@@ -208,7 +260,17 @@ async function decorateDynamic(block, rawHref, section) {
       return;
     }
 
-    entries.forEach((entry) => ul.append(buildCardFromEntry(entry)));
+    if (excludeSelf) {
+      // dated text list — reuse the flat article's .article-aside sidebar CSS
+      // (heading, 5px left rule, 120px items, yellow hover) for a 1:1 match.
+      block.classList.add('article-aside');
+      const heading = document.createElement('h5');
+      heading.textContent = 'SHARE THIS STORY';
+      entries.forEach((entry) => ul.append(buildRelatedItem(entry)));
+      block.replaceChildren(heading, ul);
+    } else {
+      entries.forEach((entry) => ul.append(buildCardFromEntry(entry)));
+    }
   } catch (e) {
     // network/parse failure — leave no broken/empty block behind
     // eslint-disable-next-line no-console
