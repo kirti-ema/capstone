@@ -1,4 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { fetchIndex } from '../../scripts/query-index.js';
 
 // Inline social glyphs (24x24, fill=currentColor so CSS controls color).
 const SOCIAL_ICONS = {
@@ -16,10 +17,109 @@ function detectPlatform(text = '', href = '') {
 }
 
 /**
+ * Builds one authored profile row — an image cell (picture) followed by a body
+ * cell (name h3, role h5, and Facebook/Twitter/Instagram social links) — exactly
+ * matching the inline-authored shape the static decoration below consumes, so a
+ * dynamically rendered person renders identically to a hand-authored one.
+ * @param {Object} person a data row { name, role, image }
+ * @returns {HTMLElement} the row div
+ */
+function buildProfileRow(person) {
+  const row = document.createElement('div');
+
+  const imageCell = document.createElement('div');
+  if (person.image) {
+    const img = document.createElement('img');
+    img.src = person.image;
+    img.alt = '';
+    img.loading = 'lazy';
+    const picture = document.createElement('picture');
+    picture.append(img);
+    imageCell.append(picture);
+  }
+
+  const bodyCell = document.createElement('div');
+  const h3 = document.createElement('h3');
+  h3.textContent = person.name || '';
+  bodyCell.append(h3);
+  if (person.role) {
+    const h5 = document.createElement('h5');
+    h5.textContent = person.role;
+    bodyCell.append(h5);
+  }
+  // the static path expects each social link in its own <p> (detectPlatform
+  // reads the link text); emit the same shape so decoration is identical.
+  ['Facebook', 'Twitter', 'Instagram'].forEach((label) => {
+    const p = document.createElement('p');
+    const a = document.createElement('a');
+    a.href = '/';
+    a.textContent = label;
+    p.append(a);
+    bodyCell.append(p);
+  });
+
+  row.append(imageCell, bodyCell);
+  return row;
+}
+
+/**
+ * Dynamic mode: the block holds a sheet .json URL plus a "type" cell (Contributor
+ * or Guide). Fetch the sheet, keep only rows of that type, sort by the authored
+ * `order`, and replace the block's children with authored-shape profile rows so
+ * the static decoration below renders them identically. On failure the block is
+ * removed so no broken markup is left behind.
+ * @param {Element} block the cards-profile block
+ * @param {string} rawHref the authored sheet URL
+ * @param {string} type the group to render ("Contributor" | "Guide")
+ * @returns {Promise<boolean>} true if dynamic rows were built
+ */
+async function decorateDynamic(block, rawHref, type) {
+  try {
+    const data = await fetchIndex(rawHref);
+    const wanted = type.trim().toLowerCase();
+    const people = data
+      .filter((p) => (p.type || '').trim().toLowerCase() === wanted)
+      .sort((a, b) => (parseFloat(a.order) || 0) - (parseFloat(b.order) || 0));
+    if (!people.length) { block.remove(); return false; }
+    block.replaceChildren(...people.map(buildProfileRow));
+    // In dynamic mode ONE block holds all cards of a group, so the block's own
+    // <ul> becomes the responsive grid (see CSS). Tag the section so it lays out
+    // its wrappers in flow (single column) instead of the static per-wrapper
+    // grid; both classes are scoped so the static About page is unaffected.
+    block.classList.add('cards-profile-grid');
+    block.closest('.section')?.classList.add('cards-profile-dynamic');
+    return true;
+  } catch (e) {
+    // network/parse failure — leave no broken block behind
+    // eslint-disable-next-line no-console
+    console.warn('cards-profile: failed to load dynamic listing', e);
+    block.remove();
+    return false;
+  }
+}
+
+/**
  * loads and decorates the block
  * @param {Element} block The block element
  */
-export default function decorate(block) {
+export default async function decorate(block) {
+  // Dynamic mode is opt-in: a sheet .json URL plus a "type" cell (Contributor
+  // or Guide) inside the authored block. Inline-authored profiles (image + body
+  // rows, no .json) are untouched, so existing instances render identically. On
+  // failure the block is removed, so skip the static decoration below.
+  const jsonLink = block.querySelector('a[href*=".json"]');
+  const jsonText = jsonLink ? null
+    : (block.textContent.match(/https?:\/\/\S+\.json|\/\S+\.json/) || [])[0];
+  if (jsonLink || jsonText) {
+    const url = jsonLink ? jsonLink.getAttribute('href') : jsonText;
+    // the type is the other authored cell (not the json URL): its trimmed text
+    const type = [...block.querySelectorAll('div')]
+      .map((d) => d.textContent.trim())
+      .find((t) => t && !/\.json/i.test(t) && !/^https?:/i.test(t)) || 'Contributor';
+    const built = await decorateDynamic(block, url, type);
+    if (!built) return;
+  }
+
   /* change to ul, li */
   const ul = document.createElement('ul');
   [...block.children].forEach((row) => {

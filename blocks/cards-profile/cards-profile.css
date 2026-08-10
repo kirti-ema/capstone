@@ -79,6 +79,47 @@ main .section.cards-profile-container .default-content-wrapper p em {
   }
 }
 
+/* --- Dynamic mode (spreadsheet-driven): one block per group holds all its
+   cards, so the block's own <ul> is the grid rather than the section. The
+   section reverts to simple single-column flow (headings + intro + the two
+   dynamic blocks stacked). Scoped to .cards-profile-dynamic so the static
+   About page (per-person blocks) is unaffected. --- */
+main .section.cards-profile-dynamic {
+  display: block;
+}
+
+main .section.cards-profile-dynamic > div {
+  max-width: 1136px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.cards-profile-grid > ul {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px 24px;
+}
+
+@media (width >= 600px) {
+  .cards-profile-grid > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  main .section.cards-profile-dynamic > div {
+    padding: 0 32px;
+  }
+
+  /* fixed 235px columns spread across the content region — same as the static
+     grid, matching the source */
+  .cards-profile-grid > ul {
+    grid-template-columns: repeat(4, 235px);
+    justify-content: space-between;
+    gap: 32px 0;
+  }
+}
+
 /* --- Individual card --- */
 .cards-profile > ul {
   list-style: none;
