@@ -92,7 +92,6 @@ export default async function decorate(block) {
   carouselId += 1;
   block.setAttribute('id', `carousel-gallery-${carouselId}`);
   const rows = block.querySelectorAll(':scope > div');
-  const isSingleSlide = rows.length < 2;
 
   block.setAttribute('role', 'region');
   block.setAttribute('aria-roledescription', 'Carousel');
@@ -104,43 +103,38 @@ export default async function decorate(block) {
   slidesWrapper.classList.add('carousel-gallery-slides');
   block.prepend(slidesWrapper);
 
-  let slideIndicators;
-  if (!isSingleSlide) {
-    const slideIndicatorsNav = document.createElement('nav');
-    slideIndicatorsNav.setAttribute('aria-label', 'Carousel Slide Controls');
-    slideIndicators = document.createElement('ol');
-    slideIndicators.classList.add('carousel-gallery-slide-indicators');
-    slideIndicatorsNav.append(slideIndicators);
-    block.append(slideIndicatorsNav);
+  // The WKND source shows the dot indicator(s) and the prev/next arrows even
+  // for a single-slide gallery (e.g. the adventure hero), so build them
+  // unconditionally. With one slide, prev/next simply resolve back to it.
+  const slideIndicatorsNav = document.createElement('nav');
+  slideIndicatorsNav.setAttribute('aria-label', 'Carousel Slide Controls');
+  const slideIndicators = document.createElement('ol');
+  slideIndicators.classList.add('carousel-gallery-slide-indicators');
+  slideIndicatorsNav.append(slideIndicators);
+  block.append(slideIndicatorsNav);
 
-    const slideNavButtons = document.createElement('div');
-    slideNavButtons.classList.add('carousel-gallery-navigation-buttons');
-    slideNavButtons.innerHTML = `
-      <button type="button" class= "slide-prev" aria-label="Previous Slide"></button>
-      <button type="button" class="slide-next" aria-label="Next Slide"></button>
-    `;
-
-    container.append(slideNavButtons);
-  }
+  const slideNavButtons = document.createElement('div');
+  slideNavButtons.classList.add('carousel-gallery-navigation-buttons');
+  slideNavButtons.innerHTML = `
+    <button type="button" class= "slide-prev" aria-label="Previous Slide"></button>
+    <button type="button" class="slide-next" aria-label="Next Slide"></button>
+  `;
+  container.append(slideNavButtons);
 
   rows.forEach((row, idx) => {
     const slide = createSlide(row, idx, carouselId);
     slidesWrapper.append(slide);
 
-    if (slideIndicators) {
-      const indicator = document.createElement('li');
-      indicator.classList.add('carousel-gallery-slide-indicator');
-      indicator.dataset.targetSlide = idx;
-      indicator.innerHTML = `<button type="button" aria-label="Show Slide ${idx + 1} of ${rows.length}"></button>`;
-      slideIndicators.append(indicator);
-    }
+    const indicator = document.createElement('li');
+    indicator.classList.add('carousel-gallery-slide-indicator');
+    indicator.dataset.targetSlide = idx;
+    indicator.innerHTML = `<button type="button" aria-label="Show Slide ${idx + 1} of ${rows.length}"></button>`;
+    slideIndicators.append(indicator);
     row.remove();
   });
 
   container.append(slidesWrapper);
   block.prepend(container);
 
-  if (!isSingleSlide) {
-    bindEvents(block);
-  }
+  bindEvents(block);
 }
