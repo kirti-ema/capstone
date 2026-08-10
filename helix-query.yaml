@@ -112,3 +112,12 @@ indices:
         select: head > meta[name="category"]
         value: |
           attribute(el, 'content')
+      # Marks the single adventure shown in the homepage "Next Adventures"
+      # featured banner, authored per page via a "Featured" metadata field
+      # (renders as <meta name="featured">). Set to "true" on exactly one
+      # adventure; the dynamic hero-banner selects it (lowest cardOrder wins if
+      # more than one is marked).
+      featured:
+        select: head > meta[name="featured"]
+        value: |
+          attribute(el, 'content')
