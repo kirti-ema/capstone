@@ -592,6 +592,48 @@ main > .section:first-of-type {
     min-width: 0;
     padding: 0;
   }
+
+  /* Re-authored magazine article (block-per-section): the SECTION itself is the
+     two-column grid and its block-wrappers are the grid items — no wrapper
+     block, no nesting. Only these pages carry an .article-title block, so scope
+     on .article-title-container to leave the still-flat articles
+     (.default-content-wrapper) and adventures untouched. Hero + breadcrumbs +
+     title span both columns (full-width, top); the body sections + author-card
+     fill the left column; the related cards-teaser is the right sidebar.
+     Source: ~67.5% body + ~10% gap + ~22.9% sidebar. */
+  main .section.article-title-container {
+    display: grid;
+    grid-template-columns: 67.5% 22.9%;
+    column-gap: 9.6%;
+    align-items: start;
+    max-width: 1136px;
+    margin: 40px auto;
+    padding: 0 32px;
+  }
+
+  /* the grid items (block wrappers) default to the left body column; drop the
+     generic per-wrapper max-width/centering so the grid controls width */
+  /* stylelint-disable-next-line no-descending-specificity */
+  main .section.article-title-container > div {
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    grid-column: 1;
+  }
+
+  /* full-width band above the columns */
+  main .section.article-title-container > .article-hero-wrapper,
+  main .section.article-title-container > .breadcrumbs-wrapper,
+  main .section.article-title-container > .article-title-wrapper {
+    grid-column: 1 / -1;
+  }
+
+  /* related articles → right sidebar, top-aligned beside the body column */
+  main .section.article-title-container > .cards-teaser-wrapper {
+    grid-column: 2;
+    grid-row: 4 / 100;
+  }
 }
 
 /* section metadata */
