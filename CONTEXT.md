@@ -2,7 +2,7 @@
 
 > Warmup context for a new EMA conversation. Read this **and** `INSTRUCTIONS.md`
 > before modifying anything. Pairs with `AGENTS.md` (Adobe EDS boilerplate rules).
-> Last updated: 2026-08-11.
+> Last updated: 2026-08-11 (magazine articles re-authored to block-per-section).
 
 ## What this project is
 
@@ -48,8 +48,12 @@ Standard EDS 3-phase load (eager → lazy → delayed). Custom auto-blocking in
    author photo `<p><picture>` before the author `<h2>` is missing).
 5. `buildWidgetAutoBlocks`.
 
-`buildArticleLayout` / `buildAdventureLayout` decorate flat detail pages into
-2-column layouts (body + SHARE sidebar / spec-rail + tabs).
+`buildArticleLayout` / `buildAdventureLayout` decorate **flat** detail pages into
+2-column layouts (body + SHARE sidebar / spec-rail + tabs). `buildArticleLayout`
+now **bails on block-authored pages** (guard: `:scope > .article-title-wrapper`)
+so it never nests a 2nd grid inside the block-per-section CSS grid. The 5 magazine
+articles are block-authored (so this builder no longer fires on them); it stays
+for any future still-flat article.
 
 ### Shared index utility (`scripts/query-index.js`)
 All dynamic blocks read a query-index feed the same way. Exports: `fetchIndex`,
@@ -57,12 +61,20 @@ All dynamic blocks read a query-index feed the same way. Exports: `fetchIndex`,
 `groupSizeOf`, and comparators `byTitle`, `byCardOrder`, `byGroupSizeThenTitle`,
 `byPublishDateDesc`, `byLastModifiedDesc`.
 
-### Blocks (23; each has `.js` + `.css`)
+### Blocks (24; each has `.js` + `.css`)
 `accordion-faq`, `article-download`, `article-hero`, `article-section`,
 `article-title`, `author-card`, `breadcrumbs`, `cards-profile`, `cards-teaser`,
 `carousel-gallery`, `carousel-hero`, `columns`, `featured-teaser`, `footer`,
-`fragment`, `header`, `hero`, `hero-banner`, `members-only`, `table-specs`,
-`tabs-detail`, `tabs-filter`, `widget`.
+`fragment`, `header`, `hero`, `hero-banner`, `members-only`, `share-story`,
+`table-specs`, `tabs-detail`, `tabs-filter`, `widget`.
+
+**Magazine article blocks** (block-per-section detail pages): `article-hero`
+(LCP lead image), `article-title` (H1 + byline paragraph — kills the source's
+duplicate CF title), `article-section` (repeatable body sections; `quote` variant
+= grey box, `quote small` variant = plain inset), `author-card` (photo/name-H2/
+role/socials), `share-story` (static "SHARE THIS STORY" sidebar; relocates any
+`article-download` widget into itself). The 2-col layout is the section's own CSS
+grid, keyed on `.article-title-container` (see below), NOT `buildArticleLayout`.
 
 Dynamic (index/sheet-driven) blocks: **`cards-teaser`** (magazine/adventure
 listings), **`tabs-filter`** (Adventures category tabs), **`cards-profile`**
@@ -115,19 +127,28 @@ hand-authored (see INSTRUCTIONS "content editing exception").
 - Adventures: dynamic `tabs-filter` (category tabs; per-tab sort — title for
   All/Travel, groupSize for activity tabs), dynamic featured hero-banner.
 - About Us: 2 dynamic `cards-profile` blocks fed by `contributors.json` DA sheet.
-- 5 magazine articles: 2-column layout + author-card + static dated SHARE sidebar.
-- **Content recovery + sync-hardening (this session):** all 5 magazine articles'
-  local files brought to byte-parity with their corrected DA sources (heroes/images
-  fixed); guide-la-skateparks PDF links fixed (`-pdf`→`.pdf`); Adventures metadata
-  converted to a proper metadata **block**; Adventures hero-banner image fixed
-  (absolute content.da.live `<source>` → relative `/media-da/` form).
+- **5 magazine articles re-authored to block-per-section & LIVE** (PR #2, merge
+  `41b0901` on `main`): each is `article-hero` → `breadcrumbs` → `article-title`
+  → `article-section`(s) → `author-card` → `share-story`, in ONE section that is
+  the 2-col CSS grid (`.article-title-container`). Quote variants: grey box
+  (`quote`) on ski-touring/western-australia/guide-la; plain inset (`quote small`)
+  on arctic-surfing; none on san-diego-surf. guide-la carries an `article-download`
+  widget relocated into the sidebar (PDF link `-pdf`→`.pdf` fixed, 2 anchors).
+- **All article images re-uploaded fresh to DA** (self-hosted `content.da.live`,
+  rendering + optimized). The 4 non-arctic articles had been fully broken
+  (`about:error`, mangled hash-chain refs) before this — restructure alone does
+  NOT fix images; manual drag-drop re-upload in DA did (see INSTRUCTIONS → "DA
+  image insert").
+- Adventures metadata is a proper metadata **block**; Adventures hero-banner image
+  fixed (absolute content.da.live `<source>` → relative `/media-da/`).
 - **local ↔ DA parity verified** for all touched pages → next EMA "sync" is a no-op.
 
 **Reverted / not deployed:**
 - Dynamic SHARE-sidebar code (commit `ed6e5e8`) was **reverted** (`f58c3b5`)
   because the magazine index `publishDate` lags and produced date-less links.
-  Sidebars are intentionally static-dated. Don't redeploy until publishDate
-  reliably populates in the index.
+  The `share-story` block is intentionally **static** (authored links + dates),
+  by the same reasoning. Don't make it fetch/dynamic until publishDate reliably
+  populates in the index.
 
 ## Remaining / possible future work
 
@@ -136,6 +157,9 @@ hand-authored (see INSTRUCTIONS "content editing exception").
 - Redeploy dynamic SHARE-sidebar only after index `publishDate` populates reliably.
 - Magazine index `publishDate`/`category`/`groupSize` have platform indexer
   content-cache lag (see INSTRUCTIONS "known issues").
+- Pre-existing site-level **SEO ~69** (flagged by PSI on article pages, not caused
+  by the block re-author). `aem-psi-check` mobile run is flaky (times out → score
+  0/n-a); desktop scores ~99. Not a real regression — re-run if it blocks a PR.
 
 ## Known issues & platform gotchas
 

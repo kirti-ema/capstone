@@ -1,7 +1,8 @@
 # INSTRUCTIONS.md — Rules, Conventions & Workflows
 
 > How to work in this project. Read with `CONTEXT.md` (state/architecture) and
-> `AGENTS.md` (Adobe EDS boilerplate rules). Last updated: 2026-08-11.
+> `AGENTS.md` (Adobe EDS boilerplate rules). Last updated: 2026-08-11
+> (magazine articles block-per-section + DA image self-hosting).
 
 ## Golden rules (do / don't)
 
@@ -9,8 +10,9 @@
   Never expect it in a PR/commit.
 - **DON'T hand-edit `content/*.plain.html` as normal practice** (AGENTS.md rule:
   use the importer). **EXCEPTION (approved):** dynamic pages the importer can't
-  produce (tabs-filter, cards-profile, dynamic cards-teaser) are hand-authored.
-  When you do, flag it as the exception, and always **edit BOTH sides** (see below).
+  produce (tabs-filter, cards-profile, dynamic cards-teaser) AND the block-per-section
+  magazine articles (see that section) are hand-authored. When you do, flag it as
+  the exception, and always **edit BOTH sides** (see below).
 - **DON'T touch `scripts/aem.js`** — core library, never modify.
 - **DON'T handle pasted secrets.** Never accept/store/use a token pasted in chat
   (GitHub PAT, Adobe IMS/DA Bearer, API key). Creds are auto-injected for git /
@@ -67,6 +69,28 @@ verbatim to the local file. Currently **all touched pages are at parity**.
   - tabs-filter: `<div class="tabs-filter"><div><div>All, Climbing, Cycling, Skiing, Surfing, Travel</div></div><div><div><a href="/us/en/adventures/query-index.json">…</a></div></div></div>`
   - cards-profile: `<div class="cards-profile"><div><div>Contributor|Guide</div></div><div><div><a href="/us/en/about-us/contributors.json">…</a></div></div></div>`
 
+## Magazine article block-per-section (all 5 done; reference = arctic-surfing)
+
+Detail articles are authored as explicit blocks in ONE content section (metadata
+in a 2nd), NOT flat content. Block order = the 2-col grid via `.article-title-container`:
+`article-hero` → `breadcrumbs` → `article-title` → `article-section`(s) →
+`author-card` → `share-story`. Hero + breadcrumbs span both columns; share-story
+is the right sidebar (rises to the title row).
+
+- **article-title**: row1 title (→ single H1), row2 byline (→ paragraph, never a heading).
+  Do NOT re-add the source's duplicate CF title.
+- **article-section**: one cell per row in reading order (H2 + paras + images).
+  Multi-row = multiple stacked sub-sections. Variants: `quote` (grey `#ebebeb` box,
+  used when source has `cmp-text--quote`), `quote small` (plain inset, no box —
+  arctic only). **Check the source per article.**
+- **author-card**: 4 rows — photo / name (**H2**, required by detection) / role / socials.
+- **share-story**: row1 heading, then one row per dated related link. **Static**
+  (authored links+dates); do NOT make it fetch (see reverted dynamic sidebar).
+  It auto-relocates a sibling `article-download` block into itself (heading →
+  download → list), so a Download-PDF widget lands in the sidebar (guide-la only).
+- **PAGE-SPECIFIC** (read source each time): #sections, quote variant, download
+  widget, byline/author/filenames/alt, source typos kept verbatim (arctic "revelas").
+
 ## Image path forms (critical — causes broken images)
 
 EDS optimizes an image **only** when its `<picture><source srcset>` uses a
@@ -92,6 +116,15 @@ to an optimized `./media_<hash>.<ext>` on render.
 - When a good source is missing, archived copies live in
   `migration-work/da-edits/<slug>*.html`.
 
+**DA image insert (self-hosting):** to store an image IN DA, **drag the file from
+the OS file window** into the DA doc. **Paste-from-source-tab creates a `wknd.site`
+HOTLINK** (renders/optimizes, but depends on wknd.site). A clean DA upload yields
+`content.da.live/.../.{slug}/{name}.ext` (no hash chain) which renders + optimizes.
+The **mangled hash-chain** `content.da.live/....-hash-hash-hash.ext` form is BROKEN
+(`about:error`) — the 4 non-arctic magazine articles all had this until re-uploaded.
+Restructuring a page does NOT fix images; they must be re-uploaded. Local `curl` /
+dev server always shows `about:error` for these — verify on the **deployed preview**.
+
 ## Verification recipe (image/layout fix)
 
 1. `POST` fixed source to DA → expect HTTP 200.
@@ -116,9 +149,10 @@ to an optimized `./media_<hash>.<ext>` on render.
   stay stale for minutes→indeterminate; re-preview/reindex won't force it. Don't
   build features that assume the index is instantly fresh (why the dynamic
   SHARE-sidebar was reverted).
-- **Flat-article SHARE sidebar is static by design** (authored `<ul>` of dated
-  links, decorated by `buildArticleLayout`). It is NOT the dynamic cards-teaser
-  and is not a revert — leave it unless doing a full block-per-section re-author.
+- **SHARE sidebar is static by design.** All 5 articles now use the static
+  `share-story` block (authored `<ul>` of dated links). It is NOT the dynamic
+  cards-teaser and its static-ness is intentional (publishDate index lag) — do
+  NOT make it fetch.
 - **`buildAuthorBioBlock` bails** if the author photo `<p><picture>` before the
   author `<h2>` is missing → 2-col layout + author card disappear. A broken image
   path can trigger this. Re-POSTing raw-import local files (mangled paths) caused
