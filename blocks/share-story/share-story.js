@@ -65,4 +65,24 @@ export default function decorate(block) {
   // opt into the shared sidebar styling instead of duplicating it (same class the
   // flat article sidebar and the reverted dynamic cards-teaser both use)
   block.classList.add('article-aside');
+
+  // Some articles (e.g. LA Skateparks) carry a "Download PDF" widget that the
+  // source renders inside this sidebar — between the heading and the related
+  // list — not in the body column. In block-per-section authoring it is a
+  // separate .article-download block (which would otherwise fall into the left
+  // body column), so relocate it here in that same order, mirroring the dynamic
+  // cards-teaser sidebar. Then drop its now-empty section wrapper so it leaves
+  // no empty grid cell. (article-download decorates first — blocks load in DOM
+  // order and it precedes this block.)
+  const section = block.closest('.section');
+  const list = block.querySelector('ul');
+  if (section) {
+    const download = section.querySelector('.article-download');
+    if (download && !block.contains(download)) {
+      const dlWrapper = download.closest('.article-download-wrapper');
+      if (list) list.before(download);
+      else block.append(download);
+      if (dlWrapper && !dlWrapper.childElementCount) dlWrapper.remove();
+    }
+  }
 }
