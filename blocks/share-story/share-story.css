@@ -1,0 +1,14 @@
+/* "SHARE THIS STORY" sidebar block. The visual treatment (heading 14px/600
+   uppercase, related links as a dark uppercase title over a muted date, 5px
+   #ebebeb left rule, 120px item height, yellow hover) is SHARED via the
+   .article-aside rules in styles.css, which this block opts into at runtime
+   (block.classList.add('article-aside') in share-story.js) — so there is one
+   source of truth for the sidebar look, not a duplicate here.
+
+   Grid placement (right column of the article-title-container grid) also lives
+   with the sibling article-grid rules in styles.css, so the whole two-column
+   layout is defined in one place.
+
+   No block-local overrides are needed today; this file is kept for future
+   share-story-scoped tweaks that shouldn't leak into the shared .article-aside
+   styling. */
