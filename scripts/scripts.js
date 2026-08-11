@@ -12,7 +12,6 @@ import {
   buildBlock,
   toClassName,
 } from './aem.js';
-import { fetchIndex, normalizePath, byPublishDateDesc } from './query-index.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -135,72 +134,6 @@ function buildAuthorBioBlock(main) {
 }
 
 /**
- * Splits a related-article link's text "Title Weekday, DD Mon YYYY" into a dark
- * title span over a muted date span (the source's dated sidebar item). Shared by
- * the static decoration and the dynamic index-driven rebuild so both render
- * identically. Idempotent (skips if already split).
- * @param {HTMLAnchorElement} a the related link
- */
-const RELATED_DATE_RE = /\s+((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,\s+\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})$/;
-function splitRelatedLink(a) {
-  if (a.querySelector('.article-related-title')) return;
-  const text = a.textContent.trim();
-  const m = text.match(RELATED_DATE_RE);
-  const title = m ? text.slice(0, m.index).trim() : text;
-  const date = m ? m[1] : '';
-  a.textContent = '';
-  const titleSpan = document.createElement('span');
-  titleSpan.className = 'article-related-title';
-  titleSpan.textContent = title;
-  a.append(titleSpan);
-  if (date) {
-    const dateSpan = document.createElement('span');
-    dateSpan.className = 'article-related-date';
-    dateSpan.textContent = date;
-    a.append(dateSpan);
-  }
-}
-
-/**
- * Makes the "SHARE THIS STORY" related list dynamic: fetches the magazine query
- * index, drops the current article (exclude-self), sorts newest-first by the
- * authored publish date, and rebuilds the list from the index — so it stays in
- * sync as articles are added/removed instead of being hand-maintained. The date
- * line uses each entry's `publishDate` (authored per article). Fire-and-forget:
- * if the fetch fails or the index is empty, the pre-existing hand-authored list
- * is left untouched (graceful fallback), so the sidebar never renders empty.
- * @param {Element} asideWrapper the sidebar wrapper holding the related <ul>
- */
-async function enhanceRelatedFromIndex(asideWrapper) {
-  const ul = [...asideWrapper.querySelectorAll('ul')].find((u) => u.querySelector('li a[href*="/magazine/"]'));
-  if (!ul) return;
-  try {
-    const data = await fetchIndex('/us/en/magazine/query-index.json');
-    const current = normalizePath(window.location.pathname);
-    const related = data
-      .filter((e) => e.title && normalizePath(e.path) !== current)
-      .sort(byPublishDateDesc);
-    if (!related.length) return; // keep the authored list as fallback
-    const frag = document.createDocumentFragment();
-    related.forEach((e) => {
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      a.href = e.path;
-      // "Title Weekday, DD Mon YYYY" so splitRelatedLink renders title + date
-      a.textContent = e.publishDate ? `${e.title} ${e.publishDate}` : e.title;
-      splitRelatedLink(a);
-      li.append(a);
-      frag.append(li);
-    });
-    ul.replaceChildren(frag);
-  } catch (e) {
-    // network/parse failure — leave the hand-authored list in place
-    // eslint-disable-next-line no-console
-    console.warn('related articles: dynamic rebuild failed, keeping authored list', e);
-  }
-}
-
-/**
  * Lays a magazine article out in two columns like the source: a ~67.5% left
  * column (title, byline, body, author card) and a ~23% right sidebar (SHARE
  * THIS STORY + related articles), separated by a ~10% gap. The hero image and
@@ -248,14 +181,26 @@ function buildArticleLayout(main) {
 
   // Related-article links come in as "<a>Title Weekday, DD Mon YYYY</a>". The
   // source splits each into a dark uppercase title over a muted date line, with
-  // a left rule on the link. Decorate the authored list first (so it renders
-  // immediately as a fallback)...
-  asideWrapper.querySelectorAll('li a').forEach(splitRelatedLink);
-  // ...then rebuild it dynamically from the magazine index (exclude-self,
-  // newest-first). Fire-and-forget: on failure the decorated authored list
-  // stays. Keeps the sidebar in sync as articles are added, matching the
-  // intended dynamic related-articles behaviour without per-article hand-editing.
-  enhanceRelatedFromIndex(asideWrapper);
+  // a left rule on the link. Split title/date into spans the CSS can style.
+  const dateRe = /\s+((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,\s+\d{1,2}\s+[A-Za-z]{3,}\s+\d{4})$/;
+  asideWrapper.querySelectorAll('li a').forEach((a) => {
+    if (a.querySelector('.article-related-title')) return;
+    const text = a.textContent.trim();
+    const m = text.match(dateRe);
+    const title = m ? text.slice(0, m.index).trim() : text;
+    const date = m ? m[1] : '';
+    a.textContent = '';
+    const titleSpan = document.createElement('span');
+    titleSpan.className = 'article-related-title';
+    titleSpan.textContent = title;
+    a.append(titleSpan);
+    if (date) {
+      const dateSpan = document.createElement('span');
+      dateSpan.className = 'article-related-date';
+      dateSpan.textContent = date;
+      a.append(dateSpan);
+    }
+  });
 
   // Some articles (e.g. LA Skateparks) carry an extra "Download PDF" widget in
   // the sidebar between "SHARE THIS STORY" and the related list: a title link,
