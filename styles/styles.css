@@ -719,6 +719,14 @@ main > .section:first-of-type {
     grid-row: 3 / 100;
   }
 
+  /* static "SHARE THIS STORY" sidebar (share-story block) → right sidebar, same
+     placement as the dynamic related list above: rises to row 3 so the heading
+     sits level with the H1 (title row), matching the source. */
+  main .section.article-title-container > .share-story-wrapper {
+    grid-column: 2;
+    grid-row: 3 / 100;
+  }
+
   /* Adventure detail two-column layout (buildAdventureLayout groups the spec
      sheet + "Share this Adventure" heading into .detail-rail and the tabs into
      .detail-body). Source: ~23.15% rail + ~2.46% gap + ~74.38% tabs column, so

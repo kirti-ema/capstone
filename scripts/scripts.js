@@ -153,6 +153,12 @@ function buildArticleLayout(main) {
   const section = [...main.querySelectorAll('.section.breadcrumbs-container')]
     .find((s) => [...s.querySelectorAll('h5')].some((h) => toClassName(h.textContent) === 'share-this-story'));
   if (!section || section.querySelector(':scope > .article-layout')) return;
+  // Block-per-section articles (re-authored with an article-title block) use the
+  // section's own CSS grid (.article-title-container in styles.css), not this
+  // flat-content builder — skip them so we don't nest a second grid. Keyed on the
+  // authored article-title block's wrapper (a direct section child), which only
+  // exists on block-authored pages; the still-flat articles have no such wrapper.
+  if (section.querySelector(':scope > .article-title-wrapper')) return;
 
   const children = [...section.children];
   const asideWrapper = children.find((c) => [...c.querySelectorAll('h5')]
