@@ -2,7 +2,9 @@
 
 > Warmup context for a new EMA conversation. Read this **and** `INSTRUCTIONS.md`
 > before modifying anything. Pairs with `AGENTS.md` (Adobe EDS boilerplate rules).
-> Last updated: 2026-08-11 (magazine articles re-authored to block-per-section).
+> Last updated: 2026-08-12 (dynamic FAQ accordion; Sidekick + DA-native Block
+> Libraries; all magazine images fixed via DA Media Library Copy; guide-la PDF
+> links fixed + force-download).
 
 ## What this project is
 
@@ -79,7 +81,21 @@ grid, keyed on `.article-title-container` (see below), NOT `buildArticleLayout`.
 Dynamic (index/sheet-driven) blocks: **`cards-teaser`** (magazine/adventure
 listings), **`tabs-filter`** (Adventures category tabs), **`cards-profile`**
 (About Us contributors/guides, spreadsheet mode), **`hero-banner`** (featured
-adventure).
+adventure), **`accordion-faq`** (FAQ page, **dual-mode** — reads `faqs.json`
+sheet when authored with a `.json` link, else inline; renders identically).
+
+### Block Library (both systems live; blocks browsable/insertable in the editor)
+- **Sidekick Library** (code, git): `tools/sidekick/{config.json, library.html,
+  library.json}`. `library.json` = 21 rows (name/path → `/tools/sidekick/blocks/<name>`).
+- **DA-native Library** (the `da.live/edit` panel): configured in the **DA Config
+  Service** via `POST admin.da.live/config/kirti-ema/capstone/` (a `library` tab
+  → `Blocks` row → `library/blocks.json`). NOT a `.da/config.json` source doc.
+- **21 block docs** authored in DA at `/tools/sidekick/blocks/<name>` (excludes
+  structural header/footer/fragment). Each = H1 + `library-metadata` (name/
+  description/searchTags) + real example markup. `article-section` doc carries 3
+  variant sub-items (default / `quote` / `quote small`). Add a block = author a doc
+  + add a `name,path` row to `library/blocks.json` (+ Sidekick `library.json`).
+  See INSTRUCTIONS "Block Library".
 
 ### Design tokens (`styles/brand.css`)
 Extracted from source. Headings **Asar** (serif), body **Source Sans Pro**.
@@ -142,6 +158,20 @@ hand-authored (see INSTRUCTIONS "content editing exception").
 - Adventures metadata is a proper metadata **block**; Adventures hero-banner image
   fixed (absolute content.da.live `<source>` → relative `/media-da/`).
 - **local ↔ DA parity verified** for all touched pages → next EMA "sync" is a no-op.
+
+**Done this session (2026-08-12):**
+- **ALL magazine article images fixed via DA Media Library "Copy"** (arctic-surfing
+  hero + 4 body/author imgs; then all 4 other articles = 21 imgs). Every US magazine
+  article now renders **0 `about:error`**. Method (preferred over hash-surgery): the
+  DA Media Library holds the authoritative optimized `media_<hash>` URL — see
+  INSTRUCTIONS "Broken-image fix".
+- **guide-la PDF**: `-pdf`→`.pdf` hrefs fixed (content), AND `article-download.js`
+  now adds the HTML5 `download` attr so PDFs download instead of opening in-tab
+  (match source's Content-Disposition). Code merged PR #4.
+- **FAQ accordion made dynamic** (dual-mode `accordion-faq`, sheet `/us/en/faqs/
+  faqs.json`, 7 rows). Code merged PR #6; page + sheet live. UI identical.
+- **Block Library** built + wired (Sidekick PR #5 + DA-native Config Service).
+  `article-section` variants (quote / quote small) added to its library doc.
 
 **Reverted / not deployed:**
 - Dynamic SHARE-sidebar code (commit `ed6e5e8`) was **reverted** (`f58c3b5`)

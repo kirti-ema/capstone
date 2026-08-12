@@ -1,8 +1,8 @@
 # INSTRUCTIONS.md — Rules, Conventions & Workflows
 
 > How to work in this project. Read with `CONTEXT.md` (state/architecture) and
-> `AGENTS.md` (Adobe EDS boilerplate rules). Last updated: 2026-08-11
-> (magazine articles block-per-section + DA image self-hosting).
+> `AGENTS.md` (Adobe EDS boilerplate rules). Last updated: 2026-08-12
+> (DA Media Library Copy for broken images; dynamic FAQ; Block Library).
 
 ## Golden rules (do / don't)
 
@@ -91,7 +91,61 @@ is the right sidebar (rises to the title row).
 - **PAGE-SPECIFIC** (read source each time): #sections, quote variant, download
   widget, byline/author/filenames/alt, source typos kept verbatim (arctic "revelas").
 
-## Image path forms (critical — causes broken images)
+## Block Library (browse/insert blocks in the editor)
+
+TWO separate systems, both live for the same 21 block docs:
+- **DA-native Library** (the `da.live/edit` panel): config lives in the **DA Config
+  Service**, NOT a source doc. `POST admin.da.live/config/kirti-ema/capstone/`
+  (multipart `config=<json>`) a multi-sheet workbook with a `library` tab
+  (columns `title,path,format,ref,icon,experience`) whose `Blocks` row `path` =
+  `https://content.da.live/kirti-ema/capstone/library/blocks.json`. Keep a `data`
+  tab. **A `.da/config.json` SOURCE doc does NOT work** — the editor never reads it.
+  Verify: `GET admin.da.live/config/kirti-ema/capstone/` → 200.
+- **Sidekick Library** (code, git, PR #5): `tools/sidekick/{config.json,
+  library.html, library.json}`; opened via the Sidekick extension.
+- **`library/blocks.json`** = DA doc (page content: POST source, then preview+
+  **publish**). Columns `name`,`path`; 21 rows; `path` = full `content.da.live/.../
+  tools/sidekick/blocks/<name>` URLs.
+- **Block docs** at `/tools/sidekick/blocks/<name>` = H1 + `library-metadata` block
+  (`name`/`description`/`searchTags`; DA shows `description` via an info icon) +
+  real example markup harvested from live pages.
+- **Variants** = extra block instances in the SAME doc, labeled by CLASS
+  (`article-section quote` → "Article Section (quote)"), each with its own
+  `library-metadata`. Only `article-section` has real variants; hero-banner
+  `no-image` / cards-teaser `article-aside` are code/context-applied, NOT exposed.
+- **Add a block later:** author the doc under `tools/sidekick/blocks/`, add a
+  `name,path` row to `library/blocks.json` (+ Sidekick `library.json`), publish.
+- `content.da.live` 401 to anon curl is NORMAL (auth'd editor reads it); verify
+  sheets via the published `aem.page` mirror. Can't drive `da.live/edit` from
+  Playwright (Adobe IMS sign-in) — user confirms the panel visually.
+
+## Broken-image fix — PREFERRED method: DA Media Library "Copy"
+
+**Use this first** whenever the asset already exists in DA (it usually does).
+No hash reconstruction, and it sidesteps the 401ing per-doc `content.da.live`
+folder path entirely.
+1. Open the asset in DA Media Library
+   (`da.live/apps/media-library?media=media_<hash>.jpg#/kirti-ema/capstone`) and
+   click its **Copy** button. It writes the authoritative published optimized URL
+   `https://main--capstone--kirti-ema.aem.live/media_<hash>.ext#width=W&height=H`
+   (a repo-wide asset served at SITE ORIGIN — 200 on aem.page+aem.live).
+2. Bulk shortcut: the library component holds the full index in a JS property —
+   `document.querySelector('nx-media-library')._displayDataCache` (array of
+   `{displayName,url,hash,doc}`); harvest all mappings in one `browser_evaluate`.
+   Base-name matching is AMBIGUOUS (multiple crops); use the **CA sibling** page as
+   ground truth (it renders 0 `about:error` and its `<img src=media_…>` order
+   matches the US page base-for-base).
+3. Paste as a clean `<picture><img src="<copied-url>" alt="" loading="lazy"></picture>`
+   (article-hero/section/author-card decorators only need `picture img` + src;
+   `createOptimizedPicture` rewrites to `./media_*`). Edit BOTH local + DA, POST,
+   preview+publish, verify `naturalWidth>0` & 0 `about:error` in a real browser,
+   re-align local to DA `<main>` inner. (Playwright can't read the clipboard — hook
+   `navigator.clipboard.write` to capture what Copy emits.)
+
+The `/media-da` and `content.da.live` hash-surgery methods below are the OLDER
+fallback for when the asset is not in the library.
+
+## Image path forms (fallback — hash-surgery when NOT in the Media Library)
 
 EDS optimizes an image **only** when its `<picture><source srcset>` uses a
 **relative `/media-da/{docpath}/{name}-<hashes>.ext`** reference. It then rewrites
@@ -140,10 +194,20 @@ dev server always shows `about:error` for these — verify on the **deployed pre
 - **Sync reverts DA-only edits.** → Always edit both local + DA (see parity rule).
 - **`about:error` hero** = absolute content.da.live in `<source>`. → relative /media-da.
 - **Mangled `/media-da` image** = extra trailing hash. → drop one segment, dot-prefix folder.
-- **guide-la-skateparks PDF links revert to `-pdf` (hyphen, 404).** Correct is
-  `.pdf` (dot). There are **2** such anchors. **Verify with an ESCAPED dot** —
-  `grep -E 'ultimateguidetolaskateparks-pdf'`; an unescaped `.pdf` pattern falsely
-  matches the hyphen form and hides the bug (burned twice).
+- **guide-la-skateparks PDF links** — FIXED (2026-08-12): the 2 hrefs are now
+  `.pdf` (dot, 200), not `-pdf` (hyphen, 404). **If they revert, verify with an
+  ESCAPED dot** — `grep -E 'ultimateguidetolaskateparks-pdf'`; an unescaped `.pdf`
+  pattern falsely matches the hyphen form and hides the bug (burned twice). Also:
+  `article-download.js` adds the HTML5 `download` attr to `.pdf` links so they
+  download instead of opening in-tab (our DA `/assets/*.pdf` is served inline, no
+  Content-Disposition, unlike the source) — PR #4.
+- **FAQ accordion is DYNAMIC (dual-mode) as of 2026-08-12** — reads the DA sheet
+  `/us/en/faqs/faqs.json` (columns `question`/`answer`/`order`). This is SAFE from
+  the indexer-lag trap because a standalone DA sheet publishes directly (unlike a
+  query-index). Add an FAQ = add a row + publish (preview path needs the `.json`
+  extension: `admin.hlx.page/preview/.../us/en/faqs/faqs.json`). Inline authoring
+  still works (dual-mode). Do NOT confuse this sheet-driven pattern with the
+  reverted index-driven SHARE-sidebar below.
 - **Indexer content-cache lag.** After authoring `publishDate`/`category`/`groupSize`,
   the rendered head + `.md` update immediately, but `query-index.json` records
   stay stale for minutes→indeterminate; re-preview/reindex won't force it. Don't
