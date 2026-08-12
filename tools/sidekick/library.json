@@ -1,0 +1,93 @@
+{
+  "total": 21,
+  "offset": 0,
+  "limit": 21,
+  "data": [
+    {
+      "name": "Accordion FAQ",
+      "path": "/tools/sidekick/blocks/accordion-faq"
+    },
+    {
+      "name": "Article Download",
+      "path": "/tools/sidekick/blocks/article-download"
+    },
+    {
+      "name": "Article Hero",
+      "path": "/tools/sidekick/blocks/article-hero"
+    },
+    {
+      "name": "Article Section",
+      "path": "/tools/sidekick/blocks/article-section"
+    },
+    {
+      "name": "Article Title",
+      "path": "/tools/sidekick/blocks/article-title"
+    },
+    {
+      "name": "Author Card",
+      "path": "/tools/sidekick/blocks/author-card"
+    },
+    {
+      "name": "Breadcrumbs",
+      "path": "/tools/sidekick/blocks/breadcrumbs"
+    },
+    {
+      "name": "Cards Profile",
+      "path": "/tools/sidekick/blocks/cards-profile"
+    },
+    {
+      "name": "Cards Teaser",
+      "path": "/tools/sidekick/blocks/cards-teaser"
+    },
+    {
+      "name": "Carousel Gallery",
+      "path": "/tools/sidekick/blocks/carousel-gallery"
+    },
+    {
+      "name": "Carousel Hero",
+      "path": "/tools/sidekick/blocks/carousel-hero"
+    },
+    {
+      "name": "Columns",
+      "path": "/tools/sidekick/blocks/columns"
+    },
+    {
+      "name": "Featured Teaser",
+      "path": "/tools/sidekick/blocks/featured-teaser"
+    },
+    {
+      "name": "Hero",
+      "path": "/tools/sidekick/blocks/hero"
+    },
+    {
+      "name": "Hero Banner",
+      "path": "/tools/sidekick/blocks/hero-banner"
+    },
+    {
+      "name": "Members Only",
+      "path": "/tools/sidekick/blocks/members-only"
+    },
+    {
+      "name": "Share Story",
+      "path": "/tools/sidekick/blocks/share-story"
+    },
+    {
+      "name": "Table Specs",
+      "path": "/tools/sidekick/blocks/table-specs"
+    },
+    {
+      "name": "Tabs Detail",
+      "path": "/tools/sidekick/blocks/tabs-detail"
+    },
+    {
+      "name": "Tabs Filter",
+      "path": "/tools/sidekick/blocks/tabs-filter"
+    },
+    {
+      "name": "Widget",
+      "path": "/tools/sidekick/blocks/widget"
+    }
+  ],
+  ":type": "sheet",
+  ":sheetname": "helix-blocks"
+}
