@@ -17,4 +17,14 @@ export default function decorate(block) {
   const content = document.createDocumentFragment();
   while (cell.firstChild) content.append(cell.firstChild);
   block.replaceChildren(content);
+
+  // Force the PDF links to download rather than open in the tab, matching the
+  // source (whose PDF endpoint sends a Content-Disposition: attachment header).
+  // Our DA-hosted /assets/*.pdf is served inline (no such header), so a plain
+  // link navigates to and renders the PDF in the same tab. The HTML5 `download`
+  // attribute makes the browser download it instead — honored here because the
+  // asset is same-origin. Bare `download` keeps the asset's own filename.
+  block.querySelectorAll('a[href$=".pdf"]').forEach((a) => {
+    a.setAttribute('download', '');
+  });
 }
