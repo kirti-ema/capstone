@@ -2,9 +2,9 @@
 
 > Warmup context for a new EMA conversation. Read this **and** `INSTRUCTIONS.md`
 > before modifying anything. Pairs with `AGENTS.md` (Adobe EDS boilerplate rules).
-> Last updated: 2026-08-12 (dynamic FAQ accordion; Sidekick + DA-native Block
-> Libraries; all magazine images fixed via DA Media Library Copy; guide-la PDF
-> links fixed + force-download).
+> Last updated: 2026-08-14 (US tree made sync-safe via refresh-from-DA; FAQ image +
+> faqs-json href fixed; guide-la revert diagnosed + restored; README/migration-analysis
+> on `main`; 3 handover PDF guides live under `/docs/`).
 
 ## What this project is
 
@@ -14,6 +14,8 @@ Goal: pixel-match the source, verified on production preview/live.
 
 - **GitHub repo:** `kirti-ema/capstone` (`https://github.com/kirti-ema/capstone`)
 - **DA content source (org/repo):** `kirti-ema/capstone`
+- **Config Service org is REPOLESS** — 3 sites (`capstone`, `eds-ema`, `ema-capstone`);
+  this project = `capstone`. `aem up` needs `--pages-url=https://main--capstone--kirti-ema.aem.page`.
 - **Deploy branch:** `main` (origin/HEAD → main). Code Sync publishes from `main`.
 - **Preview:** `https://main--capstone--kirti-ema.aem.page/{path}`
 - **Live:** `https://main--capstone--kirti-ema.aem.live/{path}`
@@ -173,6 +175,28 @@ hand-authored (see INSTRUCTIONS "content editing exception").
 - **Block Library** built + wired (Sidekick PR #5 + DA-native Config Service).
   `article-section` variants (quote / quote small) added to its library doc.
 
+**Done 2026-08-14:**
+- **US tree made sync-safe (refresh-from-DA).** A user "sync" had reverted guide-la
+  (broken imgs + `-pdf`) because local `.plain.html` held a stale render-snapshot.
+  Root cause: local files with the compact `/media-da` `<img>` form are NOT re-postable
+  — a blind sync breaks their images. Fix pattern (see INSTRUCTIONS "sync-safety"):
+  pull each DA `<main>` inner down into local (repo + `/workspace/current`), which
+  carries DA's re-postable `content.da.live` `<img>` fallback. Verified round-trip-safe
+  and applied to all US magazine + landing + 16 adventure-detail pages. **Prefer
+  DA→local refresh over local→DA sync; DA is source of truth.**
+- **guide-la restored** from the 2026-08-12 09:06 DA published snapshot (clean
+  `aem.live/media_` imgs + `.pdf` href); 3-way parity (DA = repo = workspace).
+- **FAQ image fixed** (was `about:error`; DA Media Library "Copy" URL) and the
+  accordion `faqs-json`→`faqs.json` href corrected (DA source API preserves the dot;
+  the `-json`/`-pdf` mangling is a da.live *editor* behavior, not the source API).
+- **Docs on `main`:** `README.md` (comprehensive, PR #10) and `docs/migration-analysis.md`
+  (Aug-5 planning artifact + delivery reconciliation appendix).
+- **Handover PDFs live** at `/docs/{developer,author,admin}-guide` (+ `.pdf`), via the
+  `project-management` plugin (`.agents/settings.json` enables it). Generated with
+  pandoc+typst installed to `~/.local/bin` (no sudo). Intermediate build files
+  (`content/*-GUIDE.md`, `adobe-whitepaper.typ`, `Adobe_Wordmark_RGB_Red.svg`) remain
+  in `content/` — the project guard blocks deleting under `content/`.
+
 **Reverted / not deployed:**
 - Dynamic SHARE-sidebar code (commit `ed6e5e8`) was **reverted** (`f58c3b5`)
   because the magazine index `publishDate` lags and produced date-less links.
@@ -183,7 +207,8 @@ hand-authored (see INSTRUCTIONS "content editing exception").
 ## Remaining / possible future work
 
 - CA locale (`/ca/en/`) is static — not migrated to dynamic blocks; add matching
-  CA query indices if it comes into scope.
+  CA query indices if it comes into scope. CA pages are also **not yet sync-safe**
+  (still the compact `/media-da` local form) — refresh-from-DA if CA sync is needed.
 - Redeploy dynamic SHARE-sidebar only after index `publishDate` populates reliably.
 - Magazine index `publishDate`/`category`/`groupSize` have platform indexer
   content-cache lag (see INSTRUCTIONS "known issues").
