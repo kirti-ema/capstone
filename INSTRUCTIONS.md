@@ -39,14 +39,42 @@ next sync. To make a page-body change durable, edit **both**:
    ```
 Then preview. Verify parity: `local file == DA <main> inner` (byte-identical).
 When in doubt, fetch the DA source, extract its `<main>` inner, and write that
-verbatim to the local file. Currently **all touched pages are at parity**.
+verbatim to the local file.
+
+**Sync-safety (learned 2026-08-14).** A blind EMA "sync" (local→DA) can **break
+images**: local files with the compact `/media-da` `<img>` form are render-snapshots,
+NOT re-postable sources — re-POSTing them strips image resolution → `about:error`.
+DA holds the authoritative re-postable form. So **prefer DA→local refresh over
+local→DA sync**, and before ANY sync confirm local carries DA's `<img>` fallback
+(`content.da.live/.../.{slug}/...`), not just a bare `/media-da` src. All US
+magazine + landing + adventure-detail pages were refreshed-from-DA and are now
+sync-safe; **CA is not** (still snapshot form). To harden a page: fetch DA `<main>`
+inner → write to local (repo AND `/workspace/current`) → re-POST → preview →
+assert 0 `about:error` (revert to the DA backup if it regresses).
+
+Parity is a *content* guarantee: byte-mismatches vs DA are almost always DA's own
+normalization (`<picture>` expansion, `<p>`-wrapping of block cells, heading `id`s),
+not real divergence — neutralize those before flagging drift.
 
 ## Deploy order
 
 1. Push **code** first (branch → PR → `main`); wait ~30s for Code Sync.
 2. Then **POST/preview/publish DA** docs.
-3. PR description **must** include a preview URL (`https://main--capstone--kirti-ema.aem.page/{path}`) or the PR is rejected (AGENTS.md).
+3. **`aem-psi-check` is a description-URL GATE**, not a flaky perf run: it rejects
+   ("Rejected: provide test url") any PR whose body lacks a bulleted, *servable*
+   preview URL. Put `- https://main--capstone--kirti-ema.aem.page/` (or a real page
+   like `/us/en`) in the PR body. A GitHub blob link does NOT satisfy it; `*.md`
+   files are `.hlxignore`d (not servable) so never cite the doc itself.
 - Current working branch is often `develop`; **deploy branch is `main`**.
+- **Injected creds can drop mid-session** — a git push failing with "could not read
+  Username" means auth lapsed, not a code problem; retry once creds return (never
+  paste a token). GitHub self-approval is blocked (the injected identity is the PR
+  author `kirti-ema`) — you can merge but not formally approve your own PRs.
+
+**Git fetch config (fixed 2026-08-14).** The clone was single-branch
+(`remote.origin.fetch = +refs/heads/main:...`), so `origin/develop` never updated
+and local silently fell behind. Now broadened to `+refs/heads/*:refs/remotes/origin/*`.
+Before working a branch: `git fetch origin --prune` then `git pull --ff-only`.
 
 ## Commands
 
@@ -194,13 +222,18 @@ dev server always shows `about:error` for these — verify on the **deployed pre
 - **Sync reverts DA-only edits.** → Always edit both local + DA (see parity rule).
 - **`about:error` hero** = absolute content.da.live in `<source>`. → relative /media-da.
 - **Mangled `/media-da` image** = extra trailing hash. → drop one segment, dot-prefix folder.
-- **guide-la-skateparks PDF links** — FIXED (2026-08-12): the 2 hrefs are now
-  `.pdf` (dot, 200), not `-pdf` (hyphen, 404). **If they revert, verify with an
-  ESCAPED dot** — `grep -E 'ultimateguidetolaskateparks-pdf'`; an unescaped `.pdf`
-  pattern falsely matches the hyphen form and hides the bug (burned twice). Also:
-  `article-download.js` adds the HTML5 `download` attr to `.pdf` links so they
-  download instead of opening in-tab (our DA `/assets/*.pdf` is served inline, no
-  Content-Disposition, unlike the source) — PR #4.
+- **Dot→hyphen link mangling.** da.live's *editor* normalizes a `.ext` in a link
+  href to `-ext` (`.pdf`→`-pdf`, `.json`→`-json`), which 404s. The **DA source API
+  preserves the dot** on a direct POST, so fix hrefs there. **Verify with an ESCAPED
+  dot** — `grep -E 'ultimateguidetolaskateparks-pdf'`; an unescaped `.pdf` pattern
+  falsely matches the hyphen form and hides the bug (burned repeatedly). Note:
+  dynamic blocks tolerate `-json` because they fall back to matching the anchor
+  *text* (e.g. accordion-faq), so the FAQ `faqs-json` href still renders — but the
+  link itself is a 404; fix to `.json` when correcting.
+- **guide-la-skateparks PDF links** — 2 hrefs must be `.pdf` (200), not `-pdf` (404).
+  Fixed 2026-08-12, **reverted by a sync 2026-08-12**, **restored 2026-08-14** from a
+  DA published snapshot. `article-download.js` adds the HTML5 `download` attr to
+  `.pdf` links (our DA `/assets/*.pdf` is served inline, unlike the source) — PR #4.
 - **FAQ accordion is DYNAMIC (dual-mode) as of 2026-08-12** — reads the DA sheet
   `/us/en/faqs/faqs.json` (columns `question`/`answer`/`order`). This is SAFE from
   the indexer-lag trap because a standalone DA sheet publishes directly (unlike a
