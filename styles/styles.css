@@ -140,6 +140,14 @@ main .tabs-filter-container .default-content-wrapper h1 {
   line-height: 1.5;
 }
 
+/* Magazine landing page — the source renders its "Magazine" H1 at 40px too
+   (not the 54px xxl default). No breadcrumbs here, so scope on the
+   members-only-container section (unique to this page). */
+main .members-only-container .default-content-wrapper h1 {
+  font-size: 40px;
+  line-height: 1.5;
+}
+
 /* Adventures landing "Current Adventures" H2 — the source gives it the same
    short yellow accent underline as the homepage cards-teaser headings (84px,
    2px #ffea00, 13.5px below). The intro "Experience the world" H2 lives inside
