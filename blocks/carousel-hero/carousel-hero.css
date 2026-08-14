@@ -166,22 +166,38 @@
   cursor: pointer;
 }
 
+/* Long horizontal arrow (matches the WKND source icon-font glyph): a thin shaft
+   drawn by ::before + a 45° open chevron head drawn by ::after. 2px stroke,
+   black, both pseudo-elements centered on the button so the arrow stays
+   vertically centered. */
+.carousel-hero .carousel-hero-navigation-buttons button::before {
+  display: block;
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 2px;
+  background-color: #000;
+  transform: translate(-50%, -50%);
+}
+
 .carousel-hero .carousel-hero-navigation-buttons button::after {
   display: block;
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border: 2px solid #000;
   border-bottom: 0;
   border-left: 0;
-  transform: translate(-40%, -50%) rotate(-135deg);
+  transform: translate(calc(-50% - 3px), -50%) rotate(-135deg);
 }
 
 .carousel-hero .carousel-hero-navigation-buttons button.slide-next::after {
-  transform: translate(-60%, -50%) rotate(45deg);
+  transform: translate(calc(-50% + 3px), -50%) rotate(45deg);
 }
 
 /* Desktop: card overlaps the image bottom. The image keeps its 16/9 ratio
